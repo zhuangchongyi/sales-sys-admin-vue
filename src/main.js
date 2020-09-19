@@ -48,7 +48,7 @@ const whiteList = ['/page/login'];
 router.beforeEach((to, from, next) => {
   NProgress.start()
   document.title = process.env.VUE_APP_TITLE;
-  // console.log("beforeEach to====", to, "======from", from)
+  console.log("beforeEach to====", to, "======from", from)
   if (getToken()) { //已登录
     if (to.path === '/page/login') {
       next('/')

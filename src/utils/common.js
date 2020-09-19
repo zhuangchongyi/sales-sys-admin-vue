@@ -158,6 +158,9 @@ export function approvalStatusFormatter(val) {
     case '6':
       text = '取消特批';
       break;
+    case '7':
+      text = '已关闭';
+      break;
     default:
       text = '无';
       break;

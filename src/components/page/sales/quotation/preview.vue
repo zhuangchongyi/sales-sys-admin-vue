@@ -8,7 +8,7 @@
       <el-button type="primary"
                  icon="el-icon-close"
                  :loading="btnLoading"
-                 @click="cancelAuditForm">取消审核</el-button>
+                 @click="cancelAuditForm">取 消</el-button>
     </div>
     <el-divider><strong>客户信息</strong></el-divider>
     <div class="handle-box">
@@ -119,7 +119,7 @@
           </el-form-item>
         </el-col>
         <el-col :span="4">
-          <el-form-item label="社会信用证号"
+          <el-form-item label="社会信用号"
                         prop="certificateNum">
             <el-input v-model="clienteleForm.certificateNum"
                       size="small"
@@ -890,7 +890,7 @@ export default {
     this.quotationId = this.$route.query.id;
     this.getTreeselectClienteleType();
     // this.getPersonnelName()
-    this.getQuotation()
+    // this.getQuotation()
   },
   watch: {
     $route (to, form) {
@@ -929,7 +929,7 @@ export default {
       auditQuotation(data).then(res => {
         this.btnLoading = false;
         if (res.success)
-          this.msgSuccess("取消审核成功")
+          this.msgSuccess(res.message)
         else
           this.msgError(res.message)
       })

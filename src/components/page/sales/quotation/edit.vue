@@ -26,7 +26,7 @@
           <el-form-item label="报价单号"
                         prop="quotationNum">
             <el-input v-model="quotationNum"
-                      size="mini"
+                      size="small"
                       readonly
                       style="width: 155px;" />
           </el-form-item>
@@ -107,7 +107,7 @@
           </el-form-item>
         </el-col>
         <el-col :span="4">
-          <el-form-item label="社会信用证号"
+          <el-form-item label="社会信用号"
                         prop="certificateNum">
             <el-input v-model="clienteleForm.certificateNum"
                       size="small"
@@ -136,7 +136,7 @@
                         prop="quotationTime">
             <el-date-picker v-model="clienteleForm.quotationTime"
                             style="width:155px;"
-                            value-format="yyyy-MM-dd HH:mm:ss"
+                            value-format="yyyy-MM-dd"
                             format="yyyy-MM-dd"
                             placeholder="选择日期" />
           </el-form-item>
@@ -146,7 +146,7 @@
                         prop="effectiveTime">
             <el-date-picker v-model="clienteleForm.effectiveTime"
                             style="width:155px;"
-                            value-format="yyyy-MM-dd HH:mm:ss"
+                            value-format="yyyy-MM-dd"
                             format="yyyy-MM-dd"
                             placeholder="选择日期" />
           </el-form-item>
@@ -963,15 +963,18 @@ export default {
             this.msgError("未添加产品");
             return;
           }
+          this.clienteleForm.quotationId = this.quotationId;
+          this.clienteleForm.quotationNum = this.quotationNum;
           let data = {
             clientele: JSON.stringify(this.clienteleForm),
             materielList: JSON.stringify(this.materielListData)
           }
-          console.log(data)
           addQuotation(data).then(res => {
-            console.log(res);
             if (res.success) {
+              this.quotationNum = res.data.quotationNum;
+              this.quotationId = res.data.quotationId;
               this.msgSuccess(res.message)
+              this.getQuotation()
             } else {
               this.msgError(res.message)
             }
@@ -1081,7 +1084,7 @@ export default {
     },
     handleDelete (index, row) {
       if (row.subId) {
-        console.log("dellete", row)
+        console.log("delete", row)
         deleteQuotationSub(row.subId).then(res => {
           if (res.success) {
             this.msgSuccess(res.message)
@@ -1089,10 +1092,9 @@ export default {
             this.msgError(res.message)
           }
         })
-      } else {
-        this.materielListData.splice(index, 1);
-        this.calculateTotalPrice();
       }
+      this.materielListData.splice(index, 1);
+      this.calculateTotalPrice();
     },
     handleAddMateriel () {
       this.resetMaterielForm();

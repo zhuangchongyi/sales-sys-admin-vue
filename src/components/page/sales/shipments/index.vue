@@ -400,17 +400,17 @@ export default {
     },
     /** 新增按钮操作 */
     handleAdd () {
-      this.$router.push('/page/sales/salesShipments/add');
+      this.$router.push('/page/sales/shipments/add');
     },
     /** 修改按钮操作 */
     handleUpdate (row) {
-      this.$router.push({ name: '/page/sales/salesShipments/edit', params: { id: row.clienteleId } });
+      this.$router.push({ path: '/page/sales/shipments/edit', query: { id: row.clienteleId } });
     },
     handlePreview (row) {
-      this.$router.push({ name: '/page/sales/salesShipments/preview', params: { id: row.clienteleId, isShow: false } });
+      this.$router.push({ path: '/page/sales/shipments/preview', query: { id: row.clienteleId, isShow: false } });
     },
     handleAudit (row) {
-      this.$router.push({ name: '/page/sales/salesShipments/preview', params: { id: row.clienteleId, isShow: true, isAudit: true } });
+      this.$router.push({ path: '/page/sales/shipments/preview', query: { id: row.clienteleId, isShow: true, isAudit: true } });
     },
     handleSubmit () {
       this.msgSuccess('提交成功');

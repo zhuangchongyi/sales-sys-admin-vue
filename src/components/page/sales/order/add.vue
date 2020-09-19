@@ -23,9 +23,9 @@
              :inline="true">
       <el-row>
         <el-col :span="4">
-          <el-form-item label="报价单号"
-                        prop="quotationNum">
-            <el-input v-model="quotationNum"
+          <el-form-item label="订单号"
+                        prop="orderNum">
+            <el-input v-model="orderNum"
                       size="small"
                       readonly
                       style="width: 155px;" />
@@ -132,34 +132,33 @@
           </el-form-item>
         </el-col>
         <el-col :span="4">
-          <el-form-item label="报价日期"
-                        prop="quotationTime">
-            <el-date-picker v-model="clienteleForm.quotationTime"
-                            style="width:155px;"
-                            value-format="yyyy-MM-dd"
-                            format="yyyy-MM-dd"
-                            placeholder="选择日期" />
-          </el-form-item>
-        </el-col>
-        <el-col :span="4">
-          <el-form-item label="有效日期"
-                        prop="effectiveTime">
-            <el-date-picker v-model="clienteleForm.effectiveTime"
-                            style="width:155px;"
-                            value-format="yyyy-MM-dd"
-                            format="yyyy-MM-dd"
-                            placeholder="选择日期" />
-          </el-form-item>
-        </el-col>
-        <el-col :span="4">
-          <el-form-item label="报价人"
-                        prop="personnelName">
-            <el-input v-model="clienteleForm.personnelName"
+          <el-form-item label="税率"
+                        prop="taxrate">
+            <el-input v-model="clienteleForm.taxrate"
                       size="small"
-                      suffix-icon="el-icon-search"
-                      @focus="personnelFocus"
-                      ref="personnelBlur"
+                      oninput="if(isNaN(value)) { value = null } if(value.indexOf('.')>0){value=value.slice(0,value.indexOf('.')+8)}"
+                      maxLength='9'
                       style="width: 155px;" />
+          </el-form-item>
+        </el-col>
+        <el-col :span="4">
+          <el-form-item label="税额"
+                        prop="taxamount">
+            <el-input v-model="clienteleForm.taxamount"
+                      size="small"
+                      oninput="if(isNaN(value)) { value = null } if(value.indexOf('.')>0){value=value.slice(0,value.indexOf('.')+3)}"
+                      maxLength='9'
+                      style="width: 155px;" />
+          </el-form-item>
+        </el-col>
+        <el-col :span="4">
+          <el-form-item label="交货日期"
+                        prop="deliveryTime">
+            <el-date-picker v-model="clienteleForm.deliveryTime"
+                            style="width:155px;"
+                            value-format="yyyy-MM-dd"
+                            format="yyyy-MM-dd"
+                            placeholder="选择日期" />
           </el-form-item>
         </el-col>
         <el-col :span="8">
@@ -169,6 +168,29 @@
                       placeholder="请输入付款条件"
                       size="small"
                       style="width: 420px" />
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <el-row>
+        <el-col :span="4">
+          <el-form-item label="订单日期"
+                        prop="orderTime">
+            <el-date-picker v-model="clienteleForm.orderTime"
+                            style="width:155px;"
+                            value-format="yyyy-MM-dd"
+                            format="yyyy-MM-dd"
+                            placeholder="选择日期" />
+          </el-form-item>
+        </el-col>
+        <el-col :span="4">
+          <el-form-item label="业务员"
+                        prop="personnelName">
+            <el-input v-model="clienteleForm.personnelName"
+                      size="small"
+                      suffix-icon="el-icon-search"
+                      @focus="personnelFocus"
+                      ref="personnelBlur"
+                      style="width: 155px;" />
           </el-form-item>
         </el-col>
       </el-row>
@@ -191,6 +213,7 @@
                  size="small"
                  icon="el-icon-plus"
                  class="handle-del mr10"
+                 v-show="false"
                  @click="handleAddMateriel">新增产品</el-button>
       <el-button type="primary"
                  size="small"
@@ -495,6 +518,7 @@
                           :options="materileTypeOptions"
                           :disable-branch-nodes="true"
                           :show-count="true"
+                          :disabled="true"
                           placeholder="请选择产品类别" />
             </el-form-item>
           </el-col>
@@ -506,6 +530,7 @@
               <el-input v-model="form.materielNum"
                         placeholder="请输入产品编码"
                         maxlength="10"
+                        readonly
                         show-word-limit />
             </el-form-item>
           </el-col>
@@ -514,6 +539,7 @@
                           prop="materielName">
               <el-input v-model="form.materielName"
                         placeholder="请输入产品名称"
+                        readonly
                         maxlength="50" />
             </el-form-item>
           </el-col>
@@ -755,7 +781,7 @@
 </template>
 
 <script>
-import { addQuotation, getQuotation, listQuotationSub, deleteQuotationSub } from '@/api/sales/quotation.js';
+import { addOrder, getOrder, listOrderSub, deleteOrderSub } from '@/api/sales/order.js';
 import { listAccessory, updateAccessory, deleteAccessory, downloadFile } from '@/api/sales/accessory.js';
 import { treeselect } from '@/api/basis/category.js';
 import { listClientele } from '@/api/basis/clientele.js';
@@ -778,9 +804,10 @@ export default {
       title: '',
       // 表单校验
       rules: {
-        // clienteleNum: [{ required: true, message: '客户编码不能为空', trigger: 'blur' }],
+        clienteleNum: [{ required: true, message: '客户编码不能为空', trigger: 'blur' }],
         clienteleName: [{ required: true, message: '客户名称不能为空', trigger: 'blur' }],
-        quotationTime: [{ required: true, message: '报价日期不能为空', trigger: 'blur' }],
+        orderTime: [{ required: true, message: '订单日期不能为空', trigger: 'blur' }],
+        deliveryTime: [{ required: true, message: '交货日期不能为空', trigger: 'blur' }],
         personnelName: [{ required: true, message: '业务人员不能为空', trigger: 'change' }],
       },
       formRules: {
@@ -792,7 +819,9 @@ export default {
         number: [{ required: true, message: '数量不能为空', trigger: 'blur' }],
       },
       //表单参数
-      clienteleForm: {},//主表信息
+      clienteleForm: {
+        orderTime: null
+      },//主表信息
       materielListData: [],//子表信息
       // 添加客户
       clienteleListData: [],
@@ -809,8 +838,8 @@ export default {
       clienteleTotal: 0,
       clienteleTypeOptions: [],//客户类别
       totalPrice: 0,
-      quotationNum: undefined,
-      quotationId: undefined,
+      orderNum: undefined,
+      orderId: undefined,
       //添加人员
       personnelLoading: true,
       personnelOpen: false,
@@ -874,30 +903,30 @@ export default {
     this.getPersonnelName()
   },
   methods: {
-    getQuotation () {
-      this.getQuotationList();
-      this.getQuotationSubList();
+    getOrder () {
+      this.getOrderData();
+      this.getOrderSubList();
     },
-    getQuotationList () {
-      getQuotation(this.quotationId).then(res => {
-        console.log("getQuotation", res)
+    getOrderData () {
+      getOrder(this.orderId).then(res => {
+        console.log("getOrderData", res)
         if (res.success) {
           this.clienteleForm = res.data;
-          this.quotationId = res.data.quotationId;
-          this.quotationNum = res.data.quotationNum;
+          this.orderId = res.data.orderId;
+          this.orderNum = res.data.orderNum;
         }
       })
     },
-    getQuotationSubList () {
-      let param = { quotationId: this.quotationId }
-      listQuotationSub(param).then(res => {
+    getOrderSubList () {
+      let param = { orderId: this.orderId }
+      listOrderSub(param).then(res => {
         this.materielListData = res.data || []
       })
     },
     getPersonnelName () {
       this.clienteleForm.personnelName = this.$store.getters.name;
       this.clienteleForm.personnelId = this.$store.getters.userId;
-      this.clienteleForm.quotationTime = this.parseTime(new Date());
+      this.clienteleForm.orderTime = this.parseTime(new Date());
     },
     // 客户类别
     getTreeselectClienteleType () {
@@ -948,12 +977,12 @@ export default {
       this.form = {
       };
       this.materielListData = []
-      this.quotationId = undefined;
-      this.quotationNum = undefined;
+      this.orderId = undefined;
+      this.orderNum = undefined;
       this.totalPrice = 0;
       this.clienteleForm.personnelName = this.$store.getters.name;
       this.clienteleForm.personnelId = this.$store.getters.userId;
-      this.clienteleForm.quotationTime = this.parseTime(new Date());
+      this.clienteleForm.orderTime = this.parseTime(new Date());
       this.resetForm('clienteleForm');
     },
     submitAddForm () {
@@ -964,19 +993,19 @@ export default {
             this.msgError("未添加产品");
             return;
           }
-          this.clienteleForm.quotationId = this.quotationId;
-          this.clienteleForm.quotationNum = this.quotationNum;
+          this.clienteleForm.orderId = this.orderId;
+          this.clienteleForm.orderNum = this.orderNum;
           let data = {
             clientele: JSON.stringify(this.clienteleForm),
             materielList: JSON.stringify(this.materielListData)
           }
-          addQuotation(data).then(res => {
-            console.log("addQuotation", res);
+          addOrder(data).then(res => {
+            console.log("addOrder", res);
             if (res.success) {
-              this.quotationNum = res.data.quotationNum;
-              this.quotationId = res.data.quotationId;
+              this.orderNum = res.data.orderNum;
+              this.orderId = res.data.orderId;
               this.msgSuccess(res.message)
-              this.getQuotation()
+              this.getOrder()
             } else {
               this.msgError(res.message)
             }
@@ -1087,16 +1116,17 @@ export default {
     handleDelete (index, row) {
       if (row.subId) {
         console.log("dellete", row)
-        deleteQuotationSub(row.subId).then(res => {
+        deleteOrderSub(row.subId).then(res => {
           if (res.success) {
             this.msgSuccess(res.message)
           } else {
             this.msgError(res.message)
           }
         })
+      } else {
+        this.materielListData.splice(index, 1);
+        this.calculateTotalPrice();
       }
-      this.materielListData.splice(index, 1);
-      this.calculateTotalPrice();
     },
     handleAddMateriel () {
       this.resetMaterielForm();

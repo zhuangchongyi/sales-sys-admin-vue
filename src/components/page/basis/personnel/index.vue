@@ -450,7 +450,7 @@ export default {
           { required: true, message: '员工编码不能为空', trigger: 'blur' },
           { max: 10, message: '长度不能超过10个字符', trigger: 'blur' }
         ],
-        nickname: [{ required: true, message: '员工名称不能为空', trigger: 'blur' }],
+        nickname: [{ required: true, message: '员工名称不能为空', trigger: 'blur' }, { max: 30, message: '长度不能超过30个字符', trigger: 'blur' }],
         deptId: [{ required: true, message: '归属部门不能为空', trigger: 'blur' }],
         entryTime: [{ required: true, message: '入职时间不能为空', trigger: 'blur' }],
         jobStatus: [{ required: true, message: '在职状态不能为空', trigger: 'blur' }],

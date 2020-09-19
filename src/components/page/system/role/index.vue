@@ -235,7 +235,7 @@
                append-to-body>
       <el-table v-loading="loadingDialog"
                 :data="roleUserListData">
-        <el-table-column label="用户编码"
+        <el-table-column label="账号"
                          align="center"
                          prop="username" />
         <el-table-column label="用户昵称"
@@ -243,7 +243,7 @@
                          prop="nickname" />
         <el-table-column label="员工编号"
                          align="center"
-                         prop="userNo" />
+                         prop="userNum" />
         <el-table-column label="部门编码"
                          align="center"
                          prop="dept.deptNum" />

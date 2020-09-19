@@ -30,7 +30,7 @@
                   style="width: 200px"
                   @keyup.enter.native="handleQuery" />
       </el-form-item>
-      <el-form-item label="状态"
+      <!-- <el-form-item label="状态"
                     prop="status">
         <el-select v-model="queryParams.status"
                    placeholder="状态"
@@ -42,49 +42,65 @@
                      :label="dict.dictLabel"
                      :value="dict.dictValue" />
         </el-select>
-      </el-form-item>
+      </el-form-item> -->
       <el-form-item>
         <el-button type="primary"
                    icon="el-icon-search"
-                   size="mini"
+                   size="small"
                    @click="handleQuery">搜索</el-button>
         <el-button icon="el-icon-refresh"
-                   size="mini"
+                   size="small"
                    @click="resetQuery">重置</el-button>
       </el-form-item>
     </el-form>
     <div class="handle-box">
       <el-button type="primary"
-                 size="mini"
+                 size="small"
                  icon="el-icon-plus"
                  class="handle-del mr10"
                  @click="handleAdd">新增</el-button>
       <!-- <el-button type="danger"
-                 size="mini"
+                 size="small"
                  icon="el-icon-delete"
                  class="handle-del mr10"
                  @click="handleDelete"
                  :disabled="multiple">删除</el-button> -->
-      <el-button type="primary"
-                 size="mini"
+
+      <el-dropdown trigger="click"
+                   style="margin: 0 10px;">
+        <el-button class="el-dropdown-link"
+                   size="mini"
+                   type="primary">
+          提交<i class="el-icon-arrow-down el-icon--right"></i>
+        </el-button>
+        <el-dropdown-menu slot="dropdown">
+          <el-dropdown-item icon="el-icon-top"
+                            @click.native="handleSubmit">提交</el-dropdown-item>
+          <el-dropdown-item icon="el-icon-bottom"
+                            @click.native="handleNoSubmit">收回</el-dropdown-item>
+        </el-dropdown-menu>
+      </el-dropdown>
+
+      <!-- <el-button type="primary"
+                 size="small"
                  icon="el-icon-finished"
                  class="handle-del mr10"
                  :disabled="multiple"
-                 @click="handleSubmit">提交</el-button>
+                 @click="handleSubmit">提交</el-button> -->
       <el-button type="primary"
-                 size="mini"
+                 size="small"
                  icon="el-icon-finished"
                  class="handle-del mr10"
                  :disabled="single"
                  @click="handleAudit">审核</el-button>
       <el-button type="primary"
-                 size="mini"
+                 size="small"
                  icon="el-icon-printer"
                  class="handle-del mr10"
                  :disabled="single"
                  @click="handlePrint">打印</el-button>
       <!-- <el-button type="warning"
-                 size="mini"
+                 size="small"
                  icon="el-icon-finished"
                  class="handle-del mr10"
                  :disabled="multiple"
@@ -104,6 +120,7 @@
       <el-table-column label="报价单号"
                        align="center"
                        prop="quotationNum"
+                       fixed="left"
                        :show-overflow-tooltip="true"
                        width="200" />
       <el-table-column label="报价日期"
@@ -185,15 +202,15 @@
                        class-name="small-padding fixed-width"
                        fixed="right">
         <template slot-scope="scope">
-          <el-button size="mini"
+          <el-button size="small"
                      type="text"
                      icon="el-icon-edit"
                      @click="handleUpdate(scope.row)">修改</el-button>
-          <el-button size="mini"
+          <el-button size="small"
                      type="text"
                      icon="el-icon-info"
                      @click="handlePreview(scope.row)">明细</el-button>
-          <el-button size="mini"
+          <el-button size="small"
                      type="text"
                      icon="el-icon-delete"
                      style="color:#fd5656"
@@ -203,10 +220,10 @@
     </el-table>
     <div class="pagination">
       <el-pagination background
-                     layout="total, sizes, prev, pager, next"
                      :current-page="queryParams.current"
                      :page-size="queryParams.size"
                      :total="total"
+                     layout="total, sizes, prev, pager, next"
                      :page-sizes="[10, 50, 100, 200]"
                      @size-change="handleSizeChange"
                      @current-change="handlePageChange"></el-pagination>
@@ -298,7 +315,7 @@
 </template>
 
 <script>
-import { listQuotation, getQuotation, addQuotation, updateQuotation, deleteQuotation, submitQuotation } from '@/api/sales/quotation.js';
+import { listQuotation, deleteQuotation, submitQuotation } from '@/api/sales/quotation.js';
 import Treeselect from '@riophae/vue-treeselect';
 import '@riophae/vue-treeselect/dist/vue-treeselect.css';
 export default {
@@ -372,40 +389,19 @@ export default {
     },
     // 多选框选中数据
     handleSelectionChange (selection) {
-      console.log("handleSelectionChange", selection)
+      // console.log("handleSelectionChange", selection)
       this.ids = selection.map(item => item.quotationId);
       this.single = selection.length != 1;
       this.multiple = !selection.length;
       this.selection = selection[0];
     },
     selectionRowClick (row) {
-      console.log("selectionRowClick")
+      // console.log("selectionRowClick")
       this.$refs.dataList.toggleRowSelection(row);
     },
     handledblclickRow (row, event, column) {
-      console.log("handledblclickRow")
-      this.handleAudit(row);
-    },
-    // 取消按钮
-    cancel () {
-      this.open = false;
-      this.reset();
-    },
-    // 表单重置
-    reset () {
-      this.form = {
-        userId: undefined,
-        deptId: undefined,
-        clienteleName: undefined,
-        nickName: undefined,
-        password: undefined,
-        phonenumber: undefined,
-        email: undefined,
-        sex: undefined,
-        status: '0',
-        remark: undefined,
-      };
-      this.resetForm('form');
+      // console.log("handledblclickRow")
+      this.handlePreview(row);
     },
     /** 搜索按钮操作 */
     handleQuery () {
@@ -427,8 +423,8 @@ export default {
     },
     handleSubmit () {
       let quotationIds = this.ids || [];
-      console.log(quotationIds)
-      submitQuotation(quotationIds).then(res => {
+      // console.log(quotationIds)
+      submitQuotation("1", quotationIds).then(res => {
         if (res.success) {
           this.msgSuccess('提交成功');
           this.handleQuery();
@@ -437,13 +433,25 @@ export default {
         }
       })
     },
+    handleNoSubmit () {
+      let quotationIds = this.ids || [];
+      // console.log(quotationIds)
+      submitQuotation("2", quotationIds).then(res => {
+        if (res.success) {
+          this.msgSuccess('收回成功');
+          this.handleQuery();
+        } else {
+          this.msgError(res.message)
+        }
+      })
+    },
     handleDelete (row) {
       let quotationId = row.quotationId || this.selection.quotationId;
-      console.log(quotationId);
+      // console.log(quotationId);
       deleteQuotation(quotationId).then(res => {
         if (res.success) {
           this.msgSuccess(res.message)
-          this.resetQuery();
+          this.handleQuery();
         } else {
           this.msgError(res.message)
         }

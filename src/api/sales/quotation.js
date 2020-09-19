@@ -46,9 +46,9 @@ export function auditQuotation(params) {
   });
 };
 
-export function submitQuotation(params) {
+export function submitQuotation(status, params) {
   return request({
-    url: '/sales/quotation/submit',
+    url: '/sales/quotation/submit/' + status,
     method: 'put',
     data: params
   });
