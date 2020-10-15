@@ -7,14 +7,14 @@
             <el-form-item label="客户名称" prop="clienteleName">
                 <el-input v-model="queryParams.clienteleName" placeholder="请输入客户名称" clearable size="small" style="width: 200px" @keyup.enter.native="handleQuery" />
             </el-form-item>
-<!--            <el-form-item label="状态" prop="status">
+            <!--            <el-form-item label="状态" prop="status">
                 <el-select v-model="queryParams.status" placeholder="状态" clearable size="small" style="width: 200px">
                     <el-option v-for="dict in statusOptions" :key="dict.dictValue" :label="dict.dictLabel" :value="dict.dictValue" />
                 </el-select>
             </el-form-item> -->
             <el-form-item>
                 <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
-                <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
+                <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">刷新</el-button>
             </el-form-item>
         </el-form>
         <div class="handle-box">
@@ -63,7 +63,7 @@
             <el-form ref="form" :model="form" :rules="rules" label-width="80px">
                 <el-row>
                     <el-col :span="12">
-                        <el-form-item label="用户昵称" prop="nickName"><el-input v-model="form.nickName" placeholder="请输入用户昵称" /></el-form-item>
+                        <el-form-item label="用户昵称" prop="nickName"><el-input v-model="form.nickName" placeholder="请输入用户昵称"/></el-form-item>
                     </el-col>
                     <el-col :span="12">
                         <el-form-item label="归属部门" prop="deptId">
@@ -73,10 +73,10 @@
                 </el-row>
                 <el-row>
                     <el-col :span="12">
-                        <el-form-item label="手机号码" prop="phonenumber"><el-input v-model="form.phonenumber" placeholder="请输入手机号码" maxlength="11" /></el-form-item>
+                        <el-form-item label="手机号码" prop="phonenumber"><el-input v-model="form.phonenumber" placeholder="请输入手机号码" maxlength="11"/></el-form-item>
                     </el-col>
                     <el-col :span="12">
-                        <el-form-item label="单价" prop="email"><el-input v-model="form.email" placeholder="请输入邮箱" maxlength="50" /></el-form-item>
+                        <el-form-item label="单价" prop="email"><el-input v-model="form.email" placeholder="请输入邮箱" maxlength="50"/></el-form-item>
                     </el-col>
                 </el-row>
                 <el-row>
@@ -147,9 +147,15 @@ export default {
                 label: 'label'
             },
             // 状态数据字典
-            statusOptions: [{ dictValue: '0', dictLabel: '启用' }, { dictValue: '1', dictLabel: '禁用' }],
+            statusOptions: [
+                { dictValue: '0', dictLabel: '启用' },
+                { dictValue: '1', dictLabel: '禁用' }
+            ],
             //是否为系统用户
-            isUserOptions: [{ dictValue: '0', dictLabel: '是' }, { dictValue: '1', dictLabel: '否' }],
+            isUserOptions: [
+                { dictValue: '0', dictLabel: '是' },
+                { dictValue: '1', dictLabel: '否' }
+            ],
             // 查询参数
             queryParams: {
                 address: '',
@@ -238,7 +244,7 @@ export default {
             this.open = false;
             this.reset();
         },
-        // 表单重置
+        // 表单刷新
         reset() {
             this.form = {
                 userId: undefined,
@@ -261,7 +267,7 @@ export default {
             this.queryParams.page = 1;
             this.getList();
         },
-        /** 重置按钮操作 */
+        /** 刷新按钮操作 */
         resetQuery() {
             this.dateRange = [];
             this.resetForm('queryForm');

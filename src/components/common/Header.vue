@@ -1,104 +1,59 @@
 <template>
-  <div class="header">
-    <!-- 折叠按钮 -->
-    <div class="collapse-btn"
-         @click="collapseChage">
-      <i v-if="!collapse"
-         class="el-icon-s-fold"></i>
-      <i v-else
-         class="el-icon-s-unfold"></i>
-    </div>
-    <div class="logo">{{title}}</div>
-    <div class="header-right">
-      <div class="header-user-con">
-        <!-- 全屏显示 -->
-        <div class="btn-fullscreen"
-             @click="handleFullScreen">
-          <el-tooltip effect="dark"
-                      :content="fullscreen ? `取消全屏` : `全屏`"
-                      placement="bottom"><i class="el-icon-rank"></i></el-tooltip>
+    <div class="header">
+        <!-- 折叠按钮 -->
+        <div class="collapse-btn" @click="collapseChage">
+            <i v-if="!collapse" class="el-icon-s-fold"></i>
+            <i v-else class="el-icon-s-unfold"></i>
         </div>
-        <!-- 消息中心 -->
-        <div class="btn-bell">
-          <el-tooltip effect="dark"
-                      :content="message ? `有${message}条未读消息` : `消息中心`"
-                      placement="bottom">
-            <router-link to="/page/messageTabs"><i class="el-icon-bell"></i></router-link>
-          </el-tooltip>
-          <span class="btn-bell-badge"
-                v-if="message"></span>
-        </div>
-        <!-- 用户头像 -->
-        <div class="user-avator"><img src="../../assets/img/avatar.gif" /></div>
-        <!-- 用户名下拉菜单 -->
-        <el-dropdown class="user-name"
-                     trigger="click"
-                     @command="handleCommand">
-          <span class="el-dropdown-link">
-            {{ username }}
-            <i class="el-icon-caret-bottom"></i>
-          </span>
-          <el-dropdown-menu slot="dropdown">
-            <el-dropdown-item divided
-                              command="changePwd">修改密码</el-dropdown-item>
-            <el-dropdown-item divided
-                              command="logout">退出登录</el-dropdown-item>
-          </el-dropdown-menu>
-        </el-dropdown>
-
-        <el-drawer :visible.sync="drawer"
-                   size="15%"
-                   :with-header="false">
-          <div class="demo-drawer-content"
-               style="margin-top: 16px;">
-            <el-form :model="form"
-                     ref="form"
-                     :rules="rules"
-                     label-position="center"
-                     label-width="100px">
-              <el-form-item label="原密码"
-                            prop="password">
-                <el-input v-model="form.password"
-                          placeholder="请输入原密码"
-                          style="width:160px"
-                          type="password"
-                          clearable
-                          show-password
-                          autocomplete="off"></el-input>
-              </el-form-item>
-              <el-form-item label="新密码"
-                            prop="newPassword">
-                <el-input v-model="form.newPassword"
-                          placeholder="请输入新密码"
-                          type="password"
-                          style="width:160px"
-                          clearable
-                          show-password
-                          autocomplete="off"></el-input>
-              </el-form-item>
-              <el-form-item label="确认密码"
-                            prop="checkPassword">
-                <el-input v-model="form.checkPassword"
-                          placeholder="请输入确认密码"
-                          type="password"
-                          clearable
-                          show-password
-                          style="width:160px"
-                          autocomplete="off"></el-input>
-              </el-form-item>
-            </el-form>
-            <div class="demo-drawer-footer"
-                 style="margin-left: 32px;">
-              <el-button type="primary"
-                         @click="submitForm('form')"
-                         :loading="loading">{{ loading ? '提交中 ...' : '确 定' }}</el-button>
+        <div class="logo">{{ title }}</div>
+        <div class="header-right">
+            <div class="header-user-con">
+                <!-- 全屏显示 -->
+                <div class="btn-fullscreen" @click="handleFullScreen">
+                    <el-tooltip effect="dark" :content="fullscreen ? `取消全屏` : `全屏`" placement="bottom"><i class="el-icon-rank"></i></el-tooltip>
+                </div>
+                <!-- 消息中心 -->
+                <div class="btn-bell">
+                    <el-tooltip effect="dark" :content="message ? `有${message}条未读消息` : `消息中心`" placement="bottom">
+                        <router-link to="/page/messageTabs"><i class="el-icon-bell"></i></router-link>
+                    </el-tooltip>
+                    <span class="btn-bell-badge" v-if="message"></span>
+                </div>
+                <!-- 用户头像 -->
+                <div class="user-avator"><img src="../../assets/img/avatar.gif" /></div>
+                <!-- 用户名下拉菜单 -->
+                <el-dropdown class="user-name" trigger="click" @command="handleCommand">
+                    <span class="el-dropdown-link">
+                        {{ username }}
+                        <i class="el-icon-caret-bottom"></i>
+                    </span>
+                    <el-dropdown-menu slot="dropdown">
+                        <el-dropdown-item divided command="changePwd">修改密码</el-dropdown-item>
+                        <el-dropdown-item divided command="logout">退出登录</el-dropdown-item>
+                    </el-dropdown-menu>
+                </el-dropdown>
+                <!-- 侧边弹出栏 -->
+                <el-drawer :visible.sync="drawer" size="15%" :with-header="false">
+                    <div class="demo-drawer-content" style="margin-top: 16px;">
+                        <el-form :model="form" ref="form" :rules="rules" label-position="center" label-width="100px">
+                            <el-form-item label="原密码" prop="password">
+                                <el-input v-model="form.password" placeholder="请输入原密码" style="width:160px" type="password" clearable show-password autocomplete="off"></el-input>
+                            </el-form-item>
+                            <el-form-item label="新密码" prop="newPassword">
+                                <el-input v-model="form.newPassword" placeholder="请输入新密码" type="password" style="width:160px" clearable show-password autocomplete="off"></el-input>
+                            </el-form-item>
+                            <el-form-item label="确认密码" prop="checkPassword">
+                                <el-input v-model="form.checkPassword" placeholder="请输入确认密码" type="password" clearable show-password style="width:160px" autocomplete="off"></el-input>
+                            </el-form-item>
+                        </el-form>
+                        <div class="demo-drawer-footer" style="margin-left: 32px;">
+                            <el-button type="primary" @click="submitForm('form')" :loading="loading">{{ loading ? '提交中 ...' : '确 定' }}</el-button>
+                        </div>
+                    </div>
+                </el-drawer>
             </div>
-          </div>
-        </el-drawer>
-
-      </div>
+        </div>
     </div>
-  </div>
 </template>
 <script>
 import bus from '../common/bus';
@@ -107,133 +62,141 @@ import { removeToken } from '@/utils/auth.js';
 import { changePassword } from '@/api/system/user.js';
 
 export default {
-  data () {
-    var validatePwd = (rule, value, callback) => {
-      if (value === '') {
-        callback(new Error('请输入确认密码'));
-      } else if (value !== this.form.newPassword) {
-        callback(new Error('两次输入密码不一致!'));
-      } else {
-        callback();
-      }
-    };
-    return {
-      collapse: false,
-      fullscreen: false,
-      message: 2,
-
-      drawer: false,
-      loading: false,
-      form: {},
-      rules: {
-        password: [
-          { required: true, message: '请输入原始密码', trigger: 'blur' }
-        ],
-        newPassword: [
-          { required: true, message: '请输入新密码', trigger: 'blur' }
-        ],
-        checkPassword: [
-          { validator: validatePwd, trigger: 'blur' }
-        ]
-      },
-
-    };
-  },
-  computed: {
-    username () {
-      return this.$store.getters.name || '';
-    },
-    title () {
-      return process.env.VUE_APP_TITLE;
-    },
-    avator () {
-      return this.$store.getters.avator;
-    }
-  },
-  methods: {
-    submitForm (formName) {
-      this.$refs[formName].validate((valid) => {
-        if (valid) {
-          this.loading = true;
-          changePassword(this.form).then(res => {
-            this.loading = false;
-            if (res.success) {
-              this.msgSuccess("修改成功")
-              setTimeout(() => {
-                this.drawer = false;
-                this.$alert('请重新登录系统', '提示', {
-                  confirmButtonText: '确定',
-                  type: 'warning'
-                }).then(() => {
-                  this.$store.dispatch('Logout').then(() => {
-                    location.href = '/';
-                  })
-                })
-              }, 1000);
+    data() {
+        var validatePwd = (rule, value, callback) => {
+            if (value === '') {
+                callback(new Error('请输入确认密码'));
+            } else if (value !== this.form.newPassword) {
+                callback(new Error('两次输入密码不一致!'));
             } else {
-              this.msgError(res.message);
+                callback();
             }
-          })
-        } else {
-          console.log('error submit!!');
-          return false;
-        }
-      });
+        };
+        return {
+            collapse: false,
+            fullscreen: false,
+            drawer: false,
+            loading: false,
+            form: {},
+            rules: {
+                password: [{ required: true, message: '请输入原始密码', trigger: 'blur' }],
+                newPassword: [{ required: true, message: '请输入新密码', trigger: 'blur' }],
+                checkPassword: [{ validator: validatePwd, trigger: 'blur' }]
+            },
+            message: 0,
+            timer: ''
+        };
     },
-    // 用户名下拉菜单选择事件
-    handleCommand (command) {
-      if (command == 'logout') {
-        this.$confirm('确定退出系统吗？', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }).then(() => {
-          this.$store.dispatch('Logout').then(() => {
-            location.href = '/';
-          })
-        })
-      } else if (command == 'changePwd') {
-        this.drawer = true;
-      }
-    },
-    // 侧边栏折叠
-    collapseChage () {
-      this.collapse = !this.collapse;
-      bus.$emit('collapse', this.collapse);
-    },
-    // 全屏事件
-    handleFullScreen () {
-      let element = document.documentElement;
-      if (this.fullscreen) {
-        if (document.exitFullscreen) {
-          document.exitFullscreen();
-        } else if (document.webkitCancelFullScreen) {
-          document.webkitCancelFullScreen();
-        } else if (document.mozCancelFullScreen) {
-          document.mozCancelFullScreen();
-        } else if (document.msExitFullscreen) {
-          document.msExitFullscreen();
+    computed: {
+        username() {
+            return this.$store.getters.username;
+        },
+        title() {
+            return process.env.VUE_APP_TITLE;
+        },
+        avator() {
+            return this.$store.getters.avator;
         }
-      } else {
-        if (element.requestFullscreen) {
-          element.requestFullscreen();
-        } else if (element.webkitRequestFullScreen) {
-          element.webkitRequestFullScreen();
-        } else if (element.mozRequestFullScreen) {
-          element.mozRequestFullScreen();
-        } else if (element.msRequestFullscreen) {
-          // IE11
-          element.msRequestFullscreen();
+    },
+    methods: {
+        // 获取消息通知数
+        getMessageCount() {
+            this.message++;
+            console.log('getMessageCount');
+        },
+        // 修改密码提交按钮
+        submitForm(formName) {
+            this.$refs[formName].validate(valid => {
+                if (valid) {
+                    this.loading = true;
+                    changePassword(this.form)
+                        .then(res => {
+                            this.loading = false;
+                            if (res.success) {
+                                this.msgSuccess('修改成功');
+                                setTimeout(() => {
+                                    this.drawer = false;
+                                    this.$alert('请重新登录', '提示', {
+                                        confirmButtonText: '确定',
+                                        type: 'warning'
+                                    }).then(() => {
+                                        this.$store.dispatch('Logout').then(() => {
+                                            location.href = '/';
+                                        });
+                                    });
+                                }, 1000);
+                            } else {
+                                this.msgError(res.message);
+                            }
+                        })
+                        .catch(e => {
+                            console.log(e);
+                        });
+                }
+            });
+        },
+        // 用户名下拉菜单选择事件
+        handleCommand(command) {
+            if (command == 'logout') {
+                this.$confirm('确定退出系统吗？', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    this.$store.dispatch('Logout').then(() => {
+                        location.href = '/';
+                    });
+                });
+            } else if (command == 'changePwd') {
+                this.drawer = true;
+                this.loading = false;
+            }
+        },
+        // 侧边栏折叠
+        collapseChage() {
+            this.collapse = !this.collapse;
+            bus.$emit('collapse', this.collapse);
+        },
+        // 全屏事件
+        handleFullScreen() {
+            let element = document.documentElement;
+            if (this.fullscreen) {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                } else if (document.webkitCancelFullScreen) {
+                    document.webkitCancelFullScreen();
+                } else if (document.mozCancelFullScreen) {
+                    document.mozCancelFullScreen();
+                } else if (document.msExitFullscreen) {
+                    document.msExitFullscreen();
+                }
+            } else {
+                if (element.requestFullscreen) {
+                    element.requestFullscreen();
+                } else if (element.webkitRequestFullScreen) {
+                    element.webkitRequestFullScreen();
+                } else if (element.mozRequestFullScreen) {
+                    element.mozRequestFullScreen();
+                } else if (element.msRequestFullscreen) {
+                    // IE11
+                    element.msRequestFullscreen();
+                }
+            }
+            this.fullscreen = !this.fullscreen;
         }
-      }
-      this.fullscreen = !this.fullscreen;
+    },
+    mounted() {
+        // 定时获取消息通知数
+        // this.timer = setInterval(this.getMessageCount, 1000*60);
+
+        if (document.body.clientWidth < 1500) {
+            this.collapseChage();
+        }
     }
-  },
-  mounted () {
-    if (document.body.clientWidth < 1500) {
-      this.collapseChage();
-    }
-  }
+    // beforeDestroy() {
+    //     console.log('beforeDestroy');
+    //     clearInterval(this.timer);
+    // }
 };
 </script>
 <style scoped>

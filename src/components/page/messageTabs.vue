@@ -45,9 +45,10 @@
                                 </template>
                             </el-table-column>
                             <el-table-column prop="date" width="150"></el-table-column>
-                            <el-table-column width="120">
+                            <el-table-column width="150">
                                 <template slot-scope="scope">
                                     <el-button @click="handleRestore(scope.$index)">还原</el-button>
+                                    <el-button type="danger" @click="handleDel(scope.$index)">删除</el-button>
                                 </template>
                             </el-table-column>
                         </el-table>
@@ -117,8 +118,8 @@ export default {
             const item = this.recycle.splice(index, 1);
             this.read = item.concat(this.read);
         },
-        clearRestore(){
-            this.recycle=[];
+        clearRestore() {
+            this.recycle = [];
         }
     },
     computed: {
