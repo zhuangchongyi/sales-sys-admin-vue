@@ -264,17 +264,14 @@ export default {
     },
     watch: {
         $route(to, form) {
-            console.log(to.path);
             if (to.path === '/page/warehouse/inventory/edit' && this.warehouseForm.inventoryId !== to.query.id) {
                 this.warehouseForm.inventoryId = to.query.id || 0;
-                console.log('route.inventoryId', this.warehouseForm.inventoryId);
                 this.getInventoryData();
             }
         }
     },
     created() {
         this.warehouseForm.inventoryId = this.$route.query.id || 0;
-        console.log('created.inventoryId', this.warehouseForm.inventoryId);
         this.getInventoryData();
     },
     methods: {
@@ -301,7 +298,6 @@ export default {
         },
         getWarehouseListData() {
             warehouseListPage(this.warehouseParams).then(res => {
-                console.log(res);
                 this.warehouseListData = res.data.records;
                 this.warehouseTotal = res.data.total;
             });
@@ -341,7 +337,6 @@ export default {
             this.openMateriel = true;
         },
         handleSelectionChange(selection) {
-            console.log('selection', selection);
             this.selectionMateriel = selection;
         },
         selectionRowClick(row) {
@@ -378,7 +373,6 @@ export default {
             }
         },
         calculateNumber(row) {
-            console.log('calculateNumber', row);
             row.differenceNum = parseInt(row.realityNum || 0) - parseInt(row.number || 0);
         },
         submitMaterielForm() {
@@ -401,7 +395,6 @@ export default {
                         inventorySub: JSON.stringify(this.materielListData),
                         delSubIds: JSON.stringify(this.delSubIds)
                     };
-                    console.log(data);
                     addAndUpdateInventory(data).then(res => {
                         if (res.success) {
                             this.msgSuccess(res.message);

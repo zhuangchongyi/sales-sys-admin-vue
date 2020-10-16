@@ -323,7 +323,6 @@ export default {
             this.handleQuery();
         },
         handleSelectionChangeDialog(selection) {
-            console.log('selection', selection);
             this.materielSelection = selection;
         },
         handlePageChangeDialog(val) {
@@ -337,7 +336,6 @@ export default {
         /** 查询产品列表 */
         async getMaterielList() {
             listClienteleMateriel(this.query).then(res => {
-                console.log('materiel', res);
                 this.materielListData = res.data.records;
                 this.total = res.data.total || 0;
             });
@@ -374,7 +372,6 @@ export default {
             products.forEach(item => {
                 item.clienteleId = this.queryParams.clienteleId;
             });
-            console.log('新增产品', products);
             addProduct(products).then(res => {
                 if (res.success) {
                     this.msgSuccess('新增成功');

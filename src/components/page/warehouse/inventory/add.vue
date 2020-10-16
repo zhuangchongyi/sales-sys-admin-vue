@@ -290,7 +290,6 @@ export default {
         },
         getWarehouseListData() {
             warehouseListPage(this.warehouseParams).then(res => {
-                console.log(res);
                 this.warehouseListData = res.data.records;
                 this.warehouseTotal = res.data.total;
             });
@@ -330,7 +329,6 @@ export default {
             this.openMateriel = true;
         },
         handleSelectionChange(selection) {
-            console.log('selection', selection);
             this.selectionMateriel = selection;
         },
         selectionRowClick(row) {
@@ -389,7 +387,6 @@ export default {
                         inventorySub: JSON.stringify(this.materielListData),
                         delSubIds: JSON.stringify(this.delSubIds)
                     };
-                    console.log(data);
                     addAndUpdateInventory(data).then(res => {
                         if (res.success) {
                             this.msgSuccess(res.message);

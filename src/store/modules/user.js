@@ -73,7 +73,7 @@
          }) {
              return new Promise((resolve, reject) => {
                  GetInfo(state.token).then(res => {
-                     console.log(res)
+                     //  console.log(res)
                      const user = res.data.user;
                      const avatar = user.avatar == "" ? require("@/assets/img/avatar.gif") : user.avatar;
                      if (res.data.roles && res.data.roles.length > 0) { // 验证返回的roles是否是一个非空数组

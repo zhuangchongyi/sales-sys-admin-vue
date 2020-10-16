@@ -2,7 +2,7 @@
     <div class="container">
         <el-form :model="queryParams" ref="queryParams" :inline="true">
             <el-form-item label="仓库编码" prop="warehouseNum">
-                <el-input v-model="queryParams.warehouseNum" placeholder="请选择仓库" size="small" @focus="warehouseFocus" ref="warehouseBlur" style="width: 200px" />
+                <el-input v-model="queryParams.warehouseNum" placeholder="请选择仓库" prefix-icon="el-icon-search" size="small" @focus="warehouseFocus" ref="warehouseBlur" style="width: 200px" />
             </el-form-item>
             <el-form-item label="仓库名称" prop="warehouseName">
                 <el-input v-model="queryParams.warehouseName" readonly size="small" style="width: 200px" />
@@ -11,14 +11,11 @@
                 <el-input v-model="queryParams.materielName" size="small" style="width: 200px" placeholder="搜索产品" clearable />
             </el-form-item>
             <el-form-item>
-                <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">刷新</el-button>
+                <el-button type="primary" icon="el-icon-search" size="small" @click="handleQuery">刷新</el-button>
             </el-form-item>
         </el-form>
         <div class="handle-box"></div>
         <el-table v-loading="loading" :data="repertoryListData">
-            <!-- <el-table-column type="selection"
-                       width="50"
-                       align="center" /> -->
             <el-table-column prop="materielNum" label="产品编码" align="center" :show-overflow-tooltip="true" />
             <el-table-column prop="materielName" label="产品名称" align="center" :show-overflow-tooltip="true" />
             <el-table-column prop="specification" label="规格" align="center" :show-overflow-tooltip="true" />
@@ -26,15 +23,7 @@
             <el-table-column prop="needTorque" label="所需扭矩" align="center" :show-overflow-tooltip="true" />
             <el-table-column prop="outTorque" label="输出扭矩" align="center" :show-overflow-tooltip="true" />
             <el-table-column prop="unitsName" label="单位" :show-overflow-tooltip="true" align="center" />
-            <!-- <el-table-column prop="price"
-                       label="单价"
-                       align="center" /> -->
             <el-table-column prop="number" label="现存量" align="center" :show-overflow-tooltip="true" />
-            <!-- <el-table-column prop="totalPrice"
-                       label="金额"
-                       align="center"
-                       :show-overflow-tooltip="true"
-                       width="200" /> -->
         </el-table>
         <div class="pagination">
             <el-pagination
@@ -111,7 +100,7 @@ export default {
                 specification: undefined,
                 modelName: undefined,
                 needTorque: undefined,
-                outtorque: undefined
+                outTorque: undefined
             },
             //表单参数
             form: {},
@@ -134,7 +123,7 @@ export default {
                 this.queryParams.specification = this.queryParams.materielName;
                 this.queryParams.modelName = this.queryParams.materielName;
                 this.queryParams.needTorque = this.queryParams.materielName;
-                this.queryParams.outtorque = this.queryParams.materielName;
+                this.queryParams.outTorque = this.queryParams.materielName;
                 listRepertoryPage(this.queryParams).then(res => {
                     this.repertoryListData = res.data.records;
                     this.total = res.data.total;

@@ -2,27 +2,27 @@
     <div>
         <div class="container">
             <el-form :model="queryParams" ref="queryParams" :inline="true">
-                <el-form-item label="仓库编码" prop="warehouseNum">
-                    <el-input v-model="queryParams.warehouseNum" placeholder="请输入仓库编码" clearable size="small" style="width: 200px" @keyup.enter.native="handleQuery" />
+                <el-form-item label="" prop="warehouseNum">
+                    <el-input v-model="queryParams.warehouseNum" placeholder="仓库编码" clearable size="small" style="width: 200px" @keyup.enter.native="handleQuery" />
                 </el-form-item>
-                <el-form-item label="仓库名称" prop="warehouseName">
-                    <el-input v-model="queryParams.warehouseName" placeholder="请输入仓库名称" clearable size="small" style="width: 200px" @keyup.enter.native="handleQuery" />
+                <el-form-item label="" prop="warehouseName">
+                    <el-input v-model="queryParams.warehouseName" placeholder="仓库名称" clearable size="small" style="width: 200px" @keyup.enter.native="handleQuery" />
                 </el-form-item>
                 <el-form-item>
-                    <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
-                    <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">刷新</el-button>
+                    <el-button type="primary" icon="el-icon-search" size="small" @click="handleQuery">搜索</el-button>
+                    <el-button icon="el-icon-refresh" size="small" @click="resetQuery">刷新</el-button>
                 </el-form-item>
             </el-form>
             <div class="handle-box">
-                <el-button type="primary" size="mini" icon="el-icon-plus" class="handle-del mr10" @click="handleAdd">新增</el-button>
+                <el-button type="primary" size="small" icon="el-icon-plus" class="handle-del mr10" @click="handleAdd">新增</el-button>
                 <el-dropdown trigger="click" style="margin: 0 10px;">
-                    <el-button class="el-dropdown-link" size="mini" type="primary"> 提交<i class="el-icon-arrow-down el-icon--right"></i> </el-button>
+                    <el-button class="el-dropdown-link" size="small" type="primary"> 提交<i class="el-icon-arrow-down el-icon--right"></i> </el-button>
                     <el-dropdown-menu slot="dropdown">
                         <el-dropdown-item icon="el-icon-top" @click.native="handleSubmit">提交</el-dropdown-item>
                         <el-dropdown-item icon="el-icon-bottom" @click.native="handleNoSubmit">收回</el-dropdown-item>
                     </el-dropdown-menu>
                 </el-dropdown>
-                <el-button type="primary" size="mini" icon="el-icon-finished" class="handle-del mr10" :disabled="single" @click="handleAudit">审核</el-button>
+                <el-button type="primary" size="small" icon="el-icon-finished" class="handle-del mr10" :disabled="single" @click="handleAudit">审核</el-button>
             </div>
             <el-table
                 :data="listData"

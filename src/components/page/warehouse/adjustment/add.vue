@@ -287,7 +287,6 @@ export default {
         },
         getWarehouseListData() {
             warehouseListPage(this.warehouseParams).then(res => {
-                console.log(res);
                 this.warehouseListData = res.data.records;
                 this.warehouseTotal = res.data.total;
             });
@@ -329,7 +328,6 @@ export default {
             this.openMateriel = true;
         },
         handleSelectionChange(selection) {
-            console.log('selection', selection);
             this.selectionMateriel = selection;
         },
         selectionRowClick(row) {
@@ -367,7 +365,6 @@ export default {
             this.calculateAll();
         },
         calculateTotalPrice(row) {
-            console.log('calculateTotalPrice', row);
             row.adjustPrice = (parseFloat(row.totalPrice || 0) / parseInt(row.number)).toFixed(2);
             row.adjustNum = parseInt(row.number || 0) - parseInt(row.adjustNumber || 0);
         },
@@ -400,7 +397,6 @@ export default {
                         adjustmentSub: JSON.stringify(this.materielListData),
                         delSubIds: JSON.stringify(this.delSubIds)
                     };
-                    console.log(data);
                     addAndUpdateAdjustment(data).then(res => {
                         if (res.success) {
                             this.msgSuccess(res.message);

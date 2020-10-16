@@ -1,14 +1,14 @@
 <template>
     <div class="container">
         <el-form :model="queryParams" ref="queryParams" :inline="true">
-            <el-form-item label="订单号" prop="orderNum">
-                <el-input v-model="queryParams.orderNum" placeholder="请输入订单号" clearable size="small" style="width: 200px" @keyup.enter.native="handleQuery" />
+            <el-form-item label="" prop="orderNum">
+                <el-input v-model="queryParams.orderNum" placeholder="订单号" clearable size="small" style="width: 200px" @keyup.enter.native="handleQuery" />
             </el-form-item>
-            <el-form-item label="发货单号" prop="shipmentsNum">
-                <el-input v-model="queryParams.shipmentsNum" placeholder="请输入发货单号" clearable size="small" style="width: 200px" @keyup.enter.native="handleQuery" />
+            <el-form-item label="" prop="shipmentsNum">
+                <el-input v-model="queryParams.shipmentsNum" placeholder="发货单号" clearable size="small" style="width: 200px" @keyup.enter.native="handleQuery" />
             </el-form-item>
-            <el-form-item label="客户名称" prop="clienteleName">
-                <el-input v-model="queryParams.clienteleName" placeholder="请输入名称或编码" clearable size="small" style="width: 200px" @keyup.enter.native="handleQuery" />
+            <el-form-item label="" prop="clienteleName">
+                <el-input v-model="queryParams.clienteleName" placeholder="客户名称或编码" clearable size="small" style="width: 200px" @keyup.enter.native="handleQuery" />
             </el-form-item>
             <el-form-item>
                 <el-button type="primary" icon="el-icon-search" size="small" @click="handleQuery">搜索</el-button>
@@ -92,6 +92,7 @@ export default {
     },
     methods: {
         getList() {
+            this.queryParams.clienteleNum = this.queryParams.clienteleName;
             pageSignback(this.queryParams).then(res => {
                 this.listData = res.data.records;
                 this.total = res.data.total;

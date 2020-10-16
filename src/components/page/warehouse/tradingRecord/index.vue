@@ -205,7 +205,6 @@ export default {
     methods: {
         getList() {
             listData(this.query).then(res => {
-                console.log(res);
                 this.clienteleList = res.data;
                 this.pageTotal = res.pageTotal || 50;
                 this.loading = false;
@@ -225,7 +224,6 @@ export default {
         /** 查询部门下拉树结构 */
         getTreeselect() {
             treeselect().then(response => {
-                console.log(response);
                 this.deptOptions = response.data;
             });
         },

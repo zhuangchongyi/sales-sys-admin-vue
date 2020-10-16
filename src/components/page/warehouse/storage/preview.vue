@@ -250,8 +250,8 @@ export default {
     },
     watch: {
         $route(to, form) {
-            if (to.path === '/page/warehouse/storage/preview' && this.warehouseForm.storageId !== to.query.id) {
-                this.warehouseForm.storageId = to.query.id || this.warehouseForm.storageId;
+            if (to.path === '/page/warehouse/storage/preview' && this.warehouseForm.storageId !== this.$route.query.id) {
+                this.warehouseForm.storageId = this.$route.query.id || this.warehouseForm.storageId;
                 this.isAudit = JSON.parse(this.$route.query.isAudit || this.isAudit);
                 this.getStorageData();
             }
@@ -335,7 +335,6 @@ export default {
         },
         getWarehouseListData() {
             warehouseListPage(this.warehouseParams).then(res => {
-                console.log(res);
                 this.warehouseListData = res.data.records;
                 this.warehouseTotal = res.data.total;
             });
@@ -355,7 +354,6 @@ export default {
             this.submitWarehouseForm(row);
         },
         submitWarehouseForm(row) {
-            console.log(row);
             this.warehouseForm.warehouseNum = row.warehouseNum;
             this.warehouseForm.warehouseName = row.warehouseName;
             this.warehouseForm.warehouseId = row.warehouseId;
@@ -370,7 +368,6 @@ export default {
             this.openMateriel = true;
         },
         handleSelectionChange(selection) {
-            console.log('selection', selection);
             this.selectionMateriel = selection;
         },
         selectionRowClick(row) {
@@ -384,7 +381,6 @@ export default {
         },
         getMaterielListData() {
             listAllMateriel(this.materielParams).then(res => {
-                console.log('listAllMateriel', res);
                 this.materielListPageData = res.data.records;
                 this.materielTotal = res.data.total;
             });
@@ -426,7 +422,6 @@ export default {
                         storageSub: JSON.stringify(this.materielListData),
                         delSubIds: JSON.stringify(this.delSubIds)
                     };
-                    console.log(data);
                     addAndUpdateStorage(data).then(res => {
                         if (res.success) {
                             this.msgSuccess('成功');

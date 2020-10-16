@@ -619,7 +619,6 @@ export default {
         },
         getOrderData() {
             getOrder(this.orderId).then(res => {
-                console.log('getOrderData', res);
                 if (res.success) {
                     this.clienteleForm = res.data;
                     this.orderId = res.data.orderId;
@@ -713,7 +712,6 @@ export default {
                         materielList: JSON.stringify(this.materielListData)
                     };
                     addOrder(data).then(res => {
-                        console.log('addOrder', res);
                         if (res.success) {
                             this.orderNum = res.data.orderNum;
                             this.orderId = res.data.orderId;
@@ -831,7 +829,6 @@ export default {
         },
         handleDelete(index, row) {
             if (row.subId) {
-                console.log('dellete', row);
                 // deleteOrderSub(row.subId).then(res => {
                 //     if (res.success) {
                 //         this.msgSuccess(res.message);
@@ -963,7 +960,6 @@ export default {
             });
         },
         handleDownloadFile(row) {
-            console.log('handleDownloadFile', row);
             this.imageLoading = true;
             downloadFile(row.pkId)
                 .then(res => {

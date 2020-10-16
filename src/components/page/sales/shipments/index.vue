@@ -1,17 +1,17 @@
 <template>
     <div class="container">
         <el-form :model="queryParams" ref="queryParams" :inline="true">
-            <el-form-item label="发货单号" prop="shipmentsNum">
-                <el-input v-model="queryParams.shipmentsNum" placeholder="请输入发货单号" clearable size="small" style="width: 200px" @keyup.enter.native="handleQuery" />
+            <el-form-item label="" prop="shipmentsNum">
+                <el-input v-model="queryParams.shipmentsNum" placeholder="发货单号" clearable size="small" style="width: 200px" @keyup.enter.native="handleQuery" />
             </el-form-item>
-            <el-form-item label="订单号" prop="orderNum">
-                <el-input v-model="queryParams.orderNum" placeholder="请输入订单号" clearable size="small" style="width: 200px" @keyup.enter.native="handleQuery" />
+            <el-form-item label="" prop="orderNum">
+                <el-input v-model="queryParams.orderNum" placeholder="订单号" clearable size="small" style="width: 200px" @keyup.enter.native="handleQuery" />
             </el-form-item>
-            <el-form-item label="客户编码" prop="clienteleNum">
-                <el-input v-model="queryParams.clienteleNum" placeholder="请输入客户编码" clearable size="small" style="width: 200px" @keyup.enter.native="handleQuery" />
+            <el-form-item label="" prop="clienteleNum">
+                <el-input v-model="queryParams.clienteleNum" placeholder="客户编码" clearable size="small" style="width: 200px" @keyup.enter.native="handleQuery" />
             </el-form-item>
-            <el-form-item label="客户名称" prop="clienteleName">
-                <el-input v-model="queryParams.clienteleName" placeholder="请输入客户名称" clearable size="small" style="width: 200px" @keyup.enter.native="handleQuery" />
+            <el-form-item label="" prop="clienteleName">
+                <el-input v-model="queryParams.clienteleName" placeholder="客户名称" clearable size="small" style="width: 200px" @keyup.enter.native="handleQuery" />
             </el-form-item>
             <el-form-item>
                 <el-button type="primary" icon="el-icon-search" size="small" @click="handleQuery">搜索</el-button>
@@ -19,16 +19,16 @@
             </el-form-item>
         </el-form>
         <div class="handle-box">
-            <el-button type="primary" size="mini" icon="el-icon-plus" class="handle-del mr10" v-hasPermi="['sales:shipments:add']" @click="handleAdd">新增</el-button>
+            <el-button type="primary" size="small" icon="el-icon-plus" class="handle-del mr10" v-hasPermi="['sales:shipments:add']" @click="handleAdd">新增</el-button>
             <el-dropdown trigger="click" style="margin: 0 10px;">
-                <el-button class="el-dropdown-link" size="mini" type="primary"> 提交<i class="el-icon-arrow-down el-icon--right"></i> </el-button>
+                <el-button class="el-dropdown-link" size="small" type="primary"> 提交<i class="el-icon-arrow-down el-icon--right"></i> </el-button>
                 <el-dropdown-menu slot="dropdown">
                     <el-dropdown-item icon="el-icon-top" @click.native="handleSubmit">提交</el-dropdown-item>
                     <el-dropdown-item icon="el-icon-bottom" @click.native="handleNoSubmit">收回</el-dropdown-item>
                 </el-dropdown-menu>
             </el-dropdown>
-            <el-button type="primary" size="mini" icon="el-icon-edit" class="handle-del mr10" :disabled="single" @click="handleAudit">审核</el-button>
-            <el-button type="primary" size="mini" icon="el-icon-printer" class="handle-del mr10" @click="handlePrint" :disabled="single">打印</el-button>
+            <el-button type="primary" size="small" icon="el-icon-edit" class="handle-del mr10" :disabled="single" @click="handleAudit">审核</el-button>
+            <el-button type="primary" size="small" icon="el-icon-printer" class="handle-del mr10" @click="handlePrint" :disabled="single">打印</el-button>
         </div>
         <el-table v-loading="loading" :data="listData" ref="listData" @row-click="selectionRowClick" highlight-current-row @row-dblclick="handledblclickRow" @selection-change="handleSelectionChange">
             <el-table-column type="selection" width="50" fixed="left" align="center" />
@@ -176,13 +176,20 @@ export default {
                 return;
             }
             let shipmentsId = row.shipmentsId || this.selection.shipmentsId;
-            deleteShipments(shipmentsId).then(res => {
-                if (res.success) {
-                    this.msgSuccess('删除成功');
-                    this.handleQuery();
-                } else {
-                    this.msgError(res.message);
-                }
+            let that = this;
+            this.$confirm('请确认是否删除？', '警告', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning'
+            }).then(function() {
+                deleteShipments(shipmentsId).then(res => {
+                    if (res.success) {
+                        that.msgSuccess('删除成功');
+                        that.handleQuery();
+                    } else {
+                        that.msgError(res.message);
+                    }
+                });
             });
         },
         /** 新增按钮操作 */

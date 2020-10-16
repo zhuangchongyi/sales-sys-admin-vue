@@ -247,11 +247,9 @@ export default {
     },
     watch: {
         $route(to, form) {
-            console.log(to.path);
             if (to.path === '/page/warehouse/inventory/preview' && this.warehouseForm.inventoryId !== to.query.id) {
                 this.warehouseForm.inventoryId = to.query.id || 0;
                 this.isAudit = JSON.parse(to.query.isAudit || false);
-                console.log('route.inventoryId', this.warehouseForm.inventoryId);
                 this.getInventoryData();
             }
         }
@@ -259,7 +257,6 @@ export default {
     created() {
         this.isAudit = JSON.parse(this.$route.query.isAudit || false);
         this.warehouseForm.inventoryId = this.$route.query.id || 0;
-        console.log('created.inventoryId', this.warehouseForm.inventoryId);
         this.getInventoryData();
     },
     methods: {
@@ -314,13 +311,10 @@ export default {
                 });
         },
         getInventoryData() {
-            console.log('warehouseForm', this.warehouseForm);
             getInventory(this.warehouseForm.inventoryId).then(res => {
-                console.log('getInventory', res);
                 this.warehouseForm = res.data;
 
                 listInventorySub({ inventoryId: this.warehouseForm.inventoryId }).then(res => {
-                    console.log('listInventorySub', res);
                     this.materielListData = res.data;
                     this.calculateAllNumber();
                 });
@@ -340,7 +334,6 @@ export default {
         },
         getWarehouseListData() {
             warehouseListPage(this.warehouseParams).then(res => {
-                console.log(res);
                 this.warehouseListData = res.data.records;
                 this.warehouseTotal = res.data.total;
             });
@@ -380,7 +373,6 @@ export default {
             this.openMateriel = true;
         },
         handleSelectionChange(selection) {
-            console.log('selection', selection);
             this.selectionMateriel = selection;
         },
         selectionRowClick(row) {
@@ -444,7 +436,6 @@ export default {
                         inventorySub: JSON.stringify(this.materielListData),
                         delSubIds: JSON.stringify(this.delSubIds)
                     };
-                    console.log(data);
                     addAndUpdateInventory(data).then(res => {
                         if (res.success) {
                             this.msgSuccess(res.message);

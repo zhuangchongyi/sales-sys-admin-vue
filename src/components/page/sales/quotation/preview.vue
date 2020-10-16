@@ -614,7 +614,6 @@ export default {
         },
         getQuotationList() {
             getQuotation(this.quotationId).then(res => {
-                // console.log("getQuotation", res)
                 if (res.success) {
                     this.clienteleForm = res.data;
                     this.quotationId = res.data.quotationId;
@@ -690,7 +689,6 @@ export default {
             let taht = this;
             this.$refs['clienteleForm'].validate(valid => {
                 if (valid) {
-                    console.log(this.materielListData);
                     if (this.materielListData.length == 0) {
                         this.msgError('未添加产品');
                         return;
@@ -699,9 +697,7 @@ export default {
                         clientele: JSON.stringify(this.clienteleForm),
                         materielList: JSON.stringify(this.materielListData)
                     };
-                    console.log(data);
                     addQuotation(data).then(res => {
-                        console.log(res);
                         if (res.success) {
                             this.msgSuccess(res.message);
                         } else {
@@ -810,7 +806,6 @@ export default {
         },
         handleDelete(index, row) {
             if (row.subId) {
-                console.log('dellete', row);
                 deleteQuotationSub(row.subId).then(res => {
                     if (res.success) {
                         this.msgSuccess(res.message);

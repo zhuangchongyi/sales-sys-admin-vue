@@ -272,8 +272,6 @@ export default {
     },
     watch: {
         $route(to, form) {
-            console.log('to', to);
-            console.log('form', form);
             if (to.path === '/page/warehouse/storage/edit' && this.warehouseForm.storageId !== to.query.id) {
                 this.warehouseForm.storageId = to.query.id || this.warehouseForm.storageId;
                 this.getStorageData();
@@ -287,10 +285,8 @@ export default {
     methods: {
         getStorageData() {
             getStorage(this.warehouseForm.storageId).then(res => {
-                console.log('getStorage', res);
                 this.warehouseForm = res.data;
                 listStorageSub({ storageId: this.warehouseForm.storageId }).then(res => {
-                    console.log('getStorageSub', res);
                     this.materielListData = res.data;
                 });
             });
@@ -309,7 +305,6 @@ export default {
         },
         getWarehouseListData() {
             warehouseListPage(this.warehouseParams).then(res => {
-                console.log(res);
                 this.warehouseListData = res.data.records;
                 this.warehouseTotal = res.data.total;
             });
@@ -329,7 +324,6 @@ export default {
             this.submitWarehouseForm(row);
         },
         submitWarehouseForm(row) {
-            console.log(row);
             this.warehouseForm.warehouseNum = row.warehouseNum;
             this.warehouseForm.warehouseName = row.warehouseName;
             this.warehouseForm.warehouseId = row.warehouseId;
@@ -357,7 +351,6 @@ export default {
         },
         getMaterielListData() {
             listAllMateriel(this.materielParams).then(res => {
-                console.log('listAllMateriel', res);
                 this.materielListPageData = res.data.records;
                 this.materielTotal = res.data.total;
             });
@@ -403,7 +396,6 @@ export default {
                         storageSub: JSON.stringify(this.materielListData),
                         delSubIds: JSON.stringify(this.delSubIds)
                     };
-                    console.log(data);
                     addAndUpdateStorage(data).then(res => {
                         if (res.success) {
                             this.msgSuccess(res.message);

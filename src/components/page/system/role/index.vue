@@ -320,7 +320,6 @@ export default {
                             }
                         });
                     } else {
-                        console.log('form', this.form);
                         updateRole(this.form).then(res => {
                             if (res.success) {
                                 this.msgSuccess(res.message);

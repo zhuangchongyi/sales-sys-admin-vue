@@ -55,11 +55,7 @@
                     <el-input size="mini" oninput="value=value.replace(/[^\d]/g,'')" maxLength="9" @input="calculateTotalPrice(scope.row)" v-model="scope.row.number" />
                 </template>
             </el-table-column>
-            <el-table-column prop="totalPrice" label="金额" width="120" align="center">
-                <template slot-scope="scope">
-                    <el-input size="mini" readonly v-model="scope.row.totalPrice" />
-                </template>
-            </el-table-column>
+            <el-table-column prop="totalPrice" label="金额" width="120" align="center"> </el-table-column>
             <el-table-column label="操作" align="center" class-name="small-padding fixed-width" fixed="right">
                 <template slot-scope="scope">
                     <el-button size="mini" type="text" icon="el-icon-delete" style="color:#f56c6c;" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
@@ -230,7 +226,6 @@ export default {
             this.submitWarehouseForm();
         },
         submitWarehouseForm() {
-            console.log(this.warehouseSelected);
             this.warehouseForm.warehouseNum = this.warehouseSelected.warehouseNum;
             this.warehouseForm.warehouseName = this.warehouseSelected.warehouseName;
             this.warehouseForm.warehouseId = this.warehouseSelected.warehouseId;
@@ -247,7 +242,6 @@ export default {
             this.openMateriel = true;
         },
         handleSelectionChange(selection) {
-            console.log('selection', selection);
             this.selectionMateriel = selection;
         },
         selectionRowClick(row) {
@@ -261,7 +255,6 @@ export default {
         },
         getMaterielListData() {
             listAllMateriel(this.materielParams).then(res => {
-                console.log('listAllMateriel', res);
                 this.materielListPageData = res.data.records;
                 this.materielTotal = res.data.total;
             });
@@ -294,7 +287,6 @@ export default {
 
         getWarehouseInitSubListData() {
             listInitSub(this.warehouseForm).then(res => {
-                console.log('listInitSub', res);
                 this.materielListData = res.data;
             });
         },

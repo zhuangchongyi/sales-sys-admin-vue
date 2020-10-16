@@ -306,7 +306,6 @@ export default {
                 this.warehouseForm = res.data;
             });
             listAdjustmentSub({ adjustmentId: this.warehouseForm.adjustmentId }).then(res => {
-                console.log('listAdjustmentSub', res);
                 this.materielListData = res.data;
             });
         },
@@ -324,7 +323,6 @@ export default {
         },
         getWarehouseListData() {
             warehouseListPage(this.warehouseParams).then(res => {
-                console.log(res);
                 this.warehouseListData = res.data.records;
                 this.warehouseTotal = res.data.total;
             });
@@ -364,7 +362,6 @@ export default {
             this.openMateriel = true;
         },
         handleSelectionChange(selection) {
-            console.log('selection', selection);
             this.selectionMateriel = selection;
         },
         selectionRowClick(row) {
@@ -401,7 +398,6 @@ export default {
             }
         },
         calculateTotalPrice(row) {
-            console.log(row);
             // row.totalPrice = (parseFloat(row.price) * parseInt(row.number)).toFixed(2);
         },
         submitMaterielForm() {
@@ -424,7 +420,6 @@ export default {
                         adjustmentSub: JSON.stringify(this.materielListData),
                         delSubIds: JSON.stringify(this.delSubIds)
                     };
-                    console.log(data);
                     addAndUpdateAdjustment(data).then(res => {
                         if (res.success) {
                             this.msgSuccess(res.message);

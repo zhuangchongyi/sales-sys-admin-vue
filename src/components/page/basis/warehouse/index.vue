@@ -171,7 +171,6 @@ export default {
         /** 查询部门下拉树结构 */
         getTreeselect() {
             treeselect().then(response => {
-                console.log(response);
                 this.deptOptions = response.data;
             });
         },
@@ -187,7 +186,6 @@ export default {
             this.reset();
             this.getTreeselect();
             getWarehouse(row.warehouseId).then(res => {
-                console.log('update', res);
                 this.form = res.data;
                 this.open = true;
                 this.title = '修改仓库';

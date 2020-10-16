@@ -431,7 +431,6 @@ export default {
             this.reset();
             this.getTreeselect();
             getUser(row.userId).then(res => {
-                console.log('res', res);
                 this.form = res.data;
                 this.open = true;
                 this.title = '修改员工';

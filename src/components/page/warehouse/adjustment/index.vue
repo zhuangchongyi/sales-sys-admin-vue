@@ -2,11 +2,11 @@
     <div>
         <div class="container">
             <el-form :model="queryParams" ref="queryParams" :inline="true">
-                <el-form-item label="仓库编码" prop="warehouseNum">
-                    <el-input v-model="queryParams.warehouseNum" placeholder="请输入仓库编码" size="small" style="width: 200px" @keyup.enter.native="handleQuery" />
+                <el-form-item label="" prop="warehouseNum">
+                    <el-input v-model="queryParams.warehouseNum" placeholder="仓库编码" size="small" style="width: 200px" @keyup.enter.native="handleQuery" />
                 </el-form-item>
-                <el-form-item label="仓库名称" prop="warehouseName">
-                    <el-input v-model="queryParams.warehouseName" placeholder="请输入仓库名称" size="small" style="width: 200px" @keyup.enter.native="handleQuery" />
+                <el-form-item label="" prop="warehouseName">
+                    <el-input v-model="queryParams.warehouseName" placeholder="仓库名称" size="small" style="width: 200px" @keyup.enter.native="handleQuery" />
                 </el-form-item>
                 <el-form-item>
                     <el-button type="primary" icon="el-icon-search" size="small" @click="handleQuery">搜索</el-button>
@@ -47,10 +47,10 @@
                 <el-table-column prop="status" label="状态" :formatter="auditStatusFormatter" align="center" />
                 <el-table-column prop="auditBy" label="审核人" align="center" />
                 <el-table-column prop="auditTime" label="审核日期" align="center" width="160" />
-                <el-table-column label="操作" width="300" align="center">
+                <el-table-column label="操作" width="200" align="center">
                     <template slot-scope="scope">
                         <el-button type="text" icon="el-icon-edit" @click="handleUpdate(scope.row)">修改</el-button>
-                        <el-button type="text" icon="el-icon-info" @click="handlePreview(scope.row)">明细</el-button>
+                        <!-- <el-button type="text" icon="el-icon-info" @click="handlePreview(scope.row)">明细</el-button> -->
                         <el-button type="text" icon="el-icon-delete" style="color:#fd5656" @click="handleDelete(scope.row)">删除</el-button>
                     </template>
                 </el-table-column>

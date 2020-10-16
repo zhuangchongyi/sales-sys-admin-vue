@@ -631,7 +631,6 @@ export default {
         // 删除产品
         handleDelete(index, row) {
             if (row.subId) {
-                console.log('dellete', row);
                 this.delSubIds.push(row.subId);
             } else {
                 this.calculateTotalPrice();
@@ -749,7 +748,6 @@ export default {
         },
         getWarehouseListData() {
             warehouseListPage(this.warehouseParams).then(res => {
-                console.log(res);
                 this.warehouseListData = res.data.records;
                 this.warehouseTotal = res.data.total;
             });

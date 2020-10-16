@@ -335,7 +335,6 @@ export default {
         },
         getWarehouseListData() {
             warehouseListPage(this.warehouseParams).then(res => {
-                console.log(res);
                 this.warehouseListData = res.data.records;
                 this.warehouseTotal = res.data.total;
             });
@@ -355,7 +354,6 @@ export default {
             this.submitWarehouseForm(row);
         },
         submitWarehouseForm(row) {
-            console.log(row);
             this.warehouseForm.warehouseNum = row.warehouseNum;
             this.warehouseForm.warehouseName = row.warehouseName;
             this.warehouseForm.warehouseId = row.warehouseId;
@@ -370,7 +368,6 @@ export default {
             this.openMateriel = true;
         },
         handleSelectionChange(selection) {
-            console.log('selection', selection);
             this.selectionMateriel = selection;
         },
         selectionRowClick(row) {
@@ -384,7 +381,6 @@ export default {
         },
         getMaterielListData() {
             listAllMateriel(this.materielParams).then(res => {
-                console.log('listAllMateriel', res);
                 this.materielListPageData = res.data.records;
                 this.materielTotal = res.data.total;
             });

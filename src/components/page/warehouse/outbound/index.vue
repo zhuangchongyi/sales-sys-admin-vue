@@ -1,17 +1,17 @@
 <template>
     <div class="container">
         <el-form :model="queryParams" ref="queryParams" :inline="true">
-            <el-form-item label="发货单号" prop="shipmentsNum">
-                <el-input v-model="queryParams.shipmentsNum" placeholder="请输入出库单号" clearable size="small" style="width: 200px" @keyup.enter.native="handleQuery" />
+            <el-form-item label="" prop="shipmentsNum">
+                <el-input v-model="queryParams.shipmentsNum" placeholder="发货单号" clearable size="small" style="width: 200px" @keyup.enter.native="handleQuery" />
             </el-form-item>
-            <el-form-item label="订单号" prop="orderNum">
-                <el-input v-model="queryParams.orderNum" placeholder="请输入订单号" clearable size="small" style="width: 200px" @keyup.enter.native="handleQuery" />
+            <el-form-item label="" prop="orderNum">
+                <el-input v-model="queryParams.orderNum" placeholder="订单号" clearable size="small" style="width: 200px" @keyup.enter.native="handleQuery" />
             </el-form-item>
-            <el-form-item label="客户编码" prop="clienteleNum">
-                <el-input v-model="queryParams.clienteleNum" placeholder="请输入客户编码" clearable size="small" style="width: 200px" @keyup.enter.native="handleQuery" />
+            <el-form-item label="" prop="clienteleNum">
+                <el-input v-model="queryParams.clienteleNum" placeholder="客户编码" clearable size="small" style="width: 200px" @keyup.enter.native="handleQuery" />
             </el-form-item>
-            <el-form-item label="客户名称" prop="clienteleName">
-                <el-input v-model="queryParams.clienteleName" placeholder="请输入客户名称" clearable size="small" style="width: 200px" @keyup.enter.native="handleQuery" />
+            <el-form-item label="" prop="clienteleName">
+                <el-input v-model="queryParams.clienteleName" placeholder="客户名称" clearable size="small" style="width: 200px" @keyup.enter.native="handleQuery" />
             </el-form-item>
             <el-form-item>
                 <el-button type="primary" icon="el-icon-search" size="small" @click="handleQuery">搜索</el-button>
@@ -27,8 +27,8 @@
                     <el-dropdown-item icon="el-icon-bottom" @click.native="handleNoSubmit">收回</el-dropdown-item>
                 </el-dropdown-menu>
             </el-dropdown> -->
-            <el-button type="primary" size="mini" icon="el-icon-edit" class="handle-del mr10" :disabled="single" @click="handleAudit">审核</el-button>
-            <el-button type="primary" size="mini" icon="el-icon-printer" class="handle-del mr10" @click="handlePrint" :disabled="single">打印</el-button>
+            <el-button type="primary" size="small" icon="el-icon-edit" class="handle-del mr10" :disabled="single" @click="handleAudit">审核</el-button>
+            <el-button type="primary" size="small" icon="el-icon-printer" class="handle-del mr10" @click="handlePrint" :disabled="single">打印</el-button>
         </div>
         <el-table v-loading="loading" :data="listData" ref="listData" @row-click="selectionRowClick" highlight-current-row @row-dblclick="handledblclickRow" @selection-change="handleSelectionChange">
             <el-table-column type="selection" width="50" fixed="left" align="center" />
@@ -44,13 +44,13 @@
             <el-table-column prop="auditStatus" label="审核状态" :formatter="auditStatusFormatter" align="center" width="150" />
             <el-table-column label="审核人" align="center" prop="auditBy" width="150" :show-overflow-tooltip="true" />
             <el-table-column label="审核时间" align="center" prop="auditTime" width="150" :show-overflow-tooltip="true" />
-            <el-table-column label="操作" align="center" width="180" class-name="small-padding fixed-width" fixed="right">
-                <template slot-scope="scope">
-                    <!-- <el-button size="mini" type="text" icon="el-icon-edit" v-hasPermi="['sales:shipments:edit']" @click="handleUpdate(scope.row)">修改</el-button> -->
-                    <el-button size="mini" type="text" icon="el-icon-info" v-hasPermi="['sales:shipments:preview']" @click="handlePreview(scope.row)">明细</el-button>
-                    <!-- <el-button size="mini" type="text" icon="el-icon-delete" style="color:#fd5656" v-hasPermi="['sales:shipments:delete']" @click="handleDelete(scope.row)">删除</el-button> -->
-                </template>
-            </el-table-column>
+            <!-- <el-table-column label="操作" align="center" width="180" class-name="small-padding fixed-width" fixed="right">
+                <template slot-scope="scope"> -->
+            <!-- <el-button size="mini" type="text" icon="el-icon-edit" v-hasPermi="['sales:shipments:edit']" @click="handleUpdate(scope.row)">修改</el-button> -->
+            <!-- <el-button size="mini" type="text" icon="el-icon-info" v-hasPermi="['sales:shipments:preview']" @click="handlePreview(scope.row)">明细</el-button> -->
+            <!-- <el-button size="mini" type="text" icon="el-icon-delete" style="color:#fd5656" v-hasPermi="['sales:shipments:delete']" @click="handleDelete(scope.row)">删除</el-button> -->
+            <!-- </template>
+            </el-table-column> -->
         </el-table>
         <div class="pagination">
             <el-pagination

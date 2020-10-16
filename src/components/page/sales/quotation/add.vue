@@ -623,7 +623,6 @@ export default {
         },
         getQuotationData() {
             getQuotation(this.quotationId).then(res => {
-                console.log('getQuotation', res);
                 if (res.success) {
                     this.clienteleForm = res.data;
                     this.quotationId = res.data.quotationId;

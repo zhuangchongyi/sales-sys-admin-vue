@@ -93,20 +93,19 @@
             ></el-pagination>
         </div>
 
-        <el-dialog :title="title" :visible.sync="open" width="1000px" append-to-body>
-            <el-table v-loading="loading" :data="materielListData">
-                <el-table-column label="型号" type="index" />
-                <!-- <el-table-column type="selection" width="50" align="center" /> -->
+        <el-dialog v-dialogDrag title="产品发货" :visible.sync="open" width="1000px" append-to-body>
+            <el-table v-loading="loading" :data="materielListData" ref="materielListData" highlight-current-row @row-click="selectionRowShipments" @selection-change="handleSelectionShipments">
+                <el-table-column type="selection" width="50" align="center" />
                 <el-table-column label="产品编码" align="center" :show-overflow-tooltip="true" prop="materielNum" />
                 <el-table-column label="产品名称" align="center" prop="materielName" :show-overflow-tooltip="true" />
-                <el-table-column label="规格" align="center" :show-overflow-tooltip="true" width="100" prop="specification" />
-                <el-table-column label="型号" align="center" width="100" :show-overflow-tooltip="true" prop="modelName" />
-                <el-table-column label="所需扭矩" align="center" width="100" :show-overflow-tooltip="true" prop="needTorque" />
-                <el-table-column label="输出扭矩" align="center" width="100" :show-overflow-tooltip="true" prop="outTorque" />
-                <el-table-column prop="unitsName" label="单位" width="100" align="center" />
-                <el-table-column prop="number" width="150" label="订购数量" :show-overflow-tooltip="true" align="center" />
-                <el-table-column prop="hasShipmentNum" width="150" label="已发货数量" :show-overflow-tooltip="true" align="center" />
-                <el-table-column prop="shipmentNum" width="150" label="本次可发货数量" align="center">
+                <el-table-column label="规格" align="center" :show-overflow-tooltip="true" prop="specification" />
+                <el-table-column label="型号" align="center" :show-overflow-tooltip="true" prop="modelName" />
+                <el-table-column label="所需扭矩" align="center" :show-overflow-tooltip="true" prop="needTorque" />
+                <el-table-column label="输出扭矩" align="center" :show-overflow-tooltip="true" prop="outTorque" />
+                <el-table-column prop="unitsName" label="单位" align="center" />
+                <el-table-column prop="number" label="订购数量" width="150" :show-overflow-tooltip="true" align="center" />
+                <el-table-column prop="hasShipmentNum" label="已发货数量" width="150" :show-overflow-tooltip="true" align="center" />
+                <el-table-column prop="shipmentNum" label="本次可发货数量" width="150" align="center">
                     <template slot-scope="scope">
                         <el-input
                             size="small"
@@ -168,7 +167,8 @@ export default {
                 clienteleName: undefined,
                 status: undefined
             },
-            materielListData: []
+            materielListData: [],
+            selectionShipments: []
         };
     },
     created() {
@@ -276,18 +276,18 @@ export default {
                 return;
             }
             let that = this;
+            let orderId = row.orderId || this.selection.orderId;
             this.$confirm('请确认是否删除？', '警告', {
                 confirmButtonText: '确定',
                 cancelButtonText: '取消',
                 type: 'warning'
             }).then(function() {
-                let orderId = row.orderId || this.selection.orderId;
                 deleteOrder(orderId).then(res => {
                     if (res.success) {
-                        this.msgSuccess(res.message);
-                        this.handleQuery();
+                        that.msgSuccess(res.message);
+                        that.handleQuery();
                     } else {
-                        this.msgError(res.message);
+                        that.msgError(res.message);
                     }
                 });
             });
@@ -337,6 +337,7 @@ export default {
         handleSchedule(row) {
             this.$router.push({ path: '/page/sales/order/schedule', query: { id: row.orderId } });
         },
+
         // 发货按钮
         handleShipments() {
             if (this.verifyStatus('7', '已关闭')) return;
@@ -352,21 +353,25 @@ export default {
                 this.materielListData = res.data || [];
                 this.calculateTotalAll();
             });
-            this.title = '发货';
             this.open = true;
+            this.selectionShipments = [];
+        },
+        handleSelectionShipments(selection) {
+            this.selectionShipments = selection;
+        },
+        selectionRowShipments(row) {
+            this.$refs['materielListData'].toggleRowSelection(row);
         },
         cancelForm() {
             this.open = false;
         },
         // 计算数量
         calculateTotalAll() {
-            // console.log('calculateTotalAll', this.materielListData);
             this.materielListData.forEach(item => {
                 item.shipmentNum = parseInt(item.number || 0) - parseInt(item.hasShipmentNum || 0);
             });
         },
         calculateTotal(row) {
-            // console.log('calculateTotal', row);
             let shipmentNum = parseInt(row.number || 0) - parseInt(row.hasShipmentNum || 0);
             let newShipmentNum = parseInt(row.shipmentNum || 0);
             if (newShipmentNum > shipmentNum) {
@@ -374,11 +379,11 @@ export default {
             }
         },
         submitForm() {
-            if (this.materielListData.length == 0) {
+            if (this.selectionShipments.length == 0) {
                 this.msgError('没有可发货的产品');
                 return;
             }
-            let materielListData = this.materielListData.filter(item => {
+            let materielListData = this.selectionShipments.filter(item => {
                 item.orderSubId = item.subId;
                 item.subId = undefined;
                 return item.shipmentNum > 0;

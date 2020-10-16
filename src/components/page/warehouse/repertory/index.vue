@@ -11,14 +11,11 @@
                 <el-input v-model="queryParams.materielName" size="small" style="width: 200px" placeholder="搜索产品" clearable />
             </el-form-item>
             <el-form-item>
-                <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">刷新</el-button>
+                <el-button type="primary" icon="el-icon-search" size="small" @click="handleQuery">刷新</el-button>
             </el-form-item>
         </el-form>
         <div class="handle-box"></div>
         <el-table v-loading="loading" :data="repertoryListData">
-            <!-- <el-table-column type="selection"
-                       width="50"
-                       align="center" /> -->
             <el-table-column prop="materielNum" label="产品编码" align="center" :show-overflow-tooltip="true" />
             <el-table-column prop="materielName" label="产品名称" align="center" :show-overflow-tooltip="true" />
             <el-table-column prop="specification" label="规格" align="center" :show-overflow-tooltip="true" />
@@ -105,7 +102,7 @@ export default {
                 specification: undefined,
                 modelName: undefined,
                 needTorque: undefined,
-                outtorque: undefined
+                outTorque: undefined
             },
             //表单参数
             form: {},
@@ -128,7 +125,7 @@ export default {
                 this.queryParams.specification = this.queryParams.materielName;
                 this.queryParams.modelName = this.queryParams.materielName;
                 this.queryParams.needTorque = this.queryParams.materielName;
-                this.queryParams.outtorque = this.queryParams.materielName;
+                this.queryParams.outTorque = this.queryParams.materielName;
                 listRepertoryPage(this.queryParams).then(res => {
                     this.repertoryListData = res.data.records;
                     this.total = res.data.total;

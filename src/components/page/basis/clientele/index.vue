@@ -510,16 +510,14 @@ export default {
             // this.$refs.personnelBlur.blur();
         },
         getPersonnelList() {
-            console.log(this.personnelQuery);
             userListPage(this.personnelQuery).then(res => {
-                console.log(res);
                 this.personnelLoading = false;
                 this.personnelListData = res.data.records;
                 this.personnelTotal = res.data.total;
             });
         },
         getCurrentRow(row) {
-            console.log('选中行', row);
+            // console.log('选中行', row);
             this.selectedPersonnel = row;
         },
         handlePageChangeDialog(val) {

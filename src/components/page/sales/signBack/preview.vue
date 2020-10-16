@@ -223,10 +223,8 @@ export default {
         getList() {
             if (this.signbackId) {
                 getSignback(this.signbackId).then(res => {
-                    console.log(res);
                     this.clienteleForm = res.data;
                     listSignbackSub({ signbackId: this.signbackId }).then(res => {
-                        console.log(res);
                         this.materielList = res.data;
                         this.calculateTotalAll();
                     });

@@ -301,7 +301,6 @@ export default {
         handleLookMenu(row) {
             this.reset();
             userRoleMenuList(row.userId).then(res => {
-                console.log('menu', res);
                 this.menuOpen = true;
                 this.title = '查看用户权限';
                 if (res.success) {
@@ -314,7 +313,6 @@ export default {
         handleRole(row) {
             this.reset();
             userRoleList(row.userId).then(res => {
-                console.log('role', res);
                 if (res.success) {
                     this.form.userId = row.userId;
                     this.form.roleIds = res.data.roleIds;
@@ -357,7 +355,6 @@ export default {
         },
         // 修改状态
         handleStatusChange(row) {
-            console.log('handleStatusChange', row);
             let text = row.startStatus === '0' ? '启用' : '停用';
             this.$confirm('确认要' + text + '' + row.username + '"用户吗?', '警告', {
                 confirmButtonText: '确定',

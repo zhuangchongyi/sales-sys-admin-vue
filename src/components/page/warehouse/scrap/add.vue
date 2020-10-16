@@ -289,7 +289,6 @@ export default {
         },
         getWarehouseListData() {
             warehouseListPage(this.warehouseParams).then(res => {
-                console.log(res);
                 this.warehouseListData = res.data.records;
                 this.warehouseTotal = res.data.total;
             });
@@ -377,7 +376,6 @@ export default {
                 total = parseFloat(total) + price;
             });
             this.totalPrice = total.toFixed(2);
-            console.log(this.warehouseForm.totalPrice);
         },
         submitMaterielForm() {
             this.materielListData = this.materielListData.concat(this.selectionMateriel);
@@ -401,7 +399,6 @@ export default {
                         scrapSub: JSON.stringify(this.materielListData),
                         delSubIds: JSON.stringify(this.delSubIds)
                     };
-                    console.log(data);
                     addAndUpdateScrap(data).then(res => {
                         if (res.success) {
                             this.msgSuccess(res.message);

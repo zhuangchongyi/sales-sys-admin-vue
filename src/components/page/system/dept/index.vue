@@ -254,7 +254,6 @@ export default {
         handleUpdate(row) {
             this.reset();
             getDept(row.deptId).then(res => {
-                console.log('res', res.data);
                 this.form = res.data;
                 this.open = true;
                 this.isAdd = false;

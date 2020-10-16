@@ -658,7 +658,6 @@ export default {
         },
         getOrderList() {
             getOrder(this.orderId).then(res => {
-                console.log('getOrder', res);
                 if (res.success) {
                     this.clienteleForm = res.data;
                     this.orderId = res.data.orderId;
@@ -734,7 +733,6 @@ export default {
             let taht = this;
             this.$refs['clienteleForm'].validate(valid => {
                 if (valid) {
-                    console.log(this.materielListData);
                     if (this.materielListData.length == 0) {
                         this.msgError('未添加产品');
                         return;
@@ -743,9 +741,7 @@ export default {
                         clientele: JSON.stringify(this.clienteleForm),
                         materielList: JSON.stringify(this.materielListData)
                     };
-                    console.log(data);
                     addOrder(data).then(res => {
-                        console.log(res);
                         if (res.success) {
                             this.msgSuccess(res.message);
                         } else {
@@ -854,7 +850,6 @@ export default {
         },
         handleDelete(index, row) {
             if (row.subId) {
-                console.log('dellete', row);
                 deleteOrderSub(row.subId).then(res => {
                     if (res.success) {
                         this.msgSuccess(res.message);
@@ -986,7 +981,6 @@ export default {
             });
         },
         handleDownloadFile(row) {
-            console.log('handleDownloadFile', row);
             this.imageLoading = true;
             downloadFile(row.pkId)
                 .then(res => {

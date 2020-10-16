@@ -540,15 +540,15 @@ export default {
     },
     watch: {
         $route(to, form) {
-            if (to.path === '/page/warehouse/outbound/preview' && this.shipmentsId !== to.query.id) {
-                this.shipmentsId = this.$route.query.id || 0;
+            if (to.path === '/page/warehouse/outbound/preview' && this.shipmentsId !== this.$route.query.id) {
+                this.shipmentsId = this.$route.query.id;
                 this.isAudit = JSON.parse(this.$route.query.isAudit || false);
                 this.getShipmentsData();
             }
         }
     },
     created() {
-        this.shipmentsId = this.$route.query.id || 0;
+        this.shipmentsId = this.$route.query.id;
         this.isAudit = JSON.parse(this.$route.query.isAudit || false);
         this.getTreeselectClienteleType();
         this.getShipmentsData();
@@ -642,7 +642,6 @@ export default {
             this.clienteleListData = [];
             this.clienteleTotal = 0;
             listOrderPage().then(res => {
-                console.log('getOrderData', res);
                 this.clienteleListData = res.data.records || [];
                 this.clienteleTotal = res.data.total || 0;
             });
@@ -705,13 +704,11 @@ export default {
         },
         // 计算数量
         calculateTotalAll() {
-            // console.log('calculateTotalAll', this.materielListData);
             this.materielListData.forEach(item => {
                 item.shipmentNum = parseInt(item.number || 0) - parseInt(item.hasShipmentNum || 0);
             });
         },
         calculateTotal(row) {
-            // console.log('calculateTotal', row);
             let shipmentNum = parseInt(row.number || 0) - parseInt(row.hasShipmentNum || 0);
             let newShipmentNum = parseInt(row.shipmentNum || 0);
             if (newShipmentNum > shipmentNum) {
@@ -743,7 +740,6 @@ export default {
                         delSubIds: JSON.stringify(this.delSubIds)
                     };
                     addAndUpdateShipments(data).then(res => {
-                        console.log('addAndUpdateShipments', res);
                         if (res.success) {
                             this.msgSuccess(res.message);
                         } else {
@@ -853,7 +849,6 @@ export default {
         // 删除产品
         handleDelete(index, row) {
             if (row.subId) {
-                console.log('dellete', row);
                 this.delSubIds.push(row.subId);
             } else {
                 this.calculateTotalPrice();
@@ -988,7 +983,6 @@ export default {
         },
         getWarehouseListData() {
             warehouseListPage(this.warehouseParams).then(res => {
-                console.log(res);
                 this.warehouseListData = res.data.records;
                 this.warehouseTotal = res.data.total;
             });

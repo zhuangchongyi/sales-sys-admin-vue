@@ -265,7 +265,6 @@ export default {
         submitAddForm() {
             this.$refs['clienteleForm'].validate(valid => {
                 if (valid) {
-                    console.log(this.clienteleForm);
                     let data = {
                         clientele: JSON.stringify(this.clienteleForm),
                         materielList: JSON.stringify(this.materielList)

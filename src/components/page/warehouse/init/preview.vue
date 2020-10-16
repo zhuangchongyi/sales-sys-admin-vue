@@ -201,7 +201,6 @@ export default {
             this.submitWarehouseForm();
         },
         submitWarehouseForm() {
-            console.log(this.warehouseSelected);
             this.warehouseForm.warehouseNum = this.warehouseSelected.warehouseNum;
             this.warehouseForm.warehouseName = this.warehouseSelected.warehouseName;
             this.warehouseForm.warehouseId = this.warehouseSelected.warehouseId;
@@ -217,7 +216,6 @@ export default {
             this.openMateriel = true;
         },
         handleSelectionChange(selection) {
-            console.log('selection', selection);
             this.selectionMateriel = selection;
         },
         selectionRowClick(row) {
@@ -231,7 +229,6 @@ export default {
         },
         getMaterielListData() {
             listAllMateriel(this.materielParams).then(res => {
-                console.log('listAllMateriel', res);
                 this.materielListPageData = res.data.records;
                 this.materielTotal = res.data.total;
             });
@@ -264,7 +261,6 @@ export default {
 
         getWarehouseInitSubListData() {
             listInitSub(this.warehouseForm).then(res => {
-                console.log('listInitSub', res);
                 this.materielListData = res.data;
             });
         },
@@ -282,7 +278,6 @@ export default {
                         delInitSub: JSON.stringify(this.delSubIds)
                     };
                     addAndUpdateInit(data).then(res => {
-                        console.log(res);
                         this.getWarehouseListData();
                     });
                 }

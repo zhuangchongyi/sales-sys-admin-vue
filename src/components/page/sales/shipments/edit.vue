@@ -27,7 +27,7 @@
                         <el-input v-model="clienteleForm.clienteleName" clearable size="small" style="width: 155px;" readonly />
                     </el-form-item>
                 </el-col>
-                <el-col :span="4">
+                <!-- <el-col :span="4">
                     <el-form-item label="客户类别" prop="categoryId">
                         <treeselect
                             :disabled="true"
@@ -39,7 +39,7 @@
                             placeholder="选择类别"
                         />
                     </el-form-item>
-                </el-col>
+                </el-col> -->
                 <el-col :span="4">
                     <el-form-item label="联系人" prop="leader">
                         <el-input v-model="clienteleForm.leader" clearable size="small" style="width: 155px;" readonly />
@@ -50,8 +50,6 @@
                         <el-input v-model="clienteleForm.phone" clearable size="small" style="width: 155px;" readonly />
                     </el-form-item>
                 </el-col>
-            </el-row>
-            <el-row>
                 <el-col :span="4">
                     <el-form-item label="手机" prop="mobilephone">
                         <el-input v-model="clienteleForm.mobilephone" clearable size="small" style="width: 155px;" readonly />
@@ -64,7 +62,7 @@
                 </el-col>
                 <el-col :span="8">
                     <el-form-item label="地址" prop="address">
-                        <el-input v-model="clienteleForm.address" size="small" maxlength="200" style="width: 420px" />
+                        <el-input v-model="clienteleForm.address" size="small" maxlength="200" style="width: 420px" readonly />
                     </el-form-item>
                 </el-col>
                 <el-col :span="4">
@@ -104,7 +102,7 @@
             <el-table-column prop="needTorque" label="所需扭矩" align="center" width="100" :show-overflow-tooltip="true"></el-table-column>
             <el-table-column prop="outTorque" label="输出扭矩" align="center" width="100" :show-overflow-tooltip="true"></el-table-column>
             <el-table-column prop="unitsName" label="单位" width="100" align="center"></el-table-column>
-            <el-table-column prop="price" label="单价" width="150" align="center"> </el-table-column>
+            <!-- <el-table-column prop="price" label="单价" width="150" align="center"> </el-table-column> -->
             <el-table-column prop="number" label="订购数量" width="150" align="center"> </el-table-column>
             <el-table-column prop="hasShipmentNum" label="已发货数量" width="150" align="center"> </el-table-column>
             <el-table-column prop="shipmentNum" width="150" label="本次发货数量" align="center">
@@ -528,7 +526,6 @@ export default {
             this.clienteleListData = [];
             this.clienteleTotal = 0;
             listOrderPage().then(res => {
-                console.log('getOrderData', res);
                 this.clienteleListData = res.data.records || [];
                 this.clienteleTotal = res.data.total || 0;
             });
@@ -591,13 +588,11 @@ export default {
         },
         // 计算数量
         calculateTotalAll() {
-            // console.log('calculateTotalAll', this.materielListData);
             this.materielListData.forEach(item => {
                 item.shipmentNum = parseInt(item.number || 0) - parseInt(item.hasShipmentNum || 0);
             });
         },
         calculateTotal(row) {
-            // console.log('calculateTotal', row);
             let shipmentNum = parseInt(row.number || 0) - parseInt(row.hasShipmentNum || 0);
             let newShipmentNum = parseInt(row.shipmentNum || 0);
             if (newShipmentNum > shipmentNum) {
@@ -641,7 +636,6 @@ export default {
                         delSubIds: JSON.stringify(this.delSubIds)
                     };
                     addAndUpdateShipments(data).then(res => {
-                        console.log('addAndUpdateShipments', res);
                         if (res.success) {
                             this.msgSuccess(res.message);
                         } else {
@@ -751,7 +745,6 @@ export default {
         // 删除产品
         handleDelete(index, row) {
             if (row.subId) {
-                console.log('dellete', row);
                 this.delSubIds.push(row.subId);
             } else {
                 this.calculateTotalPrice();
@@ -877,13 +870,6 @@ export default {
             }
             this.inputVisible = false;
             this.inputValue = '';
-        },
-        // 上传图片
-        handleRemove(file, fileList) {
-            console.log(file, fileList);
-        },
-        handlePreview(file) {
-            console.log(file);
         }
     }
 };

@@ -37,11 +37,11 @@
             <el-table-column prop="materielNum" label="产品编码" align="center" :show-overflow-tooltip="true" />
             <el-table-column prop="materielName" label="产品名称" align="center" :show-overflow-tooltip="true" />
             <el-table-column prop="specification" label="规格" align="center" :show-overflow-tooltip="true"></el-table-column>
-            <el-table-column prop="modelName" label="型号" align="center" width="100" :show-overflow-tooltip="true"></el-table-column>
-            <el-table-column prop="needTorque" label="所需扭矩" align="center" width="100" :show-overflow-tooltip="true"></el-table-column>
-            <el-table-column prop="outTorque" label="输出扭矩" align="center" width="100" :show-overflow-tooltip="true"></el-table-column>
-            <el-table-column prop="unitsName" label="单位" width="100" align="center"></el-table-column>
-            <el-table-column prop="returnsNum" label="退货数量" width="150" align="center"></el-table-column>
+            <el-table-column prop="modelName" label="型号" align="center" :show-overflow-tooltip="true"></el-table-column>
+            <el-table-column prop="needTorque" label="所需扭矩" align="center" :show-overflow-tooltip="true"></el-table-column>
+            <el-table-column prop="outTorque" label="输出扭矩" align="center" :show-overflow-tooltip="true"></el-table-column>
+            <el-table-column prop="unitsName" label="单位" align="center"></el-table-column>
+            <el-table-column prop="returnsNum" label="退货数量" align="center"></el-table-column>
             <el-table-column prop="realityNum" width="150" label="入库数量" align="center">
                 <template slot-scope="scope">
                     <el-input size="small" @input="calculateTotal(scope.row)" oninput="value=value.replace(/[^\d]/g,'')" maxLength="9" v-model="scope.row.realityNum" />
@@ -524,7 +524,6 @@ export default {
         // 删除产品
         handleDelete(index, row) {
             if (row.subId) {
-                console.log('dellete', row);
                 this.delSubIds.push(row.subId);
             } else {
                 this.calculateTotalPrice();
@@ -642,7 +641,6 @@ export default {
         },
         getWarehouseListData() {
             warehouseListPage(this.warehouseParams).then(res => {
-                console.log(res);
                 this.warehouseListData = res.data.records;
                 this.warehouseTotal = res.data.total;
             });

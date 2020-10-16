@@ -163,7 +163,6 @@ export default {
         },
         // 多选框选中数据
         handleSelectionChange(selection) {
-            console.log('selection', selection);
             this.multipleSelection = selection;
             this.ids = selection.map(item => item.quotationId);
             this.single = selection.length != 1;
@@ -246,7 +245,6 @@ export default {
                 return;
             }
             let quotationId = row.quotationId || this.selection.quotationId;
-            // console.log(quotationId);
             let that = this;
             this.$confirm('请确认是否删除？', '警告', {
                 confirmButtonText: '确定',
@@ -255,10 +253,10 @@ export default {
             }).then(function() {
                 deleteQuotation(quotationId).then(res => {
                     if (res.success) {
-                        this.msgSuccess('删除成功');
-                        this.handleQuery();
+                        that.msgSuccess('删除成功');
+                        that.handleQuery();
                     } else {
-                        this.msgError(res.message);
+                        that.msgError(res.message);
                     }
                 });
             });

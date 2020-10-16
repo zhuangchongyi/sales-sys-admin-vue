@@ -546,7 +546,6 @@ export default {
         },
         getQuotationList() {
             getQuotation(this.quotationId).then(res => {
-                // console.log("getQuotation", res)
                 if (res.success) {
                     this.clienteleForm = res.data;
                     this.quotationId = res.data.quotationId;
@@ -636,7 +635,6 @@ export default {
                         clientele: JSON.stringify(this.clienteleForm),
                         materielList: JSON.stringify(this.materielListData)
                     };
-                    console.log(data);
                     this.btnLoading = true;
                     generateOrder(data)
                         .then(res => {
@@ -757,7 +755,6 @@ export default {
         },
         handleDelete(index, row) {
             if (row.subId) {
-                console.log('delete', row);
                 // deleteQuotationSub(row.subId).then(res => {
                 //     if (res.success) {
                 //         this.msgSuccess(res.message);
@@ -889,13 +886,6 @@ export default {
             }
             this.inputVisible = false;
             this.inputValue = '';
-        },
-        // 上传图片
-        handleRemove(file, fileList) {
-            console.log(file, fileList);
-        },
-        handlePreview(file) {
-            console.log(file);
         }
     }
 };

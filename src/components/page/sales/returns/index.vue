@@ -1,34 +1,34 @@
 <template>
     <div class="container">
         <el-form :model="queryParams" ref="queryParams" :inline="true">
-            <el-form-item label="退货单号" prop="returnsNum">
-                <el-input v-model="queryParams.returnsNum" placeholder="请输入退货单号" clearable size="small" style="width: 200px" @keyup.enter.native="handleQuery" />
+            <el-form-item label="" prop="returnsNum">
+                <el-input v-model="queryParams.returnsNum" placeholder="退货单号" clearable size="small" style="width: 200px" @keyup.enter.native="handleQuery" />
             </el-form-item>
-            <el-form-item label="客户" prop="clienteleName">
-                <el-input v-model="queryParams.clienteleName" placeholder="请输入客户名称或编码" clearable size="small" style="width: 200px" @keyup.enter.native="handleQuery" />
+            <el-form-item label="" prop="clienteleName">
+                <el-input v-model="queryParams.clienteleName" placeholder="客户名称或编码" clearable size="small" style="width: 200px" @keyup.enter.native="handleQuery" />
             </el-form-item>
             <el-form-item>
-                <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
-                <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">刷新</el-button>
+                <el-button type="primary" icon="el-icon-search" size="small" @click="handleQuery">搜索</el-button>
+                <el-button icon="el-icon-refresh" size="small" @click="resetQuery">刷新</el-button>
             </el-form-item>
         </el-form>
         <div class="handle-box">
-            <el-button type="primary" size="mini" icon="el-icon-plus" class="handle-del mr10" @click="handleAdd">新增</el-button>
+            <el-button type="primary" size="small" icon="el-icon-plus" class="handle-del mr10" @click="handleAdd">新增</el-button>
             <el-dropdown trigger="click" style="margin: 0 10px;">
-                <el-button class="el-dropdown-link" size="mini" type="primary"> 提交<i class="el-icon-arrow-down el-icon--right"></i> </el-button>
+                <el-button class="el-dropdown-link" size="small" type="primary"> 提交<i class="el-icon-arrow-down el-icon--right"></i> </el-button>
                 <el-dropdown-menu slot="dropdown">
                     <el-dropdown-item icon="el-icon-top" @click.native="handleSubmit">提交</el-dropdown-item>
                     <el-dropdown-item icon="el-icon-bottom" @click.native="handleNoSubmit">收回</el-dropdown-item>
                 </el-dropdown-menu>
             </el-dropdown>
-            <el-button type="primary" size="mini" icon="el-icon-edit" class="handle-del mr10" :disabled="single" @click="handleAudit">审核</el-button>
-            <el-button type="primary" size="mini" icon="el-icon-printer" class="handle-del mr10" @click="handlePrint" :disabled="single">打印</el-button>
+            <el-button type="primary" size="small" icon="el-icon-edit" class="handle-del mr10" :disabled="single" @click="handleAudit">审核</el-button>
+            <el-button type="primary" size="small" icon="el-icon-printer" class="handle-del mr10" @click="handlePrint" :disabled="single">打印</el-button>
         </div>
         <el-table v-loading="loading" :data="listData" @selection-change="handleSelectionChange" ref="listData" @row-click="selectionRowClick" highlight-current-row @row-dblclick="handledblclickRow">
             <el-table-column type="selection" width="50" fixed="left" align="center" />
             <el-table-column prop="returnsNum" label="退货单号" align="center" width="180" />
-            <el-table-column prop="warehouseNum" label="退入仓库编码" align="center" width="120" />
-            <el-table-column prop="warehouseName" label="退入仓库名称" align="center" width="120" />
+            <!-- <el-table-column prop="warehouseNum" label="退入仓库编码" align="center" width="120" />
+            <el-table-column prop="warehouseName" label="退入仓库名称" align="center" width="120" /> -->
             <el-table-column prop="clienteleNum" label="客户编号" align="center" width="120" />
             <el-table-column prop="clienteleName" label="客户名称" align="center" :show-overflow-tooltip="true" width="120" />
             <el-table-column prop="totalPrice" label="退货金额" align="center" width="120" />
@@ -158,13 +158,20 @@ export default {
                 return;
             }
             let returnsId = row.returnsId || this.selection.returnsId;
-            deleteReturns(returnsId).then(res => {
-                if (res.success) {
-                    this.msgSuccess('删除成功');
-                    this.handleQuery();
-                } else {
-                    this.msgError(res.message);
-                }
+            let that = this;
+            this.$confirm('请确认是否删除？', '警告', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning'
+            }).then(function() {
+                deleteReturns(returnsId).then(res => {
+                    if (res.success) {
+                        this.msgSuccess('删除成功');
+                        this.handleQuery();
+                    } else {
+                        this.msgError(res.message);
+                    }
+                });
             });
         },
         /** 新增按钮操作 */
