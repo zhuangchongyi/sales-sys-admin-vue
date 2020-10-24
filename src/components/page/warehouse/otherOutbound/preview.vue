@@ -19,8 +19,8 @@
                     </el-form-item>
                 </el-col>
                 <el-col :span="4">
-                    <el-form-item label="来源类型" prop="sourceType">
-                        <el-select v-model="warehouseForm.sourceType" disabled placeholder="请选择来源类型" clearable style="width: 150px" size="small">
+                    <el-form-item label="出库类型" prop="outboundType">
+                        <el-select v-model="warehouseForm.outboundType" disabled placeholder="请选择出库类型" clearable style="width: 150px" size="small">
                             <el-option v-for="dict in sourceOptions" :key="dict.dictValue" :label="dict.dictLabel" :value="dict.dictValue" />
                         </el-select>
                     </el-form-item>
@@ -31,12 +31,12 @@
                     </el-form-item>
                 </el-col>
                 <el-col :span="4">
-                    <el-form-item label="入库时间" prop="storageTime">
+                    <el-form-item label="出库时间" prop="storageTime">
                         <el-date-picker v-model="warehouseForm.storageTime" readonly placeholder="请选择日期" size="small" value-format="yyyy-MM-dd" format="yyyy-MM-dd" style="width: 150px" />
                     </el-form-item>
                 </el-col>
                 <el-col :span="4">
-                    <el-form-item label="入库负责人" prop="personnelName">
+                    <el-form-item label="出库负责人" prop="personnelName">
                         <el-input v-model="warehouseForm.personnelName" readonly size="small" suffix-icon="el-icon-search" ref="personnelBlur" style="width: 150px" />
                     </el-form-item>
                 </el-col>
@@ -53,7 +53,7 @@
             <el-table-column prop="outTorque" label="输出扭矩" align="center" :show-overflow-tooltip="true" />
             <el-table-column prop="unitsName" label="单位" align="center" />
             <el-table-column prop="price" label="单价" width="120" align="center"> </el-table-column>
-            <el-table-column prop="number" label="数量" width="120" align="center"> </el-table-column>
+            <el-table-column prop="number" label="出库数量" width="120" align="center"> </el-table-column>
             <el-table-column prop="totalPrice" label="金额" width="120" align="center"> </el-table-column>
         </el-table>
 
@@ -211,9 +211,9 @@ export default {
                 warehouseNum: undefined
             },
             sourceOptions: [
-                { dictValue: '0', dictLabel: '进口' },
-                { dictValue: '1', dictLabel: '生产' },
-                { dictValue: '2', dictLabel: '采购' },
+                { dictValue: '0', dictLabel: '报废' },
+                { dictValue: '1', dictLabel: '退回' },
+                { dictValue: '2', dictLabel: '赠送' },
                 { dictValue: '3', dictLabel: '其他' }
             ],
             // 产品

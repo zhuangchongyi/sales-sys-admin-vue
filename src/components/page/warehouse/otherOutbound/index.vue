@@ -2,27 +2,27 @@
     <div>
         <div class="container">
             <el-form :model="queryParams" ref="queryParams" :inline="true">
-                <el-form-item label="仓库编码" prop="warehouseNum">
-                    <el-input v-model="queryParams.warehouseNum" placeholder="请输入仓库编码" clearable size="small" style="width: 200px" @keyup.enter.native="handleQuery" />
+                <el-form-item prop="warehouseNum">
+                    <el-input v-model="queryParams.warehouseNum" placeholder="仓库编码" clearable size="small" style="width: 200px" @keyup.enter.native="handleQuery" />
                 </el-form-item>
-                <el-form-item label="仓库名称" prop="warehouseName">
-                    <el-input v-model="queryParams.warehouseName" placeholder="请输入仓库名称" clearable size="small" style="width: 200px" @keyup.enter.native="handleQuery" />
+                <el-form-item prop="warehouseName">
+                    <el-input v-model="queryParams.warehouseName" placeholder="仓库名称" clearable size="small" style="width: 200px" @keyup.enter.native="handleQuery" />
                 </el-form-item>
                 <el-form-item>
-                    <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
-                    <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">刷新</el-button>
+                    <el-button type="primary" icon="el-icon-search" size="small" @click="handleQuery">搜索</el-button>
+                    <el-button icon="el-icon-refresh" size="small" @click="resetQuery">刷新</el-button>
                 </el-form-item>
             </el-form>
             <div class="handle-box">
-                <el-button type="primary" size="mini" icon="el-icon-plus" class="handle-del mr10" @click="handleAdd">新增</el-button>
+                <el-button type="primary" size="small" icon="el-icon-plus" class="handle-del mr10" @click="handleAdd">新增</el-button>
                 <el-dropdown trigger="click" style="margin: 0 10px;">
-                    <el-button class="el-dropdown-link" size="mini" type="primary"> 提交<i class="el-icon-arrow-down el-icon--right"></i> </el-button>
+                    <el-button class="el-dropdown-link" size="small" type="primary"> 提交<i class="el-icon-arrow-down el-icon--right"></i> </el-button>
                     <el-dropdown-menu slot="dropdown">
                         <el-dropdown-item icon="el-icon-top" @click.native="handleSubmit">提交</el-dropdown-item>
                         <el-dropdown-item icon="el-icon-bottom" @click.native="handleNoSubmit">收回</el-dropdown-item>
                     </el-dropdown-menu>
                 </el-dropdown>
-                <el-button type="primary" size="mini" icon="el-icon-finished" class="handle-del mr10" :disabled="single" @click="handleAudit">审核</el-button>
+                <el-button type="primary" size="small" icon="el-icon-finished" class="handle-del mr10" :disabled="single" @click="handleAudit">审核</el-button>
             </div>
             <el-table
                 :data="listData"
@@ -38,11 +38,10 @@
                 <el-table-column prop="storageId" label="编号" width="120" align="center" />
                 <el-table-column prop="warehouseNum" label="仓库编码" width="120" align="center"></el-table-column>
                 <el-table-column prop="warehouseName" label="仓库名称" align="center"></el-table-column>
-                <el-table-column prop="sourceType" label="来源类型" :formatter="sourceTypeFormatter" align="center"></el-table-column>
+                <el-table-column prop="outboundType" label="出库类型" :formatter="sourceTypeFormatter" align="center"></el-table-column>
                 <el-table-column prop="status" label="状态" :formatter="auditStatusFormatter" align="center"></el-table-column>
-                <el-table-column prop="sourceCompany" label="供应单位" align="center"></el-table-column>
-                <el-table-column prop="storageTime" label="入库日期" align="center"></el-table-column>
-                <el-table-column prop="personnelName" label="入库负责人" align="center"></el-table-column>
+                <el-table-column prop="outboundTime" label="出库日期" align="center"></el-table-column>
+                <el-table-column prop="personnelName" label="出库负责人" align="center"></el-table-column>
                 <el-table-column prop="auditName" label="审核人" align="center" />
                 <el-table-column prop="auditTime" label="审核日期" align="center" width="160" />
                 <el-table-column label="操作" width="300" align="center">
@@ -71,7 +70,7 @@
 <script>
 import { listStorage, deleteStorage, submitStorage } from '@/api/warehouse/storage.js';
 export default {
-    name: 'warehouse-materialStorage', //商品入库
+    name: 'warehouse-materialStorage', //商品出库
     data() {
         return {
             // 非单个禁用
@@ -81,16 +80,17 @@ export default {
                 current: 1,
                 size: 10,
                 warehouseName: undefined,
-                warehouseNum: undefined
+                warehouseNum: undefined,
+                inoutType: '1'
             },
             pageTotal: 0,
             listData: [],
             selection: undefined,
             multipleSelection: [],
             sourceOptions: [
-                { dictValue: '0', dictLabel: '进口' },
-                { dictValue: '1', dictLabel: '生产' },
-                { dictValue: '2', dictLabel: '采购' },
+                { dictValue: '0', dictLabel: '报废' },
+                { dictValue: '1', dictLabel: '退回' },
+                { dictValue: '2', dictLabel: '赠送' },
                 { dictValue: '3', dictLabel: '其他' }
             ],
             ids: []
@@ -143,7 +143,7 @@ export default {
             });
         },
         handleAdd() {
-            this.$router.push('/page/warehouse/storage/add');
+            this.$router.push('/page/warehouse/otherOutbound/add');
         },
         /** 修改按钮操作 */
         handleUpdate(row) {
@@ -154,16 +154,16 @@ export default {
                 this.msgError('已审核，不能修改');
                 return;
             }
-            this.$router.push({ path: '/page/warehouse/storage/edit', query: { id: row.storageId } });
+            this.$router.push({ path: '/page/warehouse/otherOutbound/edit', query: { id: row.storageId } });
         },
         handlePreview(row) {
-            this.$router.push({ path: '/page/warehouse/storage/preview', query: { id: row.storageId } });
+            this.$router.push({ path: '/page/warehouse/otherOutbound/preview', query: { id: row.storageId } });
         },
         handleAudit() {
             if (this.verifyStatus('0', '请先提交') || this.verifyStatus('2', '请先提交')) {
                 return;
             }
-            this.$router.push({ path: '/page/warehouse/storage/preview', query: { id: this.selection.storageId, isAudit: true } });
+            this.$router.push({ path: '/page/warehouse/otherOutbound/preview', query: { id: this.selection.storageId, isAudit: true } });
         },
         /** 删除按钮操作 */
         handleDalete(row) {

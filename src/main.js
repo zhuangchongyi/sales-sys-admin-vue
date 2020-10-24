@@ -91,7 +91,7 @@
                              }
                          }
                          if (nextFlag) {
-                             next('/page/404');
+                             next('/page/403');
                          }
                      }
                  } else {

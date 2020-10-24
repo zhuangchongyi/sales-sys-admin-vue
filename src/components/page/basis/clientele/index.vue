@@ -40,7 +40,6 @@
                 </el-form>
                 <div class="handle-box">
                     <el-button type="primary" size="small" icon="el-icon-plus" class="handle-del mr10" v-hasPermi="['basis:clientele:add']" @click="handleAdd">新增</el-button>
-                    <!-- <el-button type="primary" size="small" icon="el-icon-plus" class="handle-del mr10" v-hasPermi="['basis:clientele:add']" @click="handleQuotationAdd">报价客户录入</el-button> -->
                 </div>
                 <el-table v-loading="loading" :data="clienteleListData">
                     <el-table-column type="index" width="50" fixed="left" align="center" />

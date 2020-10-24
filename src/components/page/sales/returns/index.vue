@@ -27,8 +27,6 @@
         <el-table v-loading="loading" :data="listData" @selection-change="handleSelectionChange" ref="listData" @row-click="selectionRowClick" highlight-current-row @row-dblclick="handledblclickRow">
             <el-table-column type="selection" width="50" fixed="left" align="center" />
             <el-table-column prop="returnsNum" label="退货单号" align="center" width="180" />
-            <!-- <el-table-column prop="warehouseNum" label="退入仓库编码" align="center" width="120" />
-            <el-table-column prop="warehouseName" label="退入仓库名称" align="center" width="120" /> -->
             <el-table-column prop="clienteleNum" label="客户编号" align="center" width="120" />
             <el-table-column prop="clienteleName" label="客户名称" align="center" :show-overflow-tooltip="true" width="120" />
             <el-table-column prop="totalPrice" label="退货金额" align="center" width="120" />
@@ -39,7 +37,7 @@
             <el-table-column prop="createTime" label="录入时间" align="center" width="160" />
             <el-table-column prop="auditBy" label="审核人" align="center" width="120" />
             <el-table-column prop="auditTime" label="审核时间" align="center" width="160" />
-            <el-table-column label="操作" align="center" width="180" class-name="small-padding fixed-width" fixed="right">
+            <el-table-column label="操作" align="center" width="150" class-name="small-padding fixed-width" fixed="right">
                 <template slot-scope="scope">
                     <el-button size="mini" type="text" icon="el-icon-edit" @click="handleUpdate(scope.row)">修改</el-button>
                     <el-button size="mini" type="text" icon="el-icon-delete" style="color:#fd5656" @click="handleDelete(scope.row)">删除</el-button>

@@ -38,21 +38,16 @@
                 </el-dropdown-menu>
             </el-dropdown>
             <el-button type="primary" size="small" icon="el-icon-finished" class="handle-del mr10" :disabled="single" @click="handleAudit">审核</el-button>
-            <!-- <el-button type="primary" size="small" icon="el-icon-finished" class="handle-del mr10" :disabled="single" @click="handleGenerate">生成订单</el-button> -->
+            <el-button type="primary" size="small" icon="el-icon-finished" class="handle-del mr10" :disabled="single" @click="handleGenerate">生成订单</el-button>
             <el-button type="primary" size="small" icon="el-icon-printer" class="handle-del mr10" :disabled="single" @click="handlePrint">打印</el-button>
         </div>
         <el-table v-loading="loading" :data="dataList" ref="dataList" @row-click="selectionRowClick" highlight-current-row @row-dblclick="handledblclickRow" @selection-change="handleSelectionChange">
             <el-table-column type="selection" width="50" fixed="left" align="center" />
             <el-table-column label="报价单号" align="center" prop="quotationNum" fixed="left" :show-overflow-tooltip="true" width="200" />
             <el-table-column label="报价日期" prop="quotationTime" align="center" :show-overflow-tooltip="true" width="160"></el-table-column>
-            <el-table-column prop="status" label="状态" :formatter="auditStatusFormatter" align="center" width="120" />
+            <el-table-column label="状态" prop="status" :formatter="auditStatusFormatter" align="center" width="120" />
             <el-table-column label="客户编号" align="center" :show-overflow-tooltip="true" prop="clienteleNum" width="80" />
             <el-table-column label="客户名称" align="center" prop="clienteleName" :show-overflow-tooltip="true" width="100" />
-            <!-- <el-table-column label="客户类别"
-                       align="center"
-                       prop="categoryName"
-                       :show-overflow-tooltip="true"
-                       width="100" /> -->
             <el-table-column prop="leader" label="客户联系人" align="center" width="100" :show-overflow-tooltip="true"></el-table-column>
             <el-table-column prop="phone" label="联系人电话" align="center" width="150" :show-overflow-tooltip="true"></el-table-column>
             <el-table-column prop="mobilephone" label="手机" align="center" width="150" :show-overflow-tooltip="true"></el-table-column>
@@ -60,15 +55,14 @@
             <el-table-column prop="deptName" label="所属部门" align="center" width="100" :show-overflow-tooltip="true"></el-table-column>
             <el-table-column label="总计金额" align="center" prop="totalPrice" width="160" :show-overflow-tooltip="true"></el-table-column>
             <el-table-column label="付款条件" align="center" prop="payCondition" width="160" :show-overflow-tooltip="true"></el-table-column>
-            <el-table-column label="有效日期" align="center" prop="effectiveTime" width="160" :show-overflow-tooltip="true"></el-table-column>
+            <el-table-column label="过期日期" align="center" prop="effectiveTime" width="160" :show-overflow-tooltip="true"></el-table-column>
             <el-table-column prop="createBy" label="录入人" align="center" width="120" :show-overflow-tooltip="true" />
             <el-table-column prop="createTime" label="录入时间" align="center" width="150" :show-overflow-tooltip="true" />
             <el-table-column label="审核人" align="center" prop="auditBy" width="150" :show-overflow-tooltip="true" />
             <el-table-column label="审核时间" align="center" prop="auditTime" width="160" :show-overflow-tooltip="true" />
-            <el-table-column label="操作" align="center" width="300" class-name="small-padding fixed-width" fixed="right">
+            <el-table-column label="操作" align="center" width="150" class-name="small-padding fixed-width" fixed="right">
                 <template slot-scope="scope">
                     <el-button size="small" type="text" icon="el-icon-edit" v-hasPermi="['sales:quotation:edit']" @click="handleUpdate(scope.row)">修改</el-button>
-                    <!-- <el-button size="small" type="text" icon="el-icon-info" v-hasPermi="['sales:quotation:preview']" @click="handlePreview(scope.row)">明细</el-button> -->
                     <el-button size="small" type="text" icon="el-icon-delete" style="color:#fd5656" v-hasPermi="['sales:quotation:delete']" @click="handleDelete(scope.row)">删除</el-button>
                 </template>
             </el-table-column>
@@ -201,9 +195,9 @@ export default {
                 this.msgError('请先审核');
                 return;
             }
-            let quotationTime = new Date(this.parseTime(this.selection.quotationTime, '{y}-{m}-{d}'));
+            let effectiveTime = new Date(this.parseTime(this.selection.effectiveTime, '{y}-{m}-{d}'));
             let nowTime = new Date(this.parseTime(new Date(), '{y}-{m}-{d}'));
-            if (nowTime > quotationTime) {
+            if (nowTime > effectiveTime) {
                 this.msgError('已超过过期时间');
                 return;
             }

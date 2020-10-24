@@ -17,7 +17,9 @@
                 </el-col>
                 <el-col :span="4">
                     <el-form-item label="客户编码" prop="clienteleNum">
-                        <el-input v-model="clienteleForm.clienteleNum" maxlength="10" show-word-limit size="small" style="width: 155px;" />
+                        <el-input v-model="clienteleForm.clienteleNum" maxlength="10" show-word-limit size="small" style="width: 155px;" clearable>
+                            <!-- <el-button slot="prepend" icon="el-icon-search"></el-button> -->
+                        </el-input>
                     </el-form-item>
                 </el-col>
                 <el-col :span="4">
@@ -268,7 +270,7 @@
                 <el-row>
                     <el-col :span="12">
                         <el-form-item label="产品编码" prop="materielNum">
-                            <el-input v-model="form.materielNum" placeholder="请输入产品编码" maxlength="10" show-word-limit :readonly="form.materielId" />
+                            <el-input v-model="form.materielNum" placeholder="请输入产品编码" maxlength="10" show-word-limit />
                         </el-form-item>
                     </el-col>
                     <el-col :span="12">

@@ -223,10 +223,16 @@ export default {
         this.getList();
     },
     methods: {
+        getPersonnelName() {
+            this.clienteleForm.personnelName = this.$store.getters.name;
+            this.clienteleForm.personnelId = this.$store.getters.userId;
+            this.clienteleForm.signbackTime = this.parseTime(new Date());
+        },
         getList() {
             if (this.signbackId) {
                 getSignback(this.signbackId).then(res => {
                     this.clienteleForm = res.data;
+                    this.getPersonnelName();
                     listSignbackSub({ signbackId: this.signbackId }).then(res => {
                         this.materielList = res.data;
                         this.calculateTotalAll();
@@ -245,6 +251,9 @@ export default {
             let allSignNum = 0;
             let allRejectionNum = 0;
             this.materielList.forEach(item => {
+                if (!item.signNum || item.signNum == 0) {
+                    item.signNum = item.outboundNum;
+                }
                 allSignNum = allSignNum + parseInt(item.signNum || 0);
                 allRejectionNum = allRejectionNum + parseInt(item.rejectionNum || 0);
             });

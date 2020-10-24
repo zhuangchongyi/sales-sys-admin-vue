@@ -38,7 +38,7 @@
                 </el-dropdown-menu>
             </el-dropdown>
             <el-button type="primary" size="small" icon="el-icon-finished" class="handle-del mr10" :disabled="single" @click="handleAudit">审核</el-button>
-            <el-button type="primary" size="small" icon="el-icon-edit" class="handle-del mr10" :disabled="single" @click="handleShipments">发货</el-button>
+            <!-- <el-button type="primary" size="small" icon="el-icon-edit" class="handle-del mr10" :disabled="single" @click="handleShipments">发货</el-button> -->
             <el-button type="primary" size="small" icon="el-icon-printer" class="handle-del mr10" @click="handlePrint" :disabled="single">打印</el-button>
             <el-button type="warning" size="small" icon="el-icon-finished" class="handle-del mr10" :disabled="single" @click="handleClose">关闭</el-button>
         </div>
@@ -71,10 +71,10 @@
             <el-table-column label="录入时间" prop="createTime" :show-overflow-tooltip="true" align="center" width="160" />
             <el-table-column label="审核人" align="center" prop="auditBy" :show-overflow-tooltip="true" width="120" />
             <el-table-column label="审核时间" align="center" :show-overflow-tooltip="true" prop="auditTime" width="160" />
-            <el-table-column label="操作" align="center" width="300" class-name="small-padding fixed-width" fixed="right">
+            <el-table-column label="操作" align="center" width="200" class-name="small-padding fixed-width" fixed="right">
                 <template slot-scope="scope">
                     <el-button size="mini" type="text" icon="el-icon-edit" v-hasPermi="['sales:order:edit']" @click="handleUpdate(scope.row)">修改</el-button>
-                    <!-- <el-button size="mini" type="text" icon="el-icon-info" v-hasPermi="['sales:order:preview']" @click="handlePreview(scope.row)">明细</el-button> -->
+                    <el-button size="mini" type="text" icon="el-icon-edit" v-hasPermi="['sales:order:edit']" style="color:#e6a23c" @click="handleShipments(scope.row)">发货</el-button>
                     <!-- <el-button size="mini" type="text" icon="el-icon-info" style="color:#e6a23c" v-hasPermi="['sales:order:schedule']" @click="handleSchedule(scope.row)">查看进度</el-button> -->
                     <el-button size="mini" type="text" icon="el-icon-delete" style="color:#fd5656" v-hasPermi="['sales:order:delete']" @click="handleDelete(scope.row)">删除</el-button>
                 </template>

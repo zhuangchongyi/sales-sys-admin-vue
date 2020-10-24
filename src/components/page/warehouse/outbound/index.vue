@@ -44,13 +44,11 @@
             <el-table-column prop="auditStatus" label="审核状态" :formatter="auditStatusFormatter" align="center" width="150" />
             <el-table-column label="审核人" align="center" prop="auditBy" width="150" :show-overflow-tooltip="true" />
             <el-table-column label="审核时间" align="center" prop="auditTime" width="150" :show-overflow-tooltip="true" />
-            <!-- <el-table-column label="操作" align="center" width="180" class-name="small-padding fixed-width" fixed="right">
-                <template slot-scope="scope"> -->
-            <!-- <el-button size="mini" type="text" icon="el-icon-edit" v-hasPermi="['sales:shipments:edit']" @click="handleUpdate(scope.row)">修改</el-button> -->
-            <!-- <el-button size="mini" type="text" icon="el-icon-info" v-hasPermi="['sales:shipments:preview']" @click="handlePreview(scope.row)">明细</el-button> -->
-            <!-- <el-button size="mini" type="text" icon="el-icon-delete" style="color:#fd5656" v-hasPermi="['sales:shipments:delete']" @click="handleDelete(scope.row)">删除</el-button> -->
-            <!-- </template>
-            </el-table-column> -->
+            <el-table-column label="操作" align="center" width="180" class-name="small-padding fixed-width" fixed="right">
+                <template slot-scope="scope">
+                    <el-button size="mini" type="text" icon="el-icon-edit" v-hasPermi="['sales:shipments:edit']" @click="handleUpdate(scope.row)">出库</el-button>
+                </template>
+            </el-table-column>
         </el-table>
         <div class="pagination">
             <el-pagination

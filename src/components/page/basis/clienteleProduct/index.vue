@@ -69,7 +69,7 @@
                     <el-button type="primary" icon="el-icon-search" size="small" @click="handleQuery">搜索</el-button>
                 </el-form-item>
             </el-form>
-            <el-table v-loading="loading" :data="materielListData" @selection-change="handleSelectionChangeDialog">
+            <el-table v-loading="loading" :data="materielListData" ref="materielListData" @selection-change="handleSelectionChangeDialog" @row-click="selectionRowClick" highlight-current-row>
                 <el-table-column type="selection" width="50" fixed="left" align="center" />
                 <el-table-column label="产品编码" align="center" prop="materielNum" width="100" />
                 <el-table-column label="产品名称" align="center" prop="materielName" :show-overflow-tooltip="true" width="100" />
@@ -324,6 +324,9 @@ export default {
         },
         handleSelectionChangeDialog(selection) {
             this.materielSelection = selection;
+        },
+        selectionRowClick(row) {
+            this.$refs.materielListData.toggleRowSelection(row);
         },
         handlePageChangeDialog(val) {
             this.$set(this.query, 'current', val);

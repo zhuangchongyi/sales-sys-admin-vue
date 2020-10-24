@@ -18,8 +18,8 @@
                     </el-form-item>
                 </el-col>
                 <el-col :span="4">
-                    <el-form-item label="来源类型" prop="sourceType">
-                        <el-select v-model="warehouseForm.sourceType" placeholder="请选择来源类型" clearable style="width: 150px" size="small">
+                    <el-form-item label="出库类型" prop="outboundType">
+                        <el-select v-model="warehouseForm.outboundType" placeholder="请选择出库类型" clearable style="width: 150px" size="small">
                             <el-option v-for="dict in sourceOptions" :key="dict.dictValue" :label="dict.dictLabel" :value="dict.dictValue" />
                         </el-select>
                     </el-form-item>
@@ -30,12 +30,12 @@
                     </el-form-item>
                 </el-col>
                 <el-col :span="4">
-                    <el-form-item label="入库时间" prop="storageTime">
+                    <el-form-item label="出库时间" prop="storageTime">
                         <el-date-picker v-model="warehouseForm.storageTime" placeholder="请选择日期" size="small" value-format="yyyy-MM-dd" format="yyyy-MM-dd" style="width: 150px" />
                     </el-form-item>
                 </el-col>
                 <el-col :span="4">
-                    <el-form-item label="入库负责人" prop="personnelName">
+                    <el-form-item label="出库负责人" prop="personnelName">
                         <el-input v-model="warehouseForm.personnelName" size="small" suffix-icon="el-icon-search" @focus="personnelFocus" ref="personnelBlur" style="width: 150px" />
                     </el-form-item>
                 </el-col>
@@ -68,16 +68,12 @@
                     />
                 </template>
             </el-table-column>
-            <el-table-column prop="number" label="数量" width="120" align="center">
+            <el-table-column prop="number" label="出库数量" width="120" align="center">
                 <template slot-scope="scope">
                     <el-input size="mini" oninput="value=value.replace(/[^\d]/g,'')" maxLength="9" @input="calculateTotalPrice(scope.row)" v-model="scope.row.number" />
                 </template>
             </el-table-column>
-            <el-table-column prop="totalPrice" label="金额" width="120" align="center">
-                <template slot-scope="scope">
-                    <el-input size="mini" readonly v-model="scope.row.totalPrice" />
-                </template>
-            </el-table-column>
+            <el-table-column prop="totalPrice" label="金额" width="120" align="center"> </el-table-column>
             <el-table-column label="操作" align="center" class-name="small-padding fixed-width" fixed="right">
                 <template slot-scope="scope">
                     <el-button size="mini" type="text" icon="el-icon-delete" style="color:#f56c6c;" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
@@ -239,9 +235,9 @@ export default {
                 warehouseNum: undefined
             },
             sourceOptions: [
-                { dictValue: '0', dictLabel: '进口' },
-                { dictValue: '1', dictLabel: '生产' },
-                { dictValue: '2', dictLabel: '采购' },
+                { dictValue: '0', dictLabel: '报废' },
+                { dictValue: '1', dictLabel: '退回' },
+                { dictValue: '2', dictLabel: '赠送' },
                 { dictValue: '3', dictLabel: '其他' }
             ],
             // 产品
@@ -394,6 +390,7 @@ export default {
                         this.msgError('未添加产品');
                         return;
                     }
+                    this.warehouseForm.inout = '1';
                     let data = {
                         storage: JSON.stringify(this.warehouseForm),
                         storageSub: JSON.stringify(this.materielListData),

@@ -81,7 +81,8 @@ export default {
                 current: 1,
                 size: 10,
                 warehouseName: undefined,
-                warehouseNum: undefined
+                warehouseNum: undefined,
+                inoutType: '0'
             },
             pageTotal: 0,
             listData: [],

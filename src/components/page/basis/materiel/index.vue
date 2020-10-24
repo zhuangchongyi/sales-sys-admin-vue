@@ -40,19 +40,19 @@
                 </el-form>
                 <div class="handle-box">
                     <el-button type="primary" size="small" icon="el-icon-plus" class="handle-del mr10" v-hasPermi="['basis:materiel:add']" @click="handleAdd">新增</el-button>
-                    <!-- <el-button type="primary"  size="small" icon="el-icon-plus" class="handle-del mr10" v-hasPermi="['basis:materiel:add']" @click="handleQuotationAdd">报价产品录入</el-button> -->
+                    <el-button type="primary" size="small" icon="el-icon-plus" class="handle-del mr10" v-hasPermi="['basis:materiel:add']" @click="handleQuotationAdd">报价产品录入</el-button>
                 </div>
                 <el-table v-loading="loading" :data="materielListData">
                     <el-table-column type="index" width="50" fixed="left" align="center" />
                     <el-table-column label="产品编码" align="center" prop="materielNum" width="100" />
                     <el-table-column label="产品名称" align="center" prop="materielName" :show-overflow-tooltip="true" width="120" />
-                    <el-table-column label="产品类别" align="center" prop="category.categoryName" :show-overflow-tooltip="true" width="120" />
+                    <el-table-column label="产品类别" align="center" prop="categoryName" :show-overflow-tooltip="true" width="120" />
                     <el-table-column prop="specification" label="规格" align="center" :show-overflow-tooltip="true" width="200"></el-table-column>
                     <el-table-column prop="modelName" label="型号" align="center" :show-overflow-tooltip="true" width="200"></el-table-column>
                     <el-table-column prop="needTorque" label="所需扭矩" align="center" :show-overflow-tooltip="true" width="100"></el-table-column>
                     <el-table-column prop="outTorque" label="输出扭矩" align="center" :show-overflow-tooltip="true" width="100"></el-table-column>
-                    <el-table-column prop="units.unitsNum" label="单位编码" align="center" :show-overflow-tooltip="true" width="100"></el-table-column>
-                    <el-table-column prop="units.unitsName" label="单位名称" align="center" :show-overflow-tooltip="true" width="100"></el-table-column>
+                    <!-- <el-table-column prop="unitsNum" label="单位编码" align="center" :show-overflow-tooltip="true" width="100"></el-table-column> -->
+                    <el-table-column prop="unitsName" label="单位名称" align="center" :show-overflow-tooltip="true" width="100"></el-table-column>
                     <el-table-column prop="price" label="单价" align="center" :show-overflow-tooltip="true" width="100"></el-table-column>
                     <el-table-column prop="maxPrice" label="最高价" :show-overflow-tooltip="true" align="center" width="100"></el-table-column>
                     <el-table-column prop="minPrice" label="最低价" align="center" :show-overflow-tooltip="true" width="100"></el-table-column>
@@ -144,7 +144,7 @@
                 <el-row>
                     <el-col :span="12">
                         <el-form-item label="单位" prop="unitsName">
-                            <el-input v-model="form.units.unitsName" @focus="unitsFocus" ref="unitsBlur" />
+                            <el-input v-model="form.unitsName" @focus="unitsFocus" ref="unitsBlur" placeholder="请选择单位" />
                         </el-form-item>
                     </el-col>
                     <el-col :span="12">
@@ -310,34 +310,33 @@
         </el-dialog>
 
         <!-- 报价产品录入 -->
-        <el-dialog :title="title" :visible.sync="quotaionOpen" width="900px" append-to-body>
+        <el-dialog :title="title" :visible.sync="quotaionOpen" width="1000px" append-to-body v-dialogDrag>
             <el-form :model="quotationForm" ref="quotationForm" :inline="true">
                 <el-form-item prop="quotationNum">
-                    <el-input v-model="quotationForm.quotationNum" placeholder="报价单号 " clearable size="small" style="width: 120px" @keyup.enter.native="handleQueryQuotation" />
+                    <el-input v-model="quotationForm.quotationNum" placeholder="报价单号 " clearable size="small" @keyup.enter.native="handleQueryQuotation" />
                 </el-form-item>
                 <el-form-item prop="materielName">
-                    <el-input v-model="quotationForm.materielName" placeholder="产品关键字 " clearable size="small" style="width: 120px" @keyup.enter.native="handleQueryQuotation" />
+                    <el-input v-model="quotationForm.materielName" placeholder="产品关键字 " clearable size="small" @keyup.enter.native="handleQueryQuotation" />
                 </el-form-item>
                 <el-form-item>
-                    <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQueryQuotation">搜索</el-button>
+                    <el-button type="primary" icon="el-icon-search" size="small" @click="handleQueryQuotation">搜索</el-button>
                 </el-form-item>
             </el-form>
             <el-table v-loading="loadingQuotation" :data="quotaionMaterielList">
-                <el-table-column type="selection" width="55" align="center"></el-table-column>
-                <el-table-column prop="quotationNum" label="报价单号" width="160" align="center" :show-overflow-tooltip="true"></el-table-column>
+                <el-table-column prop="quotationNum" label="报价单号" width="180" align="center" :show-overflow-tooltip="true"></el-table-column>
                 <el-table-column prop="quotationTime" label="报价日期" width="100" align="center" :show-overflow-tooltip="true"></el-table-column>
-                <el-table-column prop="materielNum" label="产品编码" width="100" align="center" :show-overflow-tooltip="true"></el-table-column>
-                <el-table-column prop="materielName" label="产品名称" width="160" align="center" :show-overflow-tooltip="true"></el-table-column>
-                <el-table-column prop="specification" label="规格" width="160" align="center" :show-overflow-tooltip="true"></el-table-column>
-                <el-table-column prop="modelName" label="型号" width="160" align="center" :show-overflow-tooltip="true"></el-table-column>
-                <el-table-column prop="needTorque" label="所需扭矩" width="160" align="center" :show-overflow-tooltip="true"></el-table-column>
-                <el-table-column prop="outTorque" label="输出扭矩" width="160" align="center" :show-overflow-tooltip="true"></el-table-column>
-                <el-table-column prop="unitsName" label="单位" width="100" align="center" :show-overflow-tooltip="true"></el-table-column>
-                <el-table-column prop="price" label="单价" width="100" align="center" :show-overflow-tooltip="true"></el-table-column>
+                <el-table-column prop="materielNum" label="产品编码" align="center" :show-overflow-tooltip="true"></el-table-column>
+                <el-table-column prop="materielName" label="产品名称" align="center" :show-overflow-tooltip="true"></el-table-column>
+                <el-table-column prop="specification" label="规格" align="center" :show-overflow-tooltip="true"></el-table-column>
+                <el-table-column prop="modelName" label="型号" align="center" :show-overflow-tooltip="true"></el-table-column>
+                <el-table-column prop="needTorque" label="所需扭矩" align="center" :show-overflow-tooltip="true"></el-table-column>
+                <el-table-column prop="outTorque" label="输出扭矩" align="center" :show-overflow-tooltip="true"></el-table-column>
+                <el-table-column prop="unitsName" label="单位" align="center" :show-overflow-tooltip="true"></el-table-column>
+                <el-table-column prop="price" label="单价" align="center" :show-overflow-tooltip="true"></el-table-column>
                 <el-table-column label="操作" align="center" class-name="small-padding fixed-width" width="150" fixed="right">
                     <template slot-scope="scope">
-                        <el-button size="mini" type="text" icon="el-icon-plus" v-hasPermi="['basis:materiel:edit']" @click="handleAddQuotation(scope.row)">新增</el-button>
-                        <el-button size="mini" type="text" icon="el-icon-edit" v-hasPermi="['basis:materiel:edit']" @click="handleAddQuotation(scope.row)">添加型号</el-button>
+                        <el-button size="mini" type="text" icon="el-icon-plus" v-hasPermi="['basis:materiel:edit']" @click="handleAddQuotationMateriel(scope.row)">产品</el-button>
+                        <!-- <el-button size="mini" type="text" icon="el-icon-plus" v-hasPermi="['basis:materiel:edit']" @click="handleAddQuotationModelName(scope.row)">型号</el-button> -->
                     </template>
                 </el-table-column>
             </el-table>
@@ -353,10 +352,131 @@
                     @current-change="handlePageChangeQuotation"
                 ></el-pagination>
             </div>
-            <div slot="footer" class="dialog-footer">
-                <el-button type="primary" @click="submitFormQuotation">确 定</el-button>
-                <el-button @click="cancel">取 消</el-button>
-            </div>
+
+            <el-dialog title="添加新产品" :visible.sync="materielOpen" width="600px" append-to-body>
+                <el-form ref="materielForm" :model="materielForm" :rules="rules" label-width="100px">
+                    <el-row>
+                        <el-col :span="24">
+                            <el-form-item label="产品类别" prop="categoryId">
+                                <treeselect v-model="materielForm.categoryId" :options="categoryOptions" :disable-branch-nodes="true" :show-count="true" placeholder="请选择产品类别" />
+                            </el-form-item>
+                        </el-col>
+                        <el-col :span="12">
+                            <el-form-item label="产品编码" prop="materielNum">
+                                <el-input v-model="materielForm.materielNum" placeholder="请输入产品编码" maxlength="10" show-word-limit />
+                            </el-form-item>
+                        </el-col>
+                        <el-col :span="12">
+                            <el-form-item label="产品名称" prop="materielName">
+                                <el-input v-model="materielForm.materielName" placeholder="请输入产品名称" maxlength="100" />
+                            </el-form-item>
+                        </el-col>
+                    </el-row>
+                    <el-row>
+                        <el-col :span="24">
+                            <el-form-item label="规格" prop="specification">
+                                <el-input v-model="materielForm.specification" placeholder="请输入规格" />
+                            </el-form-item>
+                        </el-col>
+                    </el-row>
+                    <el-row>
+                        <el-col :span="24">
+                            <!-- <el-form-item label="型号" prop="modelName">
+                                <el-input v-model="materielForm.modelName" placeholder="请输入型号" />
+                            </el-form-item> -->
+                            <el-form-item label="型号" prop="modelNames">
+                                <el-tag :key="index" v-for="(tag, index) in modelNames" closable :disable-transitions="false" @close="handleClose(tag)">
+                                    {{ tag }}
+                                </el-tag>
+                                <el-input
+                                    class="input-new-tag"
+                                    v-if="inputVisible"
+                                    v-model="inputValue"
+                                    ref="saveTagInput"
+                                    size="small"
+                                    @keyup.enter.native="handleInputConfirm"
+                                    @blur="handleInputConfirm"
+                                >
+                                </el-input>
+                                <el-button v-else class="button-new-tag" size="small" @click="showInput">+ 添加</el-button>
+                            </el-form-item>
+                        </el-col>
+                    </el-row>
+                    <el-row>
+                        <el-col :span="12">
+                            <el-form-item label="所需扭矩" prop="needTorque">
+                                <el-input v-model="materielForm.needTorque" placeholder="请输入所需扭矩" />
+                            </el-form-item>
+                        </el-col>
+                        <el-col :span="12">
+                            <el-form-item label="输出扭矩" prop="outTorque">
+                                <el-input v-model="materielForm.outTorque" placeholder="请输入输出扭矩" />
+                            </el-form-item>
+                        </el-col>
+                    </el-row>
+                    <el-row>
+                        <el-col :span="12">
+                            <el-form-item label="单位" prop="unitsName">
+                                <el-input v-model="materielForm.unitsName" @focus="unitsFocus" ref="unitsBlur" placeholder="请选择单位" />
+                            </el-form-item>
+                        </el-col>
+                        <el-col :span="12">
+                            <el-form-item label="单价" prop="price">
+                                <el-input
+                                    v-model="materielForm.price"
+                                    oninput="if(isNaN(value)) { value = null } if(value.indexOf('.')>0){value=value.slice(0,value.indexOf('.')+3)}"
+                                    maxlength="10"
+                                    placeholder="请输入单价"
+                                />
+                            </el-form-item>
+                        </el-col>
+                    </el-row>
+                    <el-row>
+                        <el-col :span="12">
+                            <el-form-item label="最高价" prop="maxPrice">
+                                <el-input
+                                    v-model="materielForm.maxPrice"
+                                    oninput="if(isNaN(value)) { value = null } if(value.indexOf('.')>0){value=value.slice(0,value.indexOf('.')+3)}"
+                                    maxlength="10"
+                                    placeholder="请输入最高价"
+                                />
+                            </el-form-item>
+                        </el-col>
+                        <el-col :span="12">
+                            <el-form-item label="最低价" prop="minPrice">
+                                <el-input
+                                    v-model="materielForm.minPrice"
+                                    oninput="if(isNaN(value)) { value = null } if(value.indexOf('.')>0){value=value.slice(0,value.indexOf('.')+3)}"
+                                    maxlength="10"
+                                    placeholder="请输入最低价"
+                                />
+                            </el-form-item>
+                        </el-col>
+                    </el-row>
+                    <el-row>
+                        <el-col :span="24">
+                            <el-form-item label="备注">
+                                <el-input v-model="materielForm.remark" type="textarea" placeholder="请输入内容"></el-input>
+                            </el-form-item>
+                        </el-col>
+                    </el-row>
+                </el-form>
+                <div slot="footer" class="dialog-footer">
+                    <el-button type="primary" @click="submitFormQuotation">确 定</el-button>
+                    <el-button @click="cancelDialog">取 消</el-button>
+                </div>
+            </el-dialog>
+            <el-dialog title="新增为型号" :visible.sync="modelNameOpen" width="600px" append-to-body>
+                <el-table v-loading="imageLoading" :data="selectionMaterielData">
+                    <el-table-column label="名称" align="center" :show-overflow-tooltip="true" prop="name" />
+                    <el-table-column label="上传时间" align="center" :show-overflow-tooltip="true" prop="createTime" />
+                    <el-table-column label="标注" align="center" :show-overflow-tooltip="true" prop="remark" />
+                </el-table>
+                <div slot="footer" class="dialog-footer">
+                    <el-button type="primary" @click="submitFormQuotation">确 定</el-button>
+                    <el-button @click="cancelDialog">取 消</el-button>
+                </div>
+            </el-dialog>
         </el-dialog>
     </div>
 </template>
@@ -376,6 +496,9 @@ export default {
         var validateModel = (rule, value, callback) => {
             if (this.$data.modelNames.length == 0) {
                 callback(new Error('型号不能为空'));
+            }
+            if (this.$data.modelNames.indexOf(value) == 0) {
+                callback(new Error(value + '型号不能重复'));
             } else {
                 callback();
             }
@@ -399,12 +522,10 @@ export default {
             modelNames: [],
             inputVisible: false,
             inputValue: '',
-            // 部门名称
+            // 产品类别名称
             categoryName: undefined,
             //表单参数
-            form: {
-                units: {}
-            },
+            form: {},
             categoryId: undefined,
             defaultProps: {
                 children: 'children',
@@ -433,6 +554,7 @@ export default {
                 materielName: [{ required: true, message: '产品名称不能为空', trigger: 'blur' }],
                 specification: [{ required: true, message: '产品规格不能为空', trigger: 'blur' }],
                 modelNames: [{ required: true, validator: validateModel, trigger: 'blur' }],
+                unitsName: [{ required: true, message: '产品单位不能为空', trigger: 'blur' }],
                 price: [{ required: true, message: '产品单价不能为空', trigger: 'blur' }]
             },
             unitsOpen: false,
@@ -480,7 +602,11 @@ export default {
                 quotationNum: undefined,
                 materielName: undefined
             },
-            pageTotal: 0
+            pageTotal: 0,
+            materielOpen: false,
+            modelNameOpen: false,
+            selectionMaterielData: [],
+            materielForm: {}
         };
     },
     created() {
@@ -546,8 +672,7 @@ export default {
                 materielName: undefined,
                 materielNum: undefined,
                 price: undefined,
-                status: '0',
-                units: {}
+                status: '0'
             };
             this.modelNames = [];
             this.resetForm('form');
@@ -600,7 +725,6 @@ export default {
             this.$refs['form'].validate(valid => {
                 if (valid) {
                     this.form.modelNames = this.modelNames;
-                    console.log('提交表单', this.form);
                     if (this.form.materielId != undefined) {
                         updateMateriel(this.form).then(res => this.callbackFun(res));
                     } else {
@@ -633,7 +757,11 @@ export default {
         handleInputConfirm() {
             let inputValue = this.inputValue;
             if (inputValue) {
-                this.modelNames.push(inputValue);
+                if (this.modelNames.indexOf(inputValue) != 0) {
+                    this.modelNames.push(inputValue);
+                } else {
+                    this.msgError('型号不能重复');
+                }
             }
             this.inputVisible = false;
             this.inputValue = '';
@@ -678,12 +806,21 @@ export default {
         },
         submitFormDialog() {
             this.form.unitsId = this.selectedUnits.unitsId;
-            this.form.units.unitsNum = this.selectedUnits.unitsNum;
-            this.form.units.unitsName = this.selectedUnits.unitsName;
+            this.form.unitsNum = this.selectedUnits.unitsNum;
+            this.form.unitsName = this.selectedUnits.unitsName;
+            this.$refs.form.clearValidate('unitsName');
+            if (this.materielOpen) {
+                this.materielForm.unitsId = this.selectedUnits.unitsId;
+                this.materielForm.unitsNum = this.selectedUnits.unitsNum;
+                this.materielForm.unitsName = this.selectedUnits.unitsName;
+                this.$refs.materielForm.clearValidate('unitsName');
+            }
             this.unitsOpen = false;
         },
         cancelDialog() {
             this.unitsOpen = false;
+            this.materielOpen = false;
+            this.modelNameOpen = false;
         },
         unitsTypeFormatter(row, column) {
             return this.selectDictLabel(this.unitsTypeOptions, row.unitsType);
@@ -787,14 +924,9 @@ export default {
         handleQuotationAdd() {
             this.title = '添加报价产品';
             this.quotaionOpen = true;
+
             //查询报价产品
             this.handleQueryQuotation();
-        },
-        submitFormQuotation() {
-            this.msgSuccess('OK');
-        },
-        handleAddQuotation(row) {
-            console.log(row);
         },
         handlePageChangeQuotation(val) {
             this.$set(this.quotationForm, 'current', val);
@@ -809,10 +941,40 @@ export default {
             this.getQuotationMateriel();
         },
         getQuotationMateriel() {
-            listQuotationMateriel(this.quotationForm).then(res => {
-                console.log(res);
-                this.quotaionMaterielList = res.data.records;
-                this.pageTotal = res.data.total;
+            this.loadingQuotation = true;
+            this.quotaionMaterielList = [];
+            this.pageTotal = 0;
+            listQuotationMateriel(this.quotationForm)
+                .then(res => {
+                    this.loadingQuotation = false;
+                    this.quotaionMaterielList = res.data.records;
+                    this.pageTotal = res.data.total;
+                })
+                .catch(e => {
+                    this.loadingQuotation = false;
+                });
+        },
+        handleAddQuotationMateriel(row) {
+            console.log(row);
+            this.materielOpen = true;
+            this.modelNames = [];
+            this.resetForm('materielForm');
+            this.modelNames.push(row.modelName);
+            this.materielForm = row;
+        },
+        handleAddQuotationModelName(row) {
+            console.log(row);
+            this.modelNameOpen = true;
+        },
+        submitFormQuotation() {
+            this.$refs.materielForm.validate(valid => {
+                if (valid) {
+                    this.materielForm.modelNames = this.modelNames;
+                    this.materielForm.materielId = undefined;
+                    addMateriel(this.materielForm).then(res => this.callbackFun(res));
+                    this.materielOpen = false;
+                    this.getList();
+                }
             });
         }
     }

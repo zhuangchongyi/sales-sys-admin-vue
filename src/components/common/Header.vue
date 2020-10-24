@@ -47,7 +47,7 @@
                             </el-form-item>
                         </el-form>
                         <div class="demo-drawer-footer" style="margin-left: 32px;">
-                            <el-button type="primary" @click="submitForm('form')" :loading="loading">{{ loading ? '提交中 ...' : '确 定' }}</el-button>
+                            <el-button type="primary" @click="submitForm" :loading="loading">{{ loading ? '提交中 ...' : '确 定' }}</el-button>
                         </div>
                     </div>
                 </el-drawer>
@@ -60,18 +60,11 @@ import bus from '../common/bus';
 import { Logout } from '@/api/auth.js';
 import { removeToken } from '@/utils/auth.js';
 import { changePassword } from '@/api/system/user.js';
+import cookie from 'vue-cookie';
+import { decrypt } from '@/utils/jsencrypt';
 
 export default {
     data() {
-        var validatePwd = (rule, value, callback) => {
-            if (value === '') {
-                callback(new Error('请输入确认密码'));
-            } else if (value !== this.form.newPassword) {
-                callback(new Error('两次输入密码不一致!'));
-            } else {
-                callback();
-            }
-        };
         return {
             collapse: false,
             fullscreen: false,
@@ -81,7 +74,7 @@ export default {
             rules: {
                 password: [{ required: true, message: '请输入原始密码', trigger: 'blur' }],
                 newPassword: [{ required: true, message: '请输入新密码', trigger: 'blur' }],
-                checkPassword: [{ validator: validatePwd, trigger: 'blur' }]
+                checkPassword: [{ validator: this.validatePwd, trigger: 'blur' }]
             },
             message: 0,
             timer: ''
@@ -99,38 +92,50 @@ export default {
         }
     },
     methods: {
+        validatePwd(rule, value, callback) {
+            if (value === '') {
+                callback(new Error('请输入确认密码'));
+            } else if (value !== this.form.newPassword) {
+                callback(new Error('两次输入密码不一致!'));
+            } else {
+                callback();
+            }
+        },
         // 获取消息通知数
         getMessageCount() {
             this.message++;
             console.log('getMessageCount');
         },
         // 修改密码提交按钮
-        submitForm(formName) {
-            this.$refs[formName].validate(valid => {
+        submitForm() {
+            this.$refs.form.validate(valid => {
                 if (valid) {
+                    if (this.form.password !== decrypt(cookie.get('password'))) {
+                        this.msgError('输入原始密码不正确');
+                        return;
+                    }
                     this.loading = true;
                     changePassword(this.form)
                         .then(res => {
                             this.loading = false;
                             if (res.success) {
-                                this.msgSuccess('修改成功');
-                                setTimeout(() => {
-                                    this.drawer = false;
-                                    this.$alert('请重新登录', '提示', {
-                                        confirmButtonText: '确定',
-                                        type: 'warning'
-                                    }).then(() => {
-                                        this.$store.dispatch('Logout').then(() => {
-                                            location.href = '/';
-                                        });
+                                this.drawer = false;
+                                this.$alert('修改成功，请重新登录', '提示', {
+                                    confirmButtonText: '确定',
+                                    type: 'warning'
+                                }).then(() => {
+                                    this.$store.dispatch('Logout').then(() => {
+                                        location.href = '/';
                                     });
-                                }, 1000);
+                                });
                             } else {
                                 this.msgError(res.message);
                             }
                         })
                         .catch(e => {
+                            this.drawer = false;
                             console.log(e);
+                            this.msgError(e);
                         });
                 }
             });
@@ -143,9 +148,14 @@ export default {
                     cancelButtonText: '取消',
                     type: 'warning'
                 }).then(() => {
-                    this.$store.dispatch('Logout').then(() => {
-                        location.href = '/';
-                    });
+                    this.$store
+                        .dispatch('Logout')
+                        .then(() => {
+                            location.href = '/';
+                        })
+                        .catch(e => {
+                            console.log(e);
+                        });
                 });
             } else if (command == 'changePwd') {
                 this.drawer = true;

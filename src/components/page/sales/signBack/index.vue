@@ -118,7 +118,7 @@ export default {
         },
         /** 搜索按钮操作 */
         handleQuery() {
-            this.queryParams.page = 1;
+            this.queryParams.current = 1;
             this.getList();
         },
         /** 刷新按钮操作 */
@@ -134,7 +134,11 @@ export default {
             this.$router.push({ path: '/page/sales/signBack/preview', query: { signId: row.signbackId } });
         },
         handleAudit() {
-            this.$router.push({ path: '/page/sales/signBack/preview', query: { signId: this.selection.signbackId, isAudit: true } });
+            if (this.selection.signbackStatus == '1') {
+                this.$router.push({ path: '/page/sales/signBack/preview', query: { signId: this.selection.signbackId, isAudit: true } });
+            } else {
+                this.msgError('请签收');
+            }
         },
         handlePrint() {
             this.msgSuccess('打印成功');

@@ -58,15 +58,7 @@
                 </el-col>
                 <el-col :span="4">
                     <el-form-item label="签收人" prop="personnelName">
-                        <el-input
-                            v-model="clienteleForm.personnelName"
-                            size="small"
-                            placeholder="请选择"
-                            suffix-icon="el-icon-search"
-                            @focus="personnelFocus"
-                            ref="personnelBlur"
-                            style="width: 155px;"
-                        />
+                        <el-input v-model="clienteleForm.personnelName" size="small" placeholder="请选择" suffix-icon="el-icon-search" ref="personnelBlur" style="width: 155px;" disabled />
                     </el-form-item>
                 </el-col>
                 <el-col :span="4">
@@ -269,20 +261,24 @@ export default {
                 status: '3'
             };
             this.btnLoading = true;
-            auditSignback(data)
-                .then(res => {
-                    this.btnLoading = false;
-                    if (res.success) {
-                        this.msgSuccess('审核成功');
-                        this.getList();
-                    } else {
-                        this.msgError(res.message);
-                    }
-                })
-                .catch(e => {
-                    console.log(e);
-                    this.btnLoading = false;
-                });
+            this.$refs['clienteleForm'].validate(valid => {
+                if (valid) {
+                    auditSignback(data)
+                        .then(res => {
+                            this.btnLoading = false;
+                            if (res.success) {
+                                this.msgSuccess('审核成功');
+                                this.getList();
+                            } else {
+                                this.msgError(res.message);
+                            }
+                        })
+                        .catch(e => {
+                            console.log(e);
+                            this.btnLoading = false;
+                        });
+                }
+            });
         },
         cancelAuditForm() {
             if (this.clienteleForm.status === '4') {

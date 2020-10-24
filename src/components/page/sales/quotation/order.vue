@@ -14,7 +14,7 @@
                 </el-col>
                 <el-col :span="4">
                     <el-form-item label="客户编码" prop="clienteleNum">
-                        <el-input v-model="clienteleForm.clienteleNum" maxlength="10" show-word-limit size="small" style="width: 155px;" />
+                        <el-input v-model="clienteleForm.clienteleNum" maxlength="10" show-word-limit size="small" style="width: 155px;" clearable />
                     </el-form-item>
                 </el-col>
                 <el-col :span="4">

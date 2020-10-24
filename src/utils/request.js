@@ -41,7 +41,6 @@
          let code = res.code || 200;
          let msg = res.message || 'error';
          if (code === 403) {
-             removeToken();
              MessageBox.confirm(
                  '登录状态已过期，您可以继续留在该页面，或者重新登录',
                  '系统提示', {
@@ -76,8 +75,10 @@
          let msg = error.message;
          if (error.message.includes('timeout')) { // 判断请求异常信息中是否含有超时timeout字符串
              msg = "(T＿T)请求超时，请稍后处理";
-         } else if (error.message.includes('status code 500') || error.message.includes('status code 404')) {
-             msg = "(T＿T)服务器请求失败";
+         } else if (error.message.includes('status code 500')) {
+             msg = "(T＿T)服务器请求失败 500";
+         } else if (error.message.includes('status code 404')) {
+             msg = "(T＿T)服务器请求无效 404";
          }
          Message({
              message: msg,

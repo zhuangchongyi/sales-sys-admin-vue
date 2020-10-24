@@ -2,7 +2,7 @@
     <div class="container">
         <div v-show="isAudit">
             <el-button type="primary" icon="el-icon-check" :loading="btnLoading" @click="submitAuditForm">审 核</el-button>
-            <el-button type="warning" icon="el-icon-check" :loading="btnLoading" @click="submitApprovalForm">特 批</el-button>
+            <!-- <el-button type="warning" icon="el-icon-check" :loading="btnLoading" @click="submitApprovalForm">特 批</el-button> -->
             <el-button type="primary" icon="el-icon-close" :loading="btnLoading" @click="cancelAuditForm">反审核</el-button>
         </div>
         <el-divider><strong>客户信息</strong></el-divider>

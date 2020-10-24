@@ -21,3 +21,10 @@ export function GetInfo() {
         method: 'get',
     });
 };
+
+export function getCodeImg() {
+    return request({
+        url: '/auth/getCode',
+        method: 'get',
+    });
+};

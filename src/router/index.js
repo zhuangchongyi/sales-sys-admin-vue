@@ -25,13 +25,6 @@
                  meta: {
                      title: '消息中心'
                  }
-             }, {
-                 name: '/page/icon',
-                 path: '/page/icon',
-                 component: () => import('@/components/page/Icon.vue'),
-                 meta: {
-                     title: '图标'
-                 }
              },
              {
                  path: '/page/404',
@@ -45,13 +38,6 @@
                  component: () => import( /* webpackChunkName: "403" */ '@/components/page/403.vue'),
                  meta: {
                      title: '403'
-                 }
-             },
-             {
-                 path: '/page/500',
-                 component: () => import( /* webpackChunkName: "500" */ '@/components/page/500.vue'),
-                 meta: {
-                     title: '500'
                  }
              },
          ]
@@ -252,9 +238,32 @@
                  }
              },
              {
-                 name: '/page/warehouse/storage/preview',
-                 path: '/page/warehouse/storage/preview',
-                 component: () => import('@/components/page/warehouse/storage/preview.vue'),
+                 name: '/page/warehouse/otherOutbound/preview',
+                 path: '/page/warehouse/otherOutbound/preview',
+                 component: () => import('@/components/page/warehouse/otherOutbound/preview.vue'),
+                 meta: {
+                     title: '查看其他出库单'
+                 }
+             },
+             {
+                 path: '/page/warehouse/otherOutbound/add',
+                 component: () => import('@/components/page/warehouse/otherOutbound/add.vue'),
+                 meta: {
+                     title: '新增其他出库单'
+                 }
+             },
+             {
+                 name: '/page/warehouse/otherOutbound/edit',
+                 path: '/page/warehouse/otherOutbound/edit',
+                 component: () => import('@/components/page/warehouse/otherOutbound/edit.vue'),
+                 meta: {
+                     title: '修改其他出库单'
+                 }
+             },
+             {
+                 name: '/page/warehouse/otherOutbound/preview',
+                 path: '/page/warehouse/otherOutbound/preview',
+                 component: () => import('@/components/page/warehouse/otherOutbound/preview.vue'),
                  meta: {
                      title: '查看产品入库单'
                  }
@@ -352,108 +361,92 @@
                      title: '查看报废单'
                  }
              },
-             //     {
-             //       path: '/page/warehouse/standingStock/yprice',
-             //       component: () => import('@/components/page/warehouse/standingStock/index.vue'),
-             //       meta: {
-             //         title: '现存量(有价)'
-             //       }
-             //     },
-             //     {
-             //       path: '/page/warehouse/standingStock/nprice',
-             //       component: () => import('@/components/page/warehouse/standingStock/index2.vue'),
-             //       meta: {
-             //         title: '现存量(无价)'
-             //       }
-             //     },
-             //     {
-             //       path: '/page/warehouse/tradingRecord',
-             //       component: () => import('@/components/page/warehouse/tradingRecord/index.vue'),
-             //       meta: {
-             //         title: '交易记录'
-             //       }
-             //     },
-             //     {
-             //       path: '/page/finance/accountInit',
-             //       component: () => import('@/components/page/finance/accountInit/index.vue'),
-             //       meta: {
-             //         title: '财务初始化'
-             //       }
-             //     },
-             //     {
-             //       path: '/page/finance/accountReceivable',
-             //       component: () => import('@/components/page/finance/accountReceivable/index.vue'),
-             //       meta: {
-             //         title: '应收款'
-             //       }
-             //     },
-             //     {
-             //       path: '/page/finance/accountReceivable/add',
-             //       component: () => import('@/components/page/finance/accountReceivable/add.vue'),
-             //       meta: {
-             //         title: '新增应收款单'
-             //       }
-             //     },
-             //     {
-             //       name: '/page/finance/accountReceivable/edit',
-             //       path: '/page/finance/accountReceivable/edit',
-             //       component: () => import('@/components/page/finance/accountReceivable/edit.vue'),
-             //       meta: {
-             //         title: '修改应收款单'
-             //       }
-             //     },
-             //     {
-             //       name: '/page/finance/accountReceivable/preview',
-             //       path: '/page/finance/accountReceivable/preview',
-             //       component: () => import('@/components/page/finance/accountReceivable/preview.vue'),
-             //       meta: {
-             //         title: '查看应收款单'
-             //       }
-             //     },
-             //     {
-             //       path: '/page/finance/accountPayable',
-             //       component: () => import('@/components/page/finance/accountPayable/index.vue'),
-             //       meta: {
-             //         title: '应付款'
-             //       }
-             //     },
-             //     {
-             //       path: '/page/finance/collection',
-             //       component: () => import('@/components/page/finance/collection/index.vue'),
-             //       meta: {
-             //         title: '收款'
-             //       }
-             //     },
-             //     {
-             //       path: '/page/finance/collection/add',
-             //       component: () => import('@/components/page/finance/collection/add.vue'),
-             //       meta: {
-             //         title: '新增收款单'
-             //       }
-             //     },
-             //     {
-             //       name: '/page/finance/collection/edit',
-             //       path: '/page/finance/collection/edit',
-             //       component: () => import('@/components/page/finance/collection/edit.vue'),
-             //       meta: {
-             //         title: '修改收款单'
-             //       }
-             //     },
-             //     {
-             //       name: '/page/finance/collection/preview',
-             //       path: '/page/finance/collection/preview',
-             //       component: () => import('@/components/page/finance/collection/preview.vue'),
-             //       meta: {
-             //         title: '查看收款单'
-             //       }
-             //     },
-             //     {
-             //       path: '/page/finance/statements',
-             //       component: () => import('@/components/page/finance/statements/index.vue'),
-             //       meta: {
-             //         title: '对账单'
-             //       }
-             //     },
+             {
+                 path: '/page/finance/init/add',
+                 name: '/page/finance/init/add',
+                 component: () => import('@/components/page/finance/init/add.vue'),
+                 meta: {
+                     title: '新增财务初始化'
+                 }
+             },
+             {
+                 path: '/page/finance/init/edit',
+                 name: '/page/finance/init/edit',
+                 component: () => import('@/components/page/finance/init/edit.vue'),
+                 meta: {
+                     title: '修改财务初始化'
+                 }
+             },
+             {
+                 path: '/page/finance/init/preview',
+                 name: '/page/finance/init/preview',
+                 component: () => import('@/components/page/finance/init/preview.vue'),
+                 meta: {
+                     title: '查看财务初始化'
+                 }
+             },
+             {
+                 name: '/page/finance/receivable/edit',
+                 path: '/page/finance/receivable/edit',
+                 component: () => import('@/components/page/finance/receivable/edit.vue'),
+                 meta: {
+                     title: '修改应收款单'
+                 }
+             },
+             {
+                 name: '/page/finance/receivable/add',
+                 path: '/page/finance/receivable/add',
+                 component: () => import('@/components/page/finance/receivable/add.vue'),
+                 meta: {
+                     title: '新增应收款单'
+                 }
+             },
+             {
+                 name: '/page/finance/receivable/preview',
+                 path: '/page/finance/receivable/preview',
+                 component: () => import('@/components/page/finance/receivable/preview.vue'),
+                 meta: {
+                     title: '查看应收款单'
+                 }
+             },
+             {
+                 name: '/page/finance/receivable/receipt',
+                 path: '/page/finance/receivable/receipt',
+                 component: () => import('@/components/page/finance/receivable/receipt.vue'),
+                 meta: {
+                     title: '收款'
+                 }
+             },
+             {
+                 path: '/page/finance/receipt/add',
+                 component: () => import('@/components/page/finance/receipt/add.vue'),
+                 meta: {
+                     title: '新增收款单'
+                 }
+             },
+             {
+                 name: '/page/finance/receipt/edit',
+                 path: '/page/finance/receipt/edit',
+                 component: () => import('@/components/page/finance/receipt/edit.vue'),
+                 meta: {
+                     title: '修改收款单'
+                 }
+             },
+             {
+                 name: '/page/finance/receipt/preview',
+                 path: '/page/finance/receipt/preview',
+                 component: () => import('@/components/page/finance/receipt/preview.vue'),
+                 meta: {
+                     title: '查看收款单'
+                 }
+             }, {
+                 name: '/page/finance/receipt/verifica',
+                 path: '/page/finance/receipt/verifica',
+                 component: () => import('@/components/page/finance/receipt/verifica.vue'),
+                 meta: {
+                     title: '核销收款单'
+                 }
+             },
          ]
      }
  ];
