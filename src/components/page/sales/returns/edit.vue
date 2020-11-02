@@ -2,12 +2,9 @@
     <div class="container">
         <div>
             <el-button type="primary" icon="el-icon-check" @click="submitAddForm" :loading="btnLoading">保 存</el-button>
-            <!-- <el-button icon="el-icon-close" @click="clearAddForm">清 空</el-button> -->
+            <el-button icon="el-icon-close" @click="clearAddForm" :loading="btnLoading">清 空</el-button>
         </div>
         <el-divider><strong>客户信息</strong></el-divider>
-        <!-- <div class="handle-box">
-            <el-button type="primary" size="small" icon="el-icon-paperclip" class="handle-del mr10" @click="handleAddClientele">客户发货单</el-button>
-        </div> -->
         <el-form :model="clienteleForm" ref="clienteleForm" :rules="rules" label-position="right" label-width="auto" :inline="true">
             <el-row>
                 <el-col :span="4">
@@ -16,8 +13,8 @@
                     </el-form-item>
                 </el-col>
                 <el-col :span="4">
-                    <el-form-item label="发货单号" prop="shipmentsNum">
-                        <el-input v-model="clienteleForm.shipmentsNum" size="small" style="width: 155px;" readonly />
+                    <el-form-item label="订单号" prop="orderNum">
+                        <el-input v-model="clienteleForm.orderNum" size="small" style="width: 155px;" readonly />
                     </el-form-item>
                 </el-col>
                 <el-col :span="4">
@@ -57,11 +54,6 @@
                 </el-col>
             </el-row>
             <el-row>
-                <!-- <el-col :span="4">
-                    <el-form-item label="退入仓库" prop="warehouseName">
-                        <el-input v-model="clienteleForm.warehouseName" size="small" placeholder="选择仓库" suffix-icon="el-icon-search" @focus="warehouseFocus" style="width: 150px" />
-                    </el-form-item>
-                </el-col> -->
                 <el-col :span="4">
                     <el-form-item label="退货金额" prop="totalPrice">
                         <el-input v-model="clienteleForm.totalPrice" size="small" readonly style="width: 150px" />
@@ -77,7 +69,7 @@
                         <el-input
                             v-model="clienteleForm.personnelName"
                             size="small"
-                            placeholder="选择仓库"
+                            placeholder="选择人员"
                             suffix-icon="el-icon-search"
                             @focus="personnelFocus"
                             ref="personnelBlur"
@@ -96,21 +88,24 @@
         </el-form>
         <el-divider><strong>产品信息</strong></el-divider>
         <el-table v-loading="loading" :data="materielListData">
-            <el-table-column prop="materielNum" label="产品编码" align="center" :show-overflow-tooltip="true" />
-            <el-table-column prop="materielName" label="产品名称" align="center" :show-overflow-tooltip="true" />
-            <el-table-column prop="specification" label="规格" align="center" :show-overflow-tooltip="true"></el-table-column>
-            <el-table-column prop="modelName" label="型号" align="center" width="100" :show-overflow-tooltip="true"></el-table-column>
-            <el-table-column prop="needTorque" label="所需扭矩" align="center" width="100" :show-overflow-tooltip="true"></el-table-column>
-            <el-table-column prop="outTorque" label="输出扭矩" align="center" width="100" :show-overflow-tooltip="true"></el-table-column>
-            <el-table-column prop="unitsName" label="单位" width="100" align="center"></el-table-column>
-            <el-table-column prop="price" label="单价" width="150" align="center"> </el-table-column>
-            <el-table-column prop="shipmentNum" label="发货数量" width="150" align="center"></el-table-column>
-            <el-table-column prop="returnsNum" width="150" label="本次退货数量" align="center">
+            <el-table-column prop="materielNum" label="产品编码" align="center" :show-overflow-tooltip="true" width="150" />
+            <el-table-column prop="materielName" label="产品名称" align="center" :show-overflow-tooltip="true" width="150" />
+            <el-table-column prop="specification" label="规格" align="center" :show-overflow-tooltip="true" width="150"></el-table-column>
+            <el-table-column prop="modelName" label="型号" align="center" :show-overflow-tooltip="true" width="150"></el-table-column>
+            <el-table-column prop="needTorque" label="所需扭矩" align="center" :show-overflow-tooltip="true" width="100"></el-table-column>
+            <el-table-column prop="outTorque" label="输出扭矩" align="center" :show-overflow-tooltip="true" width="100"></el-table-column>
+            <el-table-column prop="unitsName" label="单位" align="center" width="100"></el-table-column>
+            <el-table-column prop="price" label="单价" align="center" width="100"> </el-table-column>
+            <el-table-column prop="number" label="订购数量" align="center" width="100"></el-table-column>
+            <el-table-column prop="hasOutboundNum" label="已发货数量" align="center" width="100"></el-table-column>
+            <el-table-column prop="hasSignbackNum" label="已签收数量" align="center" width="100"></el-table-column>
+            <el-table-column prop="hasReturnNum" label="已退货数量" align="center" width="100"></el-table-column>
+            <el-table-column prop="returnsNum" label="本次退货数量" align="center" width="120">
                 <template slot-scope="scope">
-                    <el-input size="small" @input="calculateTotal(scope.row)" oninput="value=value.replace(/[^\d]/g,'')" maxLength="9" v-model="scope.row.returnsNum" />
+                    <el-input size="mini" @input="calculateTotal(scope.row)" oninput="value=value.replace(/[^\d]/g,'')" maxLength="9" v-model="scope.row.returnsNum" />
                 </template>
             </el-table-column>
-            <el-table-column prop="returnsPrice" label="金额" width="150" align="center"></el-table-column>
+            <el-table-column prop="totalPrice" label="本次退货金额" align="center" width="120"></el-table-column>
             <el-table-column label="操作" align="center" class-name="small-padding fixed-width" fixed="right">
                 <template slot-scope="scope">
                     <el-button size="small" type="text" icon="el-icon-delete" style="color:#f56c6c;" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
@@ -119,16 +114,16 @@
         </el-table>
 
         <!--  添加客户窗口 -->
-        <el-dialog :title="title" :visible.sync="open" width="800px" append-to-body>
-            <el-form :model="clienteleQueryParams" ref="clienteleQueryParams" :inline="true">
-                <el-form-item label="发货单号" prop="shipmentsNum">
-                    <el-input v-model="clienteleQueryParams.shipmentsNum" placeholder="发货单号" clearable size="small" style="width: 155px;" @keyup.enter.native="handleQueryClientele" />
+        <el-dialog title="客户订单" :visible.sync="open" width="800px" append-to-body>
+            <el-form :model="queryParams" ref="queryParams" :inline="true">
+                <el-form-item label="发货单号" prop="orderNum">
+                    <el-input v-model="queryParams.orderNum" placeholder="发货单号" clearable size="small" style="width: 155px;" @keyup.enter.native="handleQueryOrder" />
                 </el-form-item>
                 <el-form-item label="客户" prop="clienteleName">
-                    <el-input v-model="clienteleQueryParams.clienteleName" placeholder="请输入编码或名称" clearable size="small" style="width: 155px;" @keyup.enter.native="handleQueryClientele" />
+                    <el-input v-model="queryParams.clienteleName" placeholder="请输入编码或名称" clearable size="small" style="width: 155px;" @keyup.enter.native="handleQueryOrder" />
                 </el-form-item>
                 <el-form-item>
-                    <el-button type="primary" icon="el-icon-search" size="small" @click="handleQueryClientele">搜索</el-button>
+                    <el-button type="primary" icon="el-icon-search" size="small" @click="handleQueryOrder">搜索</el-button>
                 </el-form-item>
             </el-form>
             <el-table v-loading="loading" :data="clienteleListData" highlight-current-row @row-dblclick="handledbClick">
@@ -137,8 +132,8 @@
                         <el-radio :label="scope.$index + 1" v-model="radio" @change.native="getCurrentRow(scope.row)"></el-radio>
                     </template>
                 </el-table-column>
-                <el-table-column label="发货单号" align="center" prop="shipmentsNum" :show-overflow-tooltip="true" />
-                <el-table-column label="发货日期" align="center" prop="shipmentsTime" :show-overflow-tooltip="true" />
+                <el-table-column label="发货单号" align="center" prop="orderNum" :show-overflow-tooltip="true" />
+                <el-table-column label="发货日期" align="center" prop="orderTime" :show-overflow-tooltip="true" />
                 <el-table-column label="客户编码" align="center" prop="clienteleNum" :show-overflow-tooltip="true" />
                 <el-table-column label="客户名称" align="center" prop="clienteleName" :show-overflow-tooltip="true" />
             </el-table>
@@ -146,8 +141,8 @@
                 <el-pagination
                     background
                     layout="total, sizes, prev, pager, next"
-                    :current-page="clienteleQueryParams.current"
-                    :page-size="clienteleQueryParams.size"
+                    :current-page="queryParams.current"
+                    :page-size="queryParams.size"
                     :total="clienteleTotal"
                     :page-sizes="[10, 50, 100, 200]"
                     @size-change="handleSizeChange"
@@ -156,11 +151,8 @@
             </div>
         </el-dialog>
 
-        <!-- 上传图纸对话框 -->
-        <el-dialog :title="title" :visible.sync="uploadOpen" width="600px" append-to-body> </el-dialog>
-
         <!-- 业务人员弹窗 -->
-        <el-dialog :title="title" :visible.sync="personnelOpen" width="600px" append-to-body>
+        <el-dialog title="业务员" :visible.sync="personnelOpen" width="600px" append-to-body>
             <el-form :model="personnelQueryParams" ref="personnelQueryParams" :inline="true">
                 <el-form-item label="员工编码" prop="userNum">
                     <el-input v-model="personnelQueryParams.userNum" placeholder="请输入编码 " clearable size="small" style="width: 120px" @keyup.enter.native="handlePersonnelQuery" />
@@ -196,75 +188,36 @@
                 ></el-pagination>
             </div>
         </el-dialog>
-
-        <!-- 仓库弹窗 -->
-        <el-dialog :title="title" :visible.sync="warehouseOpen" width="500px" append-to-body>
-            <el-form :model="warehouseParams" ref="warehouseParams" :inline="true">
-                <el-form-item label="仓库" prop="warehouseName">
-                    <el-input v-model="warehouseParams.warehouseName" placeholder="请输入名称或编码" clearable size="small" style="width: 150px" @keyup.enter.native="handleQueryWarehouse" />
-                </el-form-item>
-                <el-form-item>
-                    <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQueryWarehouse">搜索</el-button>
-                </el-form-item>
-            </el-form>
-            <el-table :data="warehouseListData" @row-dblclick="dbclickWarehouse" highlight-current-row>
-                <el-table-column label="选择" width="65">
-                    <template slot-scope="scope">
-                        <el-radio :label="scope.$index + 1" v-model="radio" @change.native="getCurrentWarehouseRow(scope.row)"></el-radio>
-                    </template>
-                </el-table-column>
-                <el-table-column label="仓库编码" align="center" :show-overflow-tooltip="true" prop="warehouseNum" />
-                <el-table-column label="仓库名称" align="center" prop="warehouseName" :show-overflow-tooltip="true" />
-            </el-table>
-            <div class="pagination">
-                <el-pagination
-                    background
-                    layout="total, prev, pager, next"
-                    :current-page="warehouseParams.current"
-                    :page-size="warehouseParams.size"
-                    :total="warehouseTotal"
-                    @current-change="handlePageChangeWarehouse"
-                ></el-pagination>
-            </div>
-        </el-dialog>
     </div>
 </template>
 
 <script>
-import { listShipments, listShipmentsSub } from '@/api/sales/shipments.js';
+import { listReturnOrder, listSignOrderSub } from '@/api/sales/order.js';
 import { editReturns, getReturns, listReturnsSub } from '@/api/sales/returns.js';
 import { treeselect } from '@/api/basis/category.js';
 import { listClientele } from '@/api/basis/clientele.js';
 import { userListPage } from '@/api/system/user.js';
 import { listAllMateriel } from '@/api/basis/materiel.js';
 import { listUnits } from '@/api/basis/units.js';
-import { warehouseListPage } from '@/api/basis/warehouse.js';
+import Treeselect from '@riophae/vue-treeselect';
+import '@riophae/vue-treeselect/dist/vue-treeselect.css';
 export default {
-    name: 'sales-returns-edit',
+    name: 'sales-returns-add',
+    components: { Treeselect },
     data() {
         return {
             // 遮罩层
             loading: false,
             // 是否显示弹出层
             open: false,
-            // 弹窗标题
-            title: '',
             // 表单校验
             rules: {
-                shipmentsNum: [{ required: true, message: '订单号不能为空', trigger: 'blur' }],
+                orderNum: [{ required: true, message: '订单号不能为空', trigger: 'blur' }],
                 clienteleNum: [{ required: true, message: '客户编码不能为空', trigger: 'blur' }],
                 clienteleName: [{ required: true, message: '客户名称不能为空', trigger: 'blur' }],
                 returnsTime: [{ required: true, message: '退货日期不能为空', trigger: 'blur' }],
                 personnelName: [{ required: true, message: '业务人员不能为空', trigger: 'change' }],
                 warehouseName: [{ required: true, message: '仓库不能为空', trigger: 'change' }]
-            },
-            formRules: {
-                materielName: [{ required: true, message: '产品名称不能为空', trigger: 'blur' }],
-                specification: [{ required: true, message: '规格不能为空', trigger: 'blur' }],
-                modelName: [{ required: true, message: '型号不能为空', trigger: 'blur' }],
-                price: [{ required: true, message: '单价不能为空', trigger: 'blur' }],
-                unitsName: [{ required: true, message: '单位不能为空', trigger: 'blur' }],
-                number: [{ required: true, message: '数量不能为空', trigger: 'blur' }]
             },
             //表单参数
             clienteleForm: {}, //主表信息
@@ -273,20 +226,14 @@ export default {
             clienteleListData: [],
             clienteleSelected: undefined,
             radio: '',
-            clienteleQueryParams: {
+            queryParams: {
                 current: 1,
                 size: 10,
                 clienteleName: undefined,
                 clienteleNum: undefined,
-                shipmentsStatus: '1',
-                outboundStatus: '1',
-                shipmentsNum: undefined
+                orderNum: undefined
             },
             clienteleTotal: 0,
-            clienteleTypeOptions: [], //客户类别
-            totalPrice: 0,
-            returnsNum: undefined,
-            shipmentsId: undefined,
             //添加人员
             personnelLoading: true,
             personnelOpen: false,
@@ -300,94 +247,34 @@ export default {
                 status: '0'
             },
             personnelSelection: undefined,
-
-            // 添加产品
-            materielSelection: [], //选中产品
-            uploadOpen: false,
-            fileList: [],
-            materielOpen: false,
-            linkMaterielOpen: false,
-            linkMaterielListData: [],
-            linkMaterielLoading: true,
-            form: {},
-            materileTypeOptions: [],
-            materielQueryParams: {
-                current: 1,
-                size: 10,
-                materielNum: undefined,
-                materielName: undefined
-            },
-            materielTotal: 0,
-            materielEdit: false,
-            materielIndex: undefined,
-
-            // 基本单位
-            unitsLoading: true,
-            unitsOpen: false,
-            unitsTotal: 0,
-            unitsListData: [],
-            unitsQueryParam: {
-                current: 1,
-                size: 10,
-                unitsNum: undefined,
-                unitsName: undefined,
-                unitsType: undefined,
-                status: '0'
-            },
-            unitsTypeOptions: [
-                { dictValue: '0', dictLabel: '基本单位' },
-                { dictValue: '1', dictLabel: '包装单位' }
-            ],
-            selectedUnits: undefined,
             delSubIds: [],
-
-            warehouseParams: {
-                current: 1,
-                size: 10,
-                warehouseName: undefined,
-                warehouseNum: undefined
-            },
-            warehouseSelection: undefined,
-            warehouseListData: [],
-            warehouseTotal: 0,
-            warehouseOpen: false,
-
-            returnsId: undefined,
             btnLoading: false
         };
     },
     watch: {
         $route(to, form) {
-            if (to.path === '/page/sales/returns/edit' && this.returnsId !== this.$route.query.rId) {
-                this.returnsId = this.$route.query.rId;
+            if (to.path === '/page/sales/returns/edit' && this.clienteleForm.returnsId !== this.$route.query.rId) {
                 this.getReturnsData();
             }
         }
     },
     created() {
-        this.returnsId = this.$route.query.rId;
         this.getReturnsData();
     },
     methods: {
         getReturnsData() {
-            if (this.returnsId) {
-                getReturns(this.returnsId).then(res => {
+            let returnsId = this.$route.query.rId;
+            if (returnsId) {
+                getReturns(returnsId).then(res => {
                     if (res.success) {
                         this.clienteleForm = res.data;
-                        listReturnsSub({ returnsId: this.returnsId }).then(res => {
+                        listReturnsSub({ returnsId: returnsId }).then(res => {
                             this.materielListData = res.data;
                             this.calculateTotalAll();
                         });
                     }
                 });
             }
-        },
-        listShipmentsSubList() {
-            let param = { shipmentsId: this.clienteleForm.shipmentsId };
-            listShipmentsSub(param).then(res => {
-                this.materielListData = res.data || [];
-                this.calculateTotalAll();
-            });
         },
         getPersonnelName() {
             this.clienteleForm.personnelName = this.$store.getters.name;
@@ -396,24 +283,36 @@ export default {
         },
         // 客户分页导航
         handlePageChangeClientele(val) {
-            this.$set(this.clienteleQueryParams, 'current', val);
-            this.handleQueryClientele();
+            this.$set(this.queryParams, 'current', val);
+            this.handleQueryOrder();
         },
         handleSizeChange(val) {
-            this.$set(this.clienteleQueryParams, 'size', val);
-            this.handleQueryClientele();
+            this.$set(this.queryParams, 'size', val);
+            this.handleQueryOrder();
         },
         /** 新增按钮操作 */
         handleAddClientele() {
             this.open = true;
-            this.title = '添加客户订单';
-            this.handleQueryClientele();
+            this.handleQueryOrder();
         },
-        handleQueryClientele() {
-            this.clienteleQueryParams.clienteleNum = this.clienteleQueryParams.clienteleName;
-            listShipments(this.clienteleQueryParams).then(res => {
-                this.clienteleListData = res.data.records || [];
-                this.clienteleTotal = res.data.total || 0;
+        listOrderSubList() {
+            let param = { orderId: this.clienteleForm.orderId };
+            listSignOrderSub(param).then(res => {
+                res.data.forEach(item => {
+                    if (!item.orderSubId) {
+                        item.orderSubId = item.subId;
+                        item.subId = undefined;
+                    }
+                });
+                this.materielListData = res.data;
+                this.calculateTotalAll();
+            });
+        },
+        handleQueryOrder() {
+            this.queryParams.clienteleNum = this.queryParams.clienteleName;
+            listReturnOrder(this.queryParams).then(res => {
+                this.clienteleListData = res.data.records;
+                this.clienteleTotal = res.data.total;
             });
         },
         getCurrentRow(row) {
@@ -425,35 +324,31 @@ export default {
         submitClienteleForm(row) {
             this.clienteleForm = row;
             this.open = false;
-            this.clienteleForm.remark = '';
             this.getPersonnelName();
-            this.listShipmentsSubList();
+            this.listOrderSubList();
         },
         // 计算数量金额
         calculateTotalAll() {
             let totalPrice = 0;
             this.materielListData.forEach(item => {
-                item.returnsPrice = (parseInt(item.returnsNum || 0) * parseInt(item.price || 0)).toFixed(2);
-                totalPrice = totalPrice + parseInt(item.returnsNum || 0) * parseInt(item.price || 0);
+                let total = parseInt(item.returnsNum || 0) * parseFloat(item.price || 0);
+                item.totalPrice = total.toFixed(2);
+                totalPrice = totalPrice + total;
             });
-            this.clienteleForm.totalPrice = totalPrice.toFixed(2);
+            this.$set(this.clienteleForm, 'totalPrice', totalPrice.toFixed(2));
         },
         calculateTotal(row) {
-            if (row.returnsNum > row.shipmentNum) {
-                row.returnsNum = row.shipmentNum;
+            // 最大可退货数量=  已签收数量
+            if (row.returnsNum > row.hasSignbackNum) {
+                row.returnsNum = row.hasSignbackNum;
             }
-            let totalPrice = parseInt(row.returnsNum || 0) * parseInt(row.price || 0);
-            row.returnsPrice = totalPrice.toFixed(2);
-            row.totalPrice = totalPrice.toFixed(2);
+            row.totalPrice = (parseInt(row.returnsNum || 0) * parseInt(row.price || 0)).toFixed(2);
             this.calculateTotalAll();
         },
         clearAddForm() {
             this.clienteleForm = {};
             this.form = {};
             this.materielListData = [];
-            this.shipmentsId = undefined;
-            this.returnsNum = undefined;
-            this.totalPrice = 0;
             this.clienteleForm.personnelName = this.$store.getters.name;
             this.clienteleForm.personnelId = this.$store.getters.userId;
             this.clienteleForm.returnsTime = this.parseTime(new Date());
@@ -486,6 +381,7 @@ export default {
                         .then(res => {
                             if (res.success) {
                                 this.msgSuccess(res.message);
+                                this.returnsNum = res.data;
                             } else {
                                 this.msgError(res.message);
                             }
@@ -521,7 +417,6 @@ export default {
         // 人员编码输入框获取焦点
         personnelFocus(event) {
             this.personnelOpen = true;
-            this.title = '业务员';
             this.handlePersonnelQuery();
             // 失去焦点
             // this.$refs.personnelBlur.blur();
@@ -540,205 +435,13 @@ export default {
             this.$refs.clienteleForm.clearValidate('personnelName');
         },
 
-        // 产品类别
-        getTreeselectMateriel() {
-            treeselect({ category: '0' }).then(res => {
-                this.materileTypeOptions = res.data;
-            });
-        },
-        // 多选框选中数据
-        handleSelectionChange(selection) {
-            this.materielSelection = selection;
-        },
-        clickSelectionMateriel(row, event, column) {
-            this.materielSelection = [row];
-            this.submitForm();
-        },
-        // 产品列表
-        handleAddLinkMateriel() {
-            this.linkMaterielOpen = true;
-            this.title = '添加产品';
-            this.getTreeselectMateriel();
-            this.getMaterielList();
-        },
-        getMaterielList() {
-            listAllMateriel(this.materielQueryParams).then(res => {
-                this.linkMaterielListData = res.data.records;
-                this.materielTotal = res.data.total;
-                this.linkMaterielLoading = false;
-            });
-        },
-        handlePageChangeMateriel(val) {
-            this.$set(this.materielQueryParams, 'current', val);
-        },
-        handleSizeChangeMateriel(val) {
-            this.$set(this.materielQueryParams, 'size', val);
-        },
-        handleQueryMateriel() {
-            this.materielQueryParams.current = 1;
-            this.getMaterielList();
-        },
-        submitForm() {
-            if (this.materielSelection.length !== 0) {
-                this.materielListData = this.materielListData.concat(this.materielSelection);
-            }
-            this.linkMaterielOpen = false;
-            this.calculateTotalPrice();
-        },
-        calculateTotalPrice() {
-            let total = 0;
-            this.materielListData.forEach(item => {
-                let price = parseFloat(item.price || 0) * parseInt(item.number || 0);
-                item.totalPrice = price.toFixed(2);
-                total = parseFloat(total) + price;
-            });
-            this.totalPrice = total.toFixed(2);
-        },
         // 删除产品
         handleDelete(index, row) {
             if (row.subId) {
                 this.delSubIds.push(row.subId);
-            } else {
-                this.calculateTotalPrice();
             }
             this.materielListData.splice(index, 1);
-        },
-        handleAddMateriel() {
-            this.resetMaterielForm();
-            this.getTreeselectMateriel();
-            this.materielOpen = true;
-            this.title = '添加产品';
-            this.materielEdit = false;
-        },
-        /** 修改按钮操作 */
-        handleUpdateMateriel(index, row) {
-            this.resetMaterielForm();
-            this.getTreeselectMateriel();
-            this.materielOpen = true;
-            this.title = '修改产品';
-            this.materielEdit = true;
-            this.materielIndex = index;
-            this.form = JSON.parse(JSON.stringify(row));
-        },
-        resetMaterielForm() {
-            this.form = {};
-            this.resetForm('form');
-        },
-        submitFormMateriel() {
-            this.$refs['form'].validate(valid => {
-                if (valid) {
-                    let materiel = JSON.parse(JSON.stringify(this.form));
-                    if (this.materielEdit) {
-                        this.materielListData.splice(this.materielIndex, 1, materiel);
-                    } else {
-                        this.materielListData.push(materiel);
-                    }
-                    this.resetMaterielForm();
-                    this.calculateTotalPrice();
-                    this.materielOpen = false;
-                }
-            });
-        },
-
-        // 基本单位
-        unitsFocus(event) {
-            this.unitsOpen = true;
-            this.title = '选择产品单位';
-            this.selectedUnits = undefined;
-            this.getUnitsList();
-            // 失去焦点
-            // this.$refs.unitsBlur.blur();
-        },
-        handleQueryUnits() {
-            this.unitsQueryParam.current = 1;
-            this.getUnitsList();
-        },
-        getUnitsList() {
-            listUnits(this.unitsQueryParam).then(res => {
-                this.unitsLoading = false;
-                this.unitsListData = res.data.records;
-                this.unitsTotal = res.data.total;
-            });
-        },
-        handleClickUnits(row, event, column) {
-            this.selectedUnits = row;
-            this.submitFormUnits();
-        },
-        getUnitsRow(row) {
-            this.selectedUnits = row;
-            this.submitFormUnits();
-        },
-        handlePageChangeUnits(val) {
-            this.$set(this.unitsQueryParam, 'current', val);
-            this.handleQueryClientele();
-        },
-        handleSizeChangeUnits(val) {
-            this.$set(this.unitsQueryParam, 'size', val);
-        },
-        submitFormUnits() {
-            this.form.unitsId = this.selectedUnits.unitsId;
-            this.form.unitsNum = this.selectedUnits.unitsNum;
-            this.form.unitsName = this.selectedUnits.unitsName;
-            this.unitsOpen = false;
-            this.$refs.form.clearValidate('unitsName');
-        },
-        unitsTypeFormatter(row, column) {
-            return this.selectDictLabel(this.unitsTypeOptions, row.unitsType);
-        },
-
-        cancelDialog() {
-            this.personnelOpen = false;
-        },
-        // 取消按钮
-        cancel() {
-            this.open = false;
-            this.materielOpen = false;
-            this.uploadOpen = false;
-            this.linkMaterielOpen = false;
-        },
-        handleUpload(row) {
-            this.uploadOpen = true;
-            this.form = row;
-            this.title = '图纸';
-        },
-
-        handleDeleteItem(index, row) {
-            this.msgSuccess('成功');
-        },
-
-        // 仓库
-        warehouseFocus(event) {
-            this.warehouseOpen = true;
-            this.title = '仓库';
-            this.handleQueryWarehouse();
-        },
-        getWarehouseListData() {
-            warehouseListPage(this.warehouseParams).then(res => {
-                this.warehouseListData = res.data.records;
-                this.warehouseTotal = res.data.total;
-            });
-        },
-        handlePageChangeWarehouse(val) {
-            this.$set(this.warehouseParams, 'current', val);
-            this.getWarehouseListData();
-        },
-        handleQueryWarehouse() {
-            this.warehouseParams.current = 1;
-            this.getWarehouseListData();
-        },
-        getCurrentWarehouseRow(row) {
-            this.submitWarehouseForm(row);
-        },
-        dbclickWarehouse(row, column, event) {
-            this.submitWarehouseForm(row);
-        },
-        submitWarehouseForm(row) {
-            this.clienteleForm.warehouseNum = row.warehouseNum;
-            this.clienteleForm.warehouseName = row.warehouseName;
-            this.clienteleForm.warehouseId = row.warehouseId;
-            this.$refs.clienteleForm.clearValidate('warehouseNum');
-            this.$refs.clienteleForm.clearValidate('warehouseName');
-            this.warehouseOpen = false;
+            this.calculateTotalAll();
         }
     }
 };

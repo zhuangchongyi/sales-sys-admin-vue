@@ -25,7 +25,7 @@
                 <!-- <el-table-column type="selection" width="55" align="center"></el-table-column> -->
                 <el-table-column prop="warehouseNum" label="仓库编码" align="center"></el-table-column>
                 <el-table-column prop="warehouseName" label="仓库名称" align="center"></el-table-column>
-                <el-table-column prop="dept.deptName" label="归属部门" align="center"></el-table-column>
+                <!-- <el-table-column prop="dept.deptName" label="归属部门" align="center"></el-table-column> -->
                 <el-table-column label="状态" prop="status" :formatter="statusFormatter" align="center"> </el-table-column>
                 <el-table-column prop="createTime" label="创建时间" align="center"></el-table-column>
                 <el-table-column prop="createBy" label="创建人" align="center"></el-table-column>
@@ -59,9 +59,9 @@
                 <el-form-item label="仓库名称" prop="warehouseName">
                     <el-input v-model="form.warehouseName" placeholder="请输入仓库名称" />
                 </el-form-item>
-                <el-form-item label="归属部门" prop="deptId">
+                <!-- <el-form-item label="归属部门" prop="deptId">
                     <treeselect v-model="form.deptId" :options="deptOptions" :disable-branch-nodes="true" :show-count="true" placeholder="请选择归属部门" />
-                </el-form-item>
+                </el-form-item> -->
                 <el-form-item label="状态" prop="status">
                     <el-radio-group v-model="form.status">
                         <el-radio v-for="dict in statusOptions" :key="dict.dictValue" :label="dict.dictValue">{{ dict.dictLabel }}</el-radio>

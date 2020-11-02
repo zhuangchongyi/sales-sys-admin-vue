@@ -57,8 +57,8 @@
              return new Promise((resolve, reject) => {
                  Login(userInfo).then(res => {
                      setToken(res.data.token);
-                     commit('SET_TOKEN', res.data.token);
                      localStorage.setItem('loginTime', res.data.loginTime);
+                     commit('SET_TOKEN', res.data.token);
                      resolve();
                  }).catch(error => {
                      reject(error);

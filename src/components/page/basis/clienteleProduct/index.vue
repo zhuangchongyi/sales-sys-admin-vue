@@ -414,6 +414,11 @@ export default {
 </script>
 
 <style scoped>
+.el-table--mini,
+.el-table--small,
+.el-table__expand-icon {
+    font-size: 14px;
+}
 .el-form .el-form-item__label {
     font-weight: bold;
 }
@@ -421,6 +426,7 @@ export default {
 .handle-box {
     margin-bottom: 8px;
 }
+
 .table {
     width: 100%;
     font-size: 14px;

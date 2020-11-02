@@ -40,6 +40,13 @@
                     </el-form-item>
                 </el-col>
             </el-row>
+            <el-row>
+                <el-col :span="24">
+                    <el-form-item label="备注" prop="remark">
+                        <el-input v-model="warehouseForm.remark" type="textarea" autosize style="width: 1000px" size="small" />
+                    </el-form-item>
+                </el-col>
+            </el-row>
         </el-form>
 
         <el-divider><strong>产品信息</strong></el-divider>
@@ -238,7 +245,8 @@ export default {
                 { dictValue: '0', dictLabel: '进口' },
                 { dictValue: '1', dictLabel: '生产' },
                 { dictValue: '2', dictLabel: '采购' },
-                { dictValue: '3', dictLabel: '其他' }
+                { dictValue: '3', dictLabel: '退货' },
+                { dictValue: '4', dictLabel: '其他' }
             ],
             // 产品
             selectionMateriel: [],

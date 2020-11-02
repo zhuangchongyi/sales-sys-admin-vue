@@ -21,7 +21,7 @@
      getToken
  } from '@/utils/auth';
  // 自定义指令
- import permission from './directive';
+ import directive from './directive';
  //进度条
  import NProgress from 'nprogress';
  import 'nprogress/nprogress.css';
@@ -31,7 +31,7 @@
  Vue.config.productionTip = false;
 
  Vue.use(VueI18n);
- Vue.use(permission);
+ Vue.use(directive);
  Vue.use(ElementUI, {
      size: 'small'
  });
@@ -47,6 +47,10 @@
  const filterList = ['/add', '/edit', '/preview'];
  const whiteList = ['/page/login'];
  document.title = process.env.VUE_APP_TITLE;
+ //  禁止鼠标右键
+ document.oncontextmenu = function () {
+     return process.env.NODE_ENV === "production" ? false : true;
+ }
  //使用钩子函数对路由进行权限跳转
  router.beforeEach((to, from, next) => {
      NProgress.start();
@@ -92,12 +96,13 @@
                          }
                          if (nextFlag) {
                              next('/page/403');
+                         } else {
+                             next();
                          }
                      }
                  } else {
                      next();
                  }
-
              }
          }
      } else { //未登录

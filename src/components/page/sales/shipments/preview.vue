@@ -4,12 +4,11 @@
             <el-button type="primary" icon="el-icon-check" :loading="btnLoading" @click="submitAuditForm">审 核</el-button>
             <el-button type="primary" icon="el-icon-close" :loading="btnLoading" @click="cancelAuditForm">反审核</el-button>
         </div>
+        <div v-show="isShow">
+            <el-button type="warning" icon="el-icon-check" :loading="btnLoading" @click="submitApprovalForm">特 批</el-button>
+            <el-button type="primary" icon="el-icon-close" :loading="btnLoading" @click="cancelAuditForm">取消特批</el-button>
+        </div>
         <el-divider><strong>客户信息</strong></el-divider>
-        <!-- <div class="handle-box">
-            <el-button type="primary" size="small" icon="el-icon-paperclip" class="handle-del mr10" @click="handleAddClientele"
-                >客户订单</el-button
-            >
-        </div> -->
         <el-form :model="clienteleForm" ref="clienteleForm" :rules="rules" label-position="right" label-width="auto" :inline="true">
             <el-row>
                 <el-col :span="4">
@@ -27,19 +26,6 @@
                         <el-input v-model="clienteleForm.clienteleName" clearable size="small" style="width: 155px;" readonly />
                     </el-form-item>
                 </el-col>
-                <!-- <el-col :span="4">
-                    <el-form-item label="客户类别" prop="categoryId">
-                        <treeselect
-                            :disabled="true"
-                            v-model="clienteleForm.categoryId"
-                            :options="clienteleTypeOptions"
-                            :disable-branch-nodes="true"
-                            :show-count="true"
-                            style="width: 155px;"
-                            placeholder="选择类别"
-                        />
-                    </el-form-item>
-                </el-col> -->
                 <el-col :span="4">
                     <el-form-item label="联系人" prop="leader">
                         <el-input v-model="clienteleForm.leader" clearable size="small" style="width: 155px;" readonly />
@@ -85,26 +71,18 @@
             </el-row>
         </el-form>
         <el-divider><strong>产品信息</strong></el-divider>
-        <!-- <div class="handle-box">
-            <el-button type="primary" size="small" icon="el-icon-plus" class="handle-del mr10" v-show="false" @click="handleAddMateriel"
-                >新增产品</el-button
-            >
-            <el-button type="primary" size="small" icon="el-icon-paperclip" class="handle-del mr10" @click="handleAddLinkMateriel"
-                >产品</el-button
-            >
-        </div> -->
         <el-table v-loading="loading" :data="materielListData">
             <!-- <el-table-column type="selection" width="50" align="center" /> -->
             <el-table-column prop="materielNum" label="产品编码" align="center" :show-overflow-tooltip="true" />
             <el-table-column prop="materielName" label="产品名称" align="center" :show-overflow-tooltip="true" />
-            <el-table-column prop="specification" label="规格" align="center" :show-overflow-tooltip="true" width="100"></el-table-column>
+            <el-table-column prop="specification" label="规格" align="center" :show-overflow-tooltip="true"></el-table-column>
             <el-table-column prop="modelName" label="型号" align="center" :show-overflow-tooltip="true"></el-table-column>
             <el-table-column prop="needTorque" label="所需扭矩" align="center" :show-overflow-tooltip="true"></el-table-column>
             <el-table-column prop="outTorque" label="输出扭矩" align="center" :show-overflow-tooltip="true"></el-table-column>
             <el-table-column prop="unitsName" label="单位" align="center"></el-table-column>
             <!-- <el-table-column prop="price" label="单价" align="center"> </el-table-column> -->
             <el-table-column prop="number" label="订购数量" align="center"> </el-table-column>
-            <el-table-column prop="hasShipmentNum" label="已发货数量" width="150" align="center"> </el-table-column>
+            <el-table-column prop="hasShipmentNum" label="已发货数量" align="center"> </el-table-column>
             <el-table-column prop="shipmentNum" label="本次发货数量" align="center"> </el-table-column>
         </el-table>
 
@@ -488,6 +466,7 @@ export default {
             selectedUnits: undefined,
             delSubIds: [],
             isAudit: false,
+            isShow: false,
             btnLoading: false
         };
     },
@@ -496,6 +475,7 @@ export default {
             if (to.path === '/page/sales/shipments/preview' && this.shipmentsId !== to.query.id) {
                 this.shipmentsId = this.$route.query.id || 0;
                 this.isAudit = JSON.parse(this.$route.query.isAudit || false);
+                this.isShow = JSON.parse(this.$route.query.isShow || false);
                 this.getShipmentsData();
             }
         }
@@ -504,9 +484,30 @@ export default {
         this.getTreeselectClienteleType();
         this.shipmentsId = this.$route.query.id || 0;
         this.isAudit = JSON.parse(this.$route.query.isAudit || false);
+        this.isShow = JSON.parse(this.$route.query.isShow || false);
         this.getShipmentsData();
     },
     methods: {
+        submitApprovalForm() {
+            if (this.clienteleForm.status === '5') {
+                this.msgError('已审核');
+                return;
+            }
+            let data = {
+                shipmentsId: this.shipmentsId,
+                status: '5'
+            };
+            this.btnLoading = true;
+            auditShipments(data).then(res => {
+                this.btnLoading = false;
+                if (res.success) {
+                    this.msgSuccess('特批成功');
+                } else {
+                    this.msgError(res.message);
+                }
+                this.getShipmentsData();
+            });
+        },
         submitAuditForm() {
             if (this.clienteleForm.status === '3') {
                 this.msgError('已审核');
@@ -522,10 +523,10 @@ export default {
                     this.btnLoading = false;
                     if (res.success) {
                         this.msgSuccess('审核成功');
-                        this.getShipmentsData();
                     } else {
                         this.msgError(res.message);
                     }
+                    this.getShipmentsData();
                 })
                 .catch(e => {
                     console.log(e);
@@ -539,18 +540,18 @@ export default {
             }
             let data = {
                 shipmentsId: this.shipmentsId,
-                status: '4'
+                status: this.clienteleForm.status == '3' ? '4' : '6'
             };
             this.btnLoading = true;
             auditShipments(data)
                 .then(res => {
                     this.btnLoading = false;
                     if (res.success) {
-                        this.msgSuccess('反审核成功');
-                        this.getShipmentsData();
+                        this.msgSuccess(data.status === '4' ? '反审核成功' : '取消特批成功');
                     } else {
                         this.msgError(res.message);
                     }
+                    this.getShipmentsData();
                 })
                 .catch(e => {
                     console.log(e);
@@ -581,7 +582,7 @@ export default {
         getOrderSubList() {
             let param = { orderId: this.clienteleForm.orderId };
             getOrderSub(param).then(res => {
-                this.materielListData = res.data || [];
+                this.materielListData = res.data;
                 this.calculateTotalAll();
             });
         },

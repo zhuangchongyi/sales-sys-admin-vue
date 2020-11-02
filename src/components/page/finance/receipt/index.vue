@@ -21,7 +21,7 @@
                     <el-dropdown-item icon="el-icon-bottom" @click.native="handleNoSubmit">收回</el-dropdown-item>
                 </el-dropdown-menu>
             </el-dropdown>
-            <el-button type="primary" size="small" icon="el-icon-finished" class="handle-del mr10" :disabled="multiple" @click="handleAudit">审核</el-button>
+            <el-button type="primary" size="small" icon="el-icon-finished" class="handle-del mr10" :disabled="single" @click="handleAudit">审核</el-button>
         </div>
         <el-table v-loading="loading" :data="listData" ref="listData" @row-click="selectionRowClick" highlight-current-row @row-dblclick="handlePreview" @selection-change="handleSelectionChange">
             <el-table-column type="selection" width="55" align="center" />
@@ -31,9 +31,9 @@
             <el-table-column label="收款金额" prop="receiptPrice" :show-overflow-tooltip="true" align="center" width="100" />
             <el-table-column label="收款日期" prop="receiptTime" :show-overflow-tooltip="true" align="center" width="160" />
             <el-table-column label="状态" prop="status" :show-overflow-tooltip="true" align="center" :formatter="auditStatusFormatter" />
-            <el-table-column label="核销金额" prop="hasVerificaPrice" :show-overflow-tooltip="true" align="center" width="100" />
+            <el-table-column label="已核销金额" prop="hasVerificaPrice" :show-overflow-tooltip="true" align="center" width="100" />
             <el-table-column label="未核销金额" prop="verificaPrice" :show-overflow-tooltip="true" align="center" width="100">
-                <template slot-scope="scope"> {{ scope.row.receiptPrice - scope.row.hasVerificaPrice }}</template>
+                <template slot-scope="scope"> {{ (parseFloat(scope.row.receiptPrice) - parseFloat(scope.row.hasVerificaPrice)).toFixed(2) }}</template>
             </el-table-column>
             <el-table-column label="业务人员" prop="personnelName" align="center" :show-overflow-tooltip="true" width="160" />
             <el-table-column label="业务部门" prop="deptName" align="center" :show-overflow-tooltip="true" width="160" />
@@ -41,10 +41,10 @@
             <el-table-column label="录入日期" prop="createTime" :show-overflow-tooltip="true" width="160" align="center" />
             <el-table-column label="审核人" prop="auditBy" align="center" :show-overflow-tooltip="true" width="160" />
             <el-table-column label="审核日期" prop="auditTime" :show-overflow-tooltip="true" width="160" align="center" />
-            <el-table-column label="操作" width="200" fixed="right" align="center">
+            <el-table-column label="操作" width="180" fixed="right" align="center">
                 <template slot-scope="scope">
                     <el-button type="text" icon="el-icon-edit" @click="handleUpdate(scope.$index, scope.row)">修改</el-button>
-                    <el-button type="text" icon="el-icon-edit-outline" @click="handleVerifica(scope.row)">核销</el-button>
+                    <!-- <el-button type="text" icon="el-icon-edit-outline" @click="handleVerifica(scope.row)">核销</el-button> -->
                     <el-button type="text" icon="el-icon-delete" style="color:#fd5656" @click="handleDelete(scope.row)">删除</el-button>
                 </template>
             </el-table-column>
@@ -178,10 +178,10 @@ export default {
             submitReceipt('1', this.ids).then(res => {
                 if (res.success) {
                     this.msgSuccess('提交成功');
-                    this.handleQuery();
                 } else {
                     this.msgError(res.message);
                 }
+                this.handleQuery();
             });
         },
         handleNoSubmit() {
@@ -191,10 +191,10 @@ export default {
             submitReceipt('2', this.ids).then(res => {
                 if (res.success) {
                     this.msgSuccess('提交成功');
-                    this.handleQuery();
                 } else {
                     this.msgError(res.message);
                 }
+                this.handleQuery();
             });
         },
         handleAudit() {

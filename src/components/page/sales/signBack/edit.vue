@@ -79,7 +79,7 @@
                         <el-input v-model="clienteleForm.rejectionNum" size="small" style="width: 150px" readonly />
                     </el-form-item>
                 </el-col>
-                <el-col :span="4" v-show="clienteleForm.rejectionNum != 0">
+                <el-col :span="4">
                     <el-form-item label="拒收处理方式" prop="processMode">
                         <el-select v-model="clienteleForm.processMode" placeholder="请选择" clearable size="small" style="width: 150px">
                             <el-option v-for="dict in processModeOptions" :key="dict.dictValue" :label="dict.dictLabel" :value="dict.dictValue" />
@@ -219,7 +219,6 @@ export default {
     },
     created() {
         this.signbackId = this.$route.query.signId;
-        // this.getTreeselectClienteleType();
         this.getList();
     },
     methods: {
@@ -235,7 +234,7 @@ export default {
                     this.getPersonnelName();
                     listSignbackSub({ signbackId: this.signbackId }).then(res => {
                         this.materielList = res.data;
-                        this.calculateTotalAll();
+                        // this.calculateTotalAll();
                     });
                 });
             }
@@ -251,14 +250,11 @@ export default {
             let allSignNum = 0;
             let allRejectionNum = 0;
             this.materielList.forEach(item => {
-                if (!item.signNum || item.signNum == 0) {
-                    item.signNum = item.outboundNum;
-                }
                 allSignNum = allSignNum + parseInt(item.signNum || 0);
                 allRejectionNum = allRejectionNum + parseInt(item.rejectionNum || 0);
             });
-            this.clienteleForm.signNum = allSignNum;
-            this.clienteleForm.rejectionNum = allRejectionNum;
+            this.$set(this.clienteleForm, 'signNum', allSignNum);
+            this.$set(this.clienteleForm, 'rejectionNum', allRejectionNum);
         },
         calculateTotal(row) {
             if (row.signNum > row.outboundNum) {

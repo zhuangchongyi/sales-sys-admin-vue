@@ -74,7 +74,10 @@ export default {
             rules: {
                 password: [{ required: true, message: '请输入原始密码', trigger: 'blur' }],
                 newPassword: [{ required: true, message: '请输入新密码', trigger: 'blur' }],
-                checkPassword: [{ validator: this.validatePwd, trigger: 'blur' }]
+                checkPassword: [
+                    { required: true, message: '请输入确认密码', trigger: 'blur' },
+                    { validator: this.validatePwd, trigger: 'blur' }
+                ]
             },
             message: 0,
             timer: ''

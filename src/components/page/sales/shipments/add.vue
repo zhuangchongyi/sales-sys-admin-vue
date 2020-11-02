@@ -83,14 +83,6 @@
             </el-row>
         </el-form>
         <el-divider><strong>产品信息</strong></el-divider>
-        <!-- <div class="handle-box">
-            <el-button type="primary" size="small" icon="el-icon-plus" class="handle-del mr10" v-show="false" @click="handleAddMateriel"
-                >新增产品</el-button
-            >
-            <el-button type="primary" size="small" icon="el-icon-paperclip" class="handle-del mr10" @click="handleAddLinkMateriel"
-                >产品</el-button
-            >
-        </div> -->
         <el-table v-loading="loading" :data="materielListData">
             <el-table-column type="selection" width="50" align="center" />
             <el-table-column prop="materielNum" label="产品编码" align="center" :show-overflow-tooltip="true" />
@@ -506,7 +498,7 @@ export default {
         getOrderSubList() {
             let param = { orderId: this.clienteleForm.orderId };
             getOrderSub(param).then(res => {
-                this.materielListData = res.data || [];
+                this.materielListData = res.data;
                 this.calculateTotalAll();
             });
         },
@@ -559,9 +551,9 @@ export default {
         },
         // 计算数量
         calculateTotalAll() {
-            this.materielListData.forEach(item => {
-                item.shipmentNum = parseInt(item.number || 0) - parseInt(item.hasShipmentNum || 0);
-            });
+            for (const item of this.materielListData) {
+                this.$set(item, 'shipmentNum', parseInt(item.number || 0) - parseInt(item.hasShipmentNum || 0));
+            }
         },
         calculateTotal(row) {
             let shipmentNum = parseInt(row.number || 0) - parseInt(row.hasShipmentNum || 0);
@@ -600,10 +592,10 @@ export default {
                         this.msgError('没有可发货的产品');
                         return;
                     }
+                    this.clienteleForm.status = '0';
                     let data = {
                         clientele: JSON.stringify(this.clienteleForm),
-                        materielList: JSON.stringify(materielListData),
-                        delSubIds: JSON.stringify(this.delSubIds)
+                        materielList: JSON.stringify(materielListData)
                     };
                     addAndUpdateShipments(data).then(res => {
                         if (res.success) {

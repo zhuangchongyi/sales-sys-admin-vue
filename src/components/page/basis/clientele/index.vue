@@ -43,29 +43,29 @@
                 </div>
                 <el-table v-loading="loading" :data="clienteleListData">
                     <el-table-column type="index" width="50" fixed="left" align="center" />
-                    <el-table-column label="客户编码" align="center" prop="clienteleNum" width="80" />
-                    <el-table-column label="客户名称" align="center" prop="clienteleName" :show-overflow-tooltip="true" width="100" />
-                    <el-table-column label="所属类别" align="center" prop="category.categoryName" :show-overflow-tooltip="true" width="100" />
-                    <el-table-column label="合作时间" align="center" prop="corporationTime" :show-overflow-tooltip="true" width="100" />
-                    <el-table-column label="法人" align="center" prop="legalPerson" :show-overflow-tooltip="true" width="100" />
-                    <el-table-column label="简称" align="center" prop="abbreviation" :show-overflow-tooltip="true" width="100" />
-                    <el-table-column label="联系人" align="center" prop="leader" width="100"></el-table-column>
+                    <el-table-column label="客户编码" align="center" prop="clienteleNum" width="150" />
+                    <el-table-column label="客户名称" align="center" prop="clienteleName" :show-overflow-tooltip="true" width="150" />
+                    <el-table-column label="所属类别" align="center" prop="category.categoryName" :show-overflow-tooltip="true" width="150" />
+                    <el-table-column label="合作时间" align="center" prop="corporationTime" :show-overflow-tooltip="true" width="150" />
+                    <el-table-column label="法人" align="center" prop="legalPerson" :show-overflow-tooltip="true" width="150" />
+                    <el-table-column label="简称" align="center" prop="abbreviation" :show-overflow-tooltip="true" width="150" />
+                    <el-table-column label="联系人" align="center" prop="leader" width="150"></el-table-column>
                     <el-table-column label="联系电话" align="center" prop="phone" width="150"></el-table-column>
                     <el-table-column label="手机" align="center" prop="mobilephone" width="150"></el-table-column>
                     <el-table-column label="邮箱" align="center" prop="email" width="150"></el-table-column>
                     <el-table-column label="统一社会信用证号" align="center" prop="certificateNum" width="150"></el-table-column>
-                    <el-table-column label="业务员名称" align="center" prop="personnel.nickname" width="100"></el-table-column>
-                    <el-table-column label="部门名称" align="center" prop="personnel.dept.deptName" width="100"></el-table-column>
+                    <el-table-column label="业务员名称" align="center" prop="personnel.nickname" width="150"></el-table-column>
+                    <el-table-column label="部门名称" align="center" prop="personnel.dept.deptName" width="150"></el-table-column>
                     <el-table-column label="地址" prop="address" align="center" width="300"></el-table-column>
-                    <el-table-column label="状态" prop="status" :formatter="statusFormatter" width="160" align="center"> </el-table-column>
+                    <el-table-column label="状态" prop="status" :formatter="statusFormatter" width="150" align="center"> </el-table-column>
                     <el-table-column label="创建时间" align="center" prop="createTime" width="160"></el-table-column>
                     <el-table-column label="创建人" align="center" prop="createBy" width="160"></el-table-column>
                     <el-table-column label="操作" align="center" width="250" class-name="small-padding fixed-width" fixed="right">
                         <template slot-scope="scope">
                             <el-button size="mini" type="text" icon="el-icon-edit" v-hasPermi="['basis:clientele:edit']" @click="handleUpdate(scope.row)">修改</el-button>
-                            <el-button size="mini" type="text" icon="el-icon-edit-outline" style="color:#e6a23c;" v-hasPermi="['basis:clienteleProduct:list']" @click="handleAddMateriel(scope.row)"
-                                >产品客户价</el-button
-                            >
+                            <el-button size="mini" type="text" icon="el-icon-edit-outline" style="color:#e6a23c;" v-hasPermi="['basis:clienteleProduct:list']" @click="handleAddMateriel(scope.row)">
+                                产品客户价
+                            </el-button>
                             <el-button size="mini" type="text" style="color:#fd5656" v-hasPermi="['basis:clientele:delete']" icon="el-icon-delete" @click="handleDelete(scope.row)">删除</el-button>
                         </template>
                     </el-table-column>

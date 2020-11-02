@@ -1,17 +1,22 @@
 <template>
     <div class="container">
         <el-form :model="queryParams" ref="queryParams" :inline="true">
-            <el-form-item label="" prop="shipmentsNum">
+            <el-form-item prop="shipmentsNum">
                 <el-input v-model="queryParams.shipmentsNum" placeholder="发货单号" clearable size="small" style="width: 200px" @keyup.enter.native="handleQuery" />
             </el-form-item>
-            <el-form-item label="" prop="orderNum">
+            <el-form-item prop="orderNum">
                 <el-input v-model="queryParams.orderNum" placeholder="订单号" clearable size="small" style="width: 200px" @keyup.enter.native="handleQuery" />
             </el-form-item>
-            <el-form-item label="" prop="clienteleNum">
+            <el-form-item prop="clienteleNum">
                 <el-input v-model="queryParams.clienteleNum" placeholder="客户编码" clearable size="small" style="width: 200px" @keyup.enter.native="handleQuery" />
             </el-form-item>
-            <el-form-item label="" prop="clienteleName">
+            <el-form-item prop="clienteleName">
                 <el-input v-model="queryParams.clienteleName" placeholder="客户名称" clearable size="small" style="width: 200px" @keyup.enter.native="handleQuery" />
+            </el-form-item>
+            <el-form-item prop="outboundStatus">
+                <el-select v-model="queryParams.outboundStatus" placeholder="出库状态" clearable size="small">
+                    <el-option v-for="dict in outboundStatusOptions" :key="dict.dictValue" :label="dict.dictLabel" :value="dict.dictValue" />
+                </el-select>
             </el-form-item>
             <el-form-item>
                 <el-button type="primary" icon="el-icon-search" size="small" @click="handleQuery">搜索</el-button>
@@ -35,6 +40,7 @@
             <el-table-column prop="shipmentsNum" label="发货单号" align="center" width="180" :show-overflow-tooltip="true" />
             <el-table-column prop="outboundTime" label="出库日期" align="center" width="150" :show-overflow-tooltip="true" />
             <el-table-column prop="outboundStatus" label="出库状态" :formatter="outboundStatusFormatter" align="center" width="150" />
+            <el-table-column prop="warehouseName" label="出库仓库" align="center" width="150" />
             <el-table-column label="客户编码" align="center" prop="clienteleNum" width="150" :show-overflow-tooltip="true" />
             <el-table-column label="客户名称" align="center" prop="clienteleName" :show-overflow-tooltip="true" width="150" />
             <el-table-column prop="orderNum" label="客户订单号" align="center" width="180" :show-overflow-tooltip="true" />
@@ -44,7 +50,7 @@
             <el-table-column prop="auditStatus" label="审核状态" :formatter="auditStatusFormatter" align="center" width="150" />
             <el-table-column label="审核人" align="center" prop="auditBy" width="150" :show-overflow-tooltip="true" />
             <el-table-column label="审核时间" align="center" prop="auditTime" width="150" :show-overflow-tooltip="true" />
-            <el-table-column label="操作" align="center" width="180" class-name="small-padding fixed-width" fixed="right">
+            <el-table-column label="操作" align="center" width="100" class-name="small-padding fixed-width" fixed="right">
                 <template slot-scope="scope">
                     <el-button size="mini" type="text" icon="el-icon-edit" v-hasPermi="['sales:shipments:edit']" @click="handleUpdate(scope.row)">出库</el-button>
                 </template>
@@ -66,7 +72,7 @@
 </template>
 
 <script>
-import { listShipments, deleteShipments, submitShipments } from '@/api/sales/shipments.js';
+import { listOutbound, deleteShipments, submitShipments } from '@/api/sales/shipments.js';
 export default {
     name: 'sales-shipments',
     data() {
@@ -94,11 +100,12 @@ export default {
                 clienteleName: undefined,
                 clienteleNum: undefined,
                 orderNum: undefined,
-                shipmentsStatus: '1'
+                shipmentsStatus: '1',
+                outboundStatus: undefined
             },
             selection: undefined,
             multipleSelection: [],
-            shipmentsStatusOptions: [
+            outboundStatusOptions: [
                 { dictValue: '0', dictLabel: '未出库' },
                 { dictValue: '1', dictLabel: '已出库' }
             ]
@@ -109,7 +116,7 @@ export default {
     },
     methods: {
         outboundStatusFormatter(row) {
-            return this.selectDictLabel(this.shipmentsStatusOptions, row.outboundStatus);
+            return this.selectDictLabel(this.outboundStatusOptions, row.outboundStatus);
         },
         auditStatusFormatter(row, column) {
             return this.approvalStatusFormatter(row.auditStatus);
@@ -125,9 +132,8 @@ export default {
             this.handleQuery();
         },
         getList() {
-            listShipments(this.queryParams)
+            listOutbound(this.queryParams)
                 .then(res => {
-                    console.log(res);
                     this.listData = res.data.records;
                     this.pageTotal = res.data.tatol;
                     this.loading = false;
@@ -154,7 +160,8 @@ export default {
             this.selection = selection[0];
         },
         selectionRowClick(row) {
-            this.$refs['listData'].toggleRowSelection(row);
+            this.$refs.listData.clearSelection();
+            this.$refs.listData.toggleRowSelection(row);
         },
         handledblclickRow(row, event, column) {
             this.handlePreview(row);
@@ -166,31 +173,9 @@ export default {
             }
             this.msgSuccess('打印成功');
         },
-        handleDelete() {
-            if ('1' === row.status || '4' === row.status) {
-                this.msgError('已提交，请收回删除');
-                return;
-            } else if ('3' === row.status) {
-                this.msgError('已审核，不能删除');
-                return;
-            }
-            let shipmentsId = row.shipmentsId || this.selection.shipmentsId;
-            deleteShipments(shipmentsId).then(res => {
-                if (res.success) {
-                    this.msgSuccess('删除成功');
-                    this.handleQuery();
-                } else {
-                    this.msgError(res.message);
-                }
-            });
-        },
-        /** 新增按钮操作 */
-        handleAdd() {
-            this.$router.push('/page/warehouse/outbound/add');
-        },
         /** 修改按钮操作 */
         handleUpdate(row) {
-            if ('3' == row.status) {
+            if ('3' == row.auditStatus) {
                 this.msgError('已审核，不能修改');
                 return;
             }
@@ -201,6 +186,10 @@ export default {
         },
         handleAudit(row) {
             let shipmentsId = this.selection.shipmentsId;
+            if (!this.selection.warehouseName) {
+                this.msgError('未选择出库仓库');
+                return;
+            }
             this.$router.push({ path: '/page/warehouse/outbound/preview', query: { id: shipmentsId, isAudit: true } });
         },
         handleSubmit() {

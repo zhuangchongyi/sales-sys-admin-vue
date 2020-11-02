@@ -21,10 +21,10 @@
                 <el-button class="filter-item" type="primary" icon="el-icon-plus" size="small" v-hasPermi="['basis:materielType:add']" @click="handleAdd">新增</el-button>
             </div>
             <el-table style="width: 100%" v-loading="loading" :data="categoryListData" row-key="categoryId" default-expand-all :tree-props="{ children: 'children', hasChildren: 'hasChildren' }">
-                <el-table-column prop="categoryNum" label="产品类别编码" width="200"></el-table-column>
-                <el-table-column prop="categoryName" label="产品类别名称" width="260"></el-table-column>
-                <el-table-column prop="status" label="状态" width="100" :formatter="statusFormat"></el-table-column>
-                <el-table-column label="创建时间" align="center" prop="createTime" width="200"></el-table-column>
+                <el-table-column prop="categoryNum" label="产品类别编码"></el-table-column>
+                <el-table-column prop="categoryName" label="产品类别名称"></el-table-column>
+                <el-table-column prop="status" label="状态" :formatter="statusFormat"></el-table-column>
+                <el-table-column label="创建时间" align="center" prop="createTime"></el-table-column>
                 <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
                     <template slot-scope="scope">
                         <el-button size="mini" type="text" icon="el-icon-edit" v-hasPermi="['basis:materielType:edit']" @click="handleUpdate(scope.row)">修改</el-button>
@@ -47,7 +47,7 @@
             <el-dialog :title="title" :visible.sync="open" width="600px" append-to-body>
                 <el-form ref="form" :model="form" :rules="rules" label-width="auto">
                     <el-row>
-                        <el-col :span="24" v-if="form.parentId !== 0">
+                        <el-col :span="24" v-if="form.parentId !== 0 && isShow">
                             <el-form-item label="上级类别" prop="parentId">
                                 <treeselect v-model="form.parentId" :options="categoryOptions" :normalizer="normalizer" placeholder="选择上级产品类别" />
                             </el-form-item>
@@ -124,7 +124,8 @@ export default {
                 categoryName: [{ required: true, message: '类别名称不能为空', trigger: 'blur' }],
                 categoryNum: [{ required: true, message: '类别编码不能为空', trigger: 'blur' }],
                 status: [{ required: true, message: '状态不能为空', trigger: 'blur' }]
-            }
+            },
+            isShow: true
         };
     },
     created() {
@@ -182,6 +183,11 @@ export default {
             this.reset();
             if (row != undefined) {
                 this.form.parentId = row.categoryId;
+            }
+            if (this.categoryOptions.length === 0) {
+                this.isShow = false;
+            } else {
+                this.isShow = true;
             }
             this.open = true;
             this.title = '新增产品类别';

@@ -73,7 +73,9 @@
                 </el-col>
                 <el-col :span="4">
                     <el-form-item label="拒收处理方式" prop="processMode">
-                        <el-input v-model="clienteleForm.processMode" size="small" style="width: 150px" readonly />
+                        <el-select v-model="clienteleForm.processMode" placeholder="请选择" clearable size="small" style="width: 150px" disabled>
+                            <el-option v-for="dict in processModeOptions" :key="dict.dictValue" :label="dict.dictLabel" :value="dict.dictValue" />
+                        </el-select>
                     </el-form-item>
                 </el-col>
             </el-row>
@@ -218,7 +220,7 @@ export default {
                     this.clienteleForm = res.data;
                     listSignbackSub({ signbackId: this.signbackId }).then(res => {
                         this.materielList = res.data;
-                        this.calculateTotalAll();
+                        // this.calculateTotalAll();
                     });
                 });
             }
@@ -234,11 +236,10 @@ export default {
             let allSignNum = 0;
             let allRejectionNum = 0;
             this.materielList.forEach(item => {
+                item.rejectionNum = parseInt(item.outboundNum || 0) - parseInt(row.signNum || 0);
                 allSignNum = allSignNum + parseInt(item.signNum || 0);
                 allRejectionNum = allRejectionNum + parseInt(item.rejectionNum || 0);
             });
-            this.clienteleForm.signNum = allSignNum;
-            this.clienteleForm.rejectionNum = allRejectionNum;
         },
         calculateTotal(row) {
             if (row.signNum > row.outboundNum) {

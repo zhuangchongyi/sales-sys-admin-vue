@@ -135,6 +135,8 @@ export default {
         },
         /** 修改按钮操作 */
         handleUpdate(row) {
+            if (parseFloat(row.hasVerificaPrice) > parseFloat(0)) {
+            }
             this.$router.push({ path: '/page/finance/init/edit', query: { iid: row.initId } });
         },
         handlePreview(row) {

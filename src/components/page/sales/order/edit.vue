@@ -6,11 +6,6 @@
                  @click="clearAddForm">清 空</el-button> -->
         </div>
         <el-divider><strong>客户信息</strong></el-divider>
-        <!-- <div class="handle-box">
-            <el-button type="primary" size="small" icon="el-icon-paperclip" class="handle-del mr10" @click="handleAddClientele"
-                >客户</el-button
-            >
-        </div> -->
         <el-form :model="clienteleForm" ref="clienteleForm" :rules="rules" label-position="right" label-width="auto" :inline="true">
             <el-row>
                 <el-col :span="4">
@@ -72,7 +67,7 @@
                 </el-col>
                 <el-col :span="4">
                     <el-form-item label="总计金额" prop="totalPrice">
-                        <el-input v-model="totalPrice" size="small" readonly style="width: 155px;" />
+                        <el-input v-model="clienteleForm.totalPrice" size="small" readonly style="width: 155px;" />
                     </el-form-item>
                 </el-col>
                 <el-col :span="4">
@@ -130,7 +125,6 @@
         </el-form>
         <el-divider><strong>产品信息</strong></el-divider>
         <div class="handle-box">
-            <el-button type="primary" size="small" icon="el-icon-plus" class="handle-del mr10" v-show="false" @click="handleAddMateriel">新增产品</el-button>
             <el-button type="primary" size="small" icon="el-icon-paperclip" class="handle-del mr10" @click="handleAddLinkMateriel">产品</el-button>
         </div>
         <el-table v-loading="loading" :data="materielListData">
@@ -153,22 +147,18 @@
                     />
                 </template>
             </el-table-column>
-            <el-table-column prop="number" width="150" label="数量" align="center">
+            <el-table-column prop="number" width="150" label="订购数量" align="center">
                 <template slot-scope="scope">
                     <el-input size="small" @input="calculateTotalPrice" oninput="value=value.replace(/[^\d]/g,'')" maxLength="9" v-model="scope.row.number" />
                 </template>
             </el-table-column>
-            <el-table-column prop="totalPrice" label="金额" width="200" align="center">
-                <template slot-scope="scope">
-                    <el-input size="small" readonly v-model="scope.row.totalPrice" />
-                </template>
-            </el-table-column>
+            <el-table-column prop="totalPrice" label="金额" width="200" align="center"> </el-table-column>
             <el-table-column prop="demand" label="技术要求" width="300" align="center">
                 <template slot-scope="scope">
                     <el-input size="small" v-model="scope.row.demand" />
                 </template>
             </el-table-column>
-            <el-table-column label="操作" align="center" class-name="small-padding fixed-width" fixed="right" width="260">
+            <el-table-column label="操作" align="center" class-name="small-padding fixed-width" fixed="right" width="180">
                 <template slot-scope="scope">
                     <!-- <el-button size="small" type="text" icon="el-icon-edit" @click="handleUpdateMateriel(scope.$index, scope.row)">编辑</el-button> -->
                     <el-button size="small" type="text" icon="el-icon-upload" style="color:#e6a23c;" v-show="scope.row.subId" @click="handleUpload(scope.row)">图纸</el-button>
@@ -325,7 +315,7 @@
                         </el-form-item>
                     </el-col>
                     <el-col :span="12">
-                        <el-form-item label="数量" prop="number">
+                        <el-form-item label="订购数量" prop="number">
                             <el-input v-model="form.number" oninput="value=value.replace(/[^\d]/g,'')" maxLength="9" placeholder="请输入数量"> </el-input>
                         </el-form-item>
                     </el-col>
@@ -524,7 +514,6 @@ export default {
             },
             clienteleTotal: 0,
             clienteleTypeOptions: [], //客户类别
-            totalPrice: 0,
             orderNum: undefined,
             orderId: undefined,
             //添加人员
@@ -685,7 +674,6 @@ export default {
             this.clienteleForm = {};
             this.form = {};
             this.materielListData = [];
-            this.totalPrice = 0;
             this.delSubIds = [];
             this.clienteleForm.personnelName = this.$store.getters.name;
             this.clienteleForm.personnelId = this.$store.getters.userId;
@@ -815,7 +803,7 @@ export default {
                 item.totalPrice = price.toFixed(2);
                 total = parseFloat(total) + price;
             });
-            this.totalPrice = total.toFixed(2);
+            this.$set(this.clienteleForm, 'totalPrice', total.toFixed(2));
         },
         handleDelete(index, row) {
             if (row.subId) {

@@ -53,7 +53,7 @@
                 </el-col>
                 <el-col :span="6">
                     <el-form-item label="付款方式" prop="paymentType">
-                        <el-select v-model="clienteleForm.status" clearable size="small" disabled>
+                        <el-select v-model="clienteleForm.paymentType" clearable size="small" disabled>
                             <el-option v-for="dict in paymentTypeOptions" :key="dict.dictValue" :label="dict.dictLabel" :value="dict.dictValue" />
                         </el-select>
                     </el-form-item>
@@ -184,8 +184,8 @@ export default {
                 receiptPrice: [{ required: true, message: '金额不能为空', trigger: 'blur' }],
                 clienteleName: [{ required: true, message: '客户名称不能为空', trigger: 'blur' }],
                 clienteleNum: [{ required: true, message: '客户编码不能为空', trigger: 'blur' }],
-                personnelName: [{ required: true, message: '客户名称不能为空', trigger: 'blur' }],
-                deptName: [{ required: true, message: '客户名称不能为空', trigger: 'blur' }],
+                // personnelName: [{ required: true, message: '客户名称不能为空', trigger: 'blur' }],
+                // deptName: [{ required: true, message: '客户名称不能为空', trigger: 'blur' }],
                 paymentType: [{ required: true, message: '付款方式不能为空', trigger: 'blur' }]
             },
             //表单参数

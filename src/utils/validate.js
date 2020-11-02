@@ -98,3 +98,11 @@
      const reg = /^(?!0+$)(?!0*\.0*$)\d{1,8}(\.\d{1,2})?$/
      return reg.test(number)
  }
+
+ /**
+  * @param {string} path
+  * @returns {Boolean}
+  */
+ export function isImages(type) {
+     return /^image\/(jpeg|png|jpg|gif)$/.test(type);
+ }

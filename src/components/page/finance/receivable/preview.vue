@@ -13,8 +13,30 @@
                     </el-form-item>
                 </el-col>
                 <el-col :span="4">
+                    <el-form-item label="客户编码" prop="clienteleNum">
+                        <el-input v-model="clienteleForm.clienteleNum" size="small" style="width: 150px;" readonly />
+                    </el-form-item>
+                </el-col>
+                <el-col :span="4">
+                    <el-form-item label="客户名称" prop="clienteleName">
+                        <el-input v-model="clienteleForm.clienteleName" size="small" style="width: 150px" readonly />
+                    </el-form-item>
+                </el-col>
+                <el-col :span="4">
                     <el-form-item label="财务日期" prop="financeTime">
                         <el-date-picker v-model="clienteleForm.financeTime" size="small" style="width: 150px;" readonly />
+                    </el-form-item>
+                </el-col>
+                <el-col :span="4">
+                    <el-form-item label="应收金额" prop="totalPrice">
+                        <el-input
+                            v-model="clienteleForm.totalPrice"
+                            size="small"
+                            style="width: 150px"
+                            oninput="if(isNaN(value)) { value = null } if(value.indexOf('.')>0){value=value.slice(0,value.indexOf('.')+3)}"
+                            maxLength="9"
+                            readonly
+                        />
                     </el-form-item>
                 </el-col>
                 <el-col :span="4">
@@ -35,16 +57,6 @@
                 <el-col :span="4">
                     <el-form-item label="订单日期" prop="orderTime">
                         <el-date-picker v-model="clienteleForm.orderTime" size="small" style="width: 150px;" readonly />
-                    </el-form-item>
-                </el-col>
-                <el-col :span="4">
-                    <el-form-item label="客户编码" prop="clienteleNum">
-                        <el-input v-model="clienteleForm.clienteleNum" size="small" style="width: 150px;" readonly />
-                    </el-form-item>
-                </el-col>
-                <el-col :span="4">
-                    <el-form-item label="客户名称" prop="clienteleName">
-                        <el-input v-model="clienteleForm.clienteleName" size="small" style="width: 150px" readonly />
                     </el-form-item>
                 </el-col>
                 <el-col :span="4">
@@ -76,23 +88,6 @@
                         />
                     </el-form-item>
                 </el-col>
-                <el-col :span="4">
-                    <el-form-item label="应收金额" prop="receivePrice">
-                        <el-input
-                            v-model="clienteleForm.receivePrice"
-                            size="small"
-                            style="width: 150px"
-                            oninput="if(isNaN(value)) { value = null } if(value.indexOf('.')>0){value=value.slice(0,value.indexOf('.')+3)}"
-                            maxLength="9"
-                            readonly
-                        />
-                    </el-form-item>
-                </el-col>
-                <el-col :span="4">
-                    <el-form-item label="累计金额" prop="totalPrice">
-                        <el-input v-model="clienteleForm.totalPrice" size="small" style="width: 150px" readonly />
-                    </el-form-item>
-                </el-col>
             </el-row>
             <el-row>
                 <el-col :span="24">
@@ -102,21 +97,6 @@
                 </el-col>
             </el-row>
         </el-form>
-        <!-- <el-divider><strong>签回产品信息</strong></el-divider>
-        <el-table v-loading="loading" :data="materielListData">
-            <el-table-column label="产品编码" align="center" prop="materielNum" />
-            <el-table-column label="产品名称" align="center" prop="materielName" :show-overflow-tooltip="true" />
-            <el-table-column label="规格" align="center" prop="specification" :show-overflow-tooltip="true"></el-table-column>
-            <el-table-column label="型号" align="center" prop="modelName" :show-overflow-tooltip="true"></el-table-column>
-            <el-table-column label="所需扭矩" align="center" prop="needTorque" :show-overflow-tooltip="true"></el-table-column>
-            <el-table-column label="输出扭矩" align="center" prop="outTorque" :show-overflow-tooltip="true"></el-table-column>
-            <el-table-column label="单位" prop="unitsName" align="center"></el-table-column>
-            <el-table-column label="单价" align="center" prop="price"></el-table-column>
-            <el-table-column label="订购数量" align="center" prop="number"></el-table-column>
-            <el-table-column label="发货数量" align="center" prop="shipmentNum"></el-table-column>
-            <el-table-column label="签回数量" align="center" prop="signNum"></el-table-column>
-            <el-table-column label="应收金额" prop="totalPrice" align="center"> </el-table-column>
-        </el-table> -->
 
         <!--  添加客户窗口 -->
         <el-dialog title="客戶签回单" :visible.sync="open" width="60%" append-to-body>
@@ -154,7 +134,6 @@
                 </el-table-column>
                 <el-table-column label="客户编码" align="center" prop="clienteleNum" :show-overflow-tooltip="true" />
                 <el-table-column label="客户名称" align="center" prop="clienteleName" :show-overflow-tooltip="true" />
-                <!-- <el-table-column label="应付金额" align="center" prop="totalPrice" :show-overflow-tooltip="true" /> -->
             </el-table>
             <div class="pagination">
                 <el-pagination
@@ -177,7 +156,7 @@
 </template>
 
 <script>
-import { auditReceivable, getReceivable, listReceivableSub } from '@/api/finance/receivable.js';
+import { auditReceivable, getReceivable } from '@/api/finance/receivable.js';
 import { financeSignback, financeSignbackSub } from '@/api/sales/signback.js';
 export default {
     data() {
@@ -196,7 +175,7 @@ export default {
                 clienteleNum: [{ required: true, message: '客户编码不能为空', trigger: 'blur' }],
                 clienteleName: [{ required: true, message: '客户名称不能为空', trigger: 'blur' }],
                 financeTime: [{ required: true, message: '财务日期不能为空', trigger: 'blur' }],
-                receivePrice: [
+                totalPrice: [
                     { required: true, message: '应收金额不能为空', trigger: 'blur' },
                     { validator: this.validateReceivePrice, trigger: ['blur', 'change'] }
                 ]
@@ -280,9 +259,6 @@ export default {
                 getReceivable(id).then(res => {
                     if (res.success) {
                         this.clienteleForm = res.data;
-                        listReceivableSub({ receivableId: id }).then(res => {
-                            this.materielListData = res.data;
-                        });
                     }
                 });
             }
@@ -380,7 +356,7 @@ export default {
                     total = total + parseFloat(item.totalPrice || 0);
                 });
                 this.clienteleForm.totalPrice = total.toFixed(2);
-                this.$set(this.clienteleForm, 'receivePrice', total.toFixed(2));
+                this.$set(this.clienteleForm, 'totalPrice', total.toFixed(2));
             });
         },
         // 取消按钮
@@ -393,13 +369,8 @@ export default {
         submitAddForm() {
             this.$refs.clienteleForm.validate(valid => {
                 if (valid) {
-                    if (parseFloat(this.clienteleForm.totalPrice) < parseFloat(this.clienteleForm.receivePrice)) {
-                        this.msgError('应收金额超过累计金额');
-                        return;
-                    }
                     let data = {
-                        clienteleForm: JSON.stringify(this.clienteleForm),
-                        materielList: JSON.stringify(this.materielListData)
+                        clienteleForm: JSON.stringify(this.clienteleForm)
                     };
                     addReceivable(data).then(res => {
                         if (res.success) {

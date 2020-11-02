@@ -53,10 +53,17 @@
      });
  }
 
- // =====================================以下是子表操作================================================//
- export function listReceivableSub(params) {
+ export function getReceivableList(params) {
      return request({
-         url: '/finance/receivableSub/list',
+         url: '/finance/receivable/clientele',
+         method: 'get',
+         params: params
+     });
+ }
+
+ export function getClienteleReceivableList(params) {
+     return request({
+         url: '/finance/receivable/clienteleList',
          method: 'get',
          params: params
      });

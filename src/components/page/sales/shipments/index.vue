@@ -28,7 +28,7 @@
                 </el-dropdown-menu>
             </el-dropdown>
             <el-button type="primary" size="small" icon="el-icon-edit" class="handle-del mr10" :disabled="single" @click="handleAudit">审核</el-button>
-            <el-button type="warning" size="small" icon="el-icon-edit" class="handle-del mr10" :disabled="single" @click="handleAudit">特批</el-button>
+            <el-button type="warning" size="small" icon="el-icon-edit" class="handle-del mr10" :disabled="single" @click="handleApprove">特批</el-button>
             <el-button type="primary" size="small" icon="el-icon-printer" class="handle-del mr10" @click="handlePrint" :disabled="single">打印</el-button>
         </div>
         <el-table v-loading="loading" :data="listData" ref="listData" @row-click="selectionRowClick" highlight-current-row @row-dblclick="handledblclickRow" @selection-change="handleSelectionChange">
@@ -155,7 +155,7 @@ export default {
             this.selection = selection[0];
         },
         selectionRowClick(row) {
-            this.$refs['listData'].toggleRowSelection(row);
+            this.$refs.listData.toggleRowSelection(row);
         },
         handledblclickRow(row, event, column) {
             this.handlePreview(row);
@@ -168,10 +168,10 @@ export default {
             this.msgSuccess('打印成功');
         },
         handleDelete(row) {
-            if ('1' === row.status || '4' === row.status) {
+            if ('1' === row.status || '4' === row.status || '6' === row.status) {
                 this.msgError('已提交，请收回删除');
                 return;
-            } else if ('3' === row.status) {
+            } else if ('3' === row.status || '5' === row.status) {
                 this.msgError('已审核，不能删除');
                 return;
             }
@@ -198,10 +198,10 @@ export default {
         },
         /** 修改按钮操作 */
         handleUpdate(row) {
-            if ('1' === row.status || '4' === row.status) {
+            if ('1' === row.status || '4' === row.status || '6' === row.status) {
                 this.msgError('已提交，不能修改');
                 return;
-            } else if ('3' === row.status) {
+            } else if ('3' === row.status || '5' === row.status) {
                 this.msgError('已审核，不能修改');
                 return;
             }
@@ -210,15 +210,22 @@ export default {
         handlePreview(row) {
             this.$router.push({ path: '/page/sales/shipments/preview', query: { id: row.shipmentsId } });
         },
+        handleApprove(row) {
+            if (this.verifyStatus('0', '请先提交') || this.verifyStatus('2', '请先提交') || this.verifyStatus('3', '已审核')) {
+                return;
+            }
+            let shipmentsId = this.selection.shipmentsId;
+            this.$router.push({ path: '/page/sales/shipments/preview', query: { id: shipmentsId, isShow: true } });
+        },
         handleAudit(row) {
-            if (this.verifyStatus('0', '请先提交') || this.verifyStatus('2', '请先提交')) {
+            if (this.verifyStatus('0', '请先提交') || this.verifyStatus('2', '请先提交') || this.verifyStatus('5', '已特批')) {
                 return;
             }
             let shipmentsId = this.selection.shipmentsId;
             this.$router.push({ path: '/page/sales/shipments/preview', query: { id: shipmentsId, isAudit: true } });
         },
         handleSubmit() {
-            if (this.verifyStatus('1', '已提交') || this.verifyStatus('4', '已提交') || this.verifyStatus('3', '已审核')) {
+            if (this.verifyStatus('1', '已提交') || this.verifyStatus('4', '已提交') || this.verifyStatus('3', '已审核') || this.verifyStatus('5', '已特批')) {
                 return;
             }
             submitShipments('1', this.ids).then(res => {
@@ -231,12 +238,12 @@ export default {
             });
         },
         handleNoSubmit() {
-            if (this.verifyStatus('0', '请先提交') || this.verifyStatus('2', '已收回') || this.verifyStatus('3', '已审核，不能收回')) {
+            if (this.verifyStatus('0', '请先提交') || this.verifyStatus('2', '已收回') || this.verifyStatus('3', '已审核，不能收回') || this.verifyStatus('5', '已特批')) {
                 return;
             }
             submitShipments('2', this.ids).then(res => {
                 if (res.success) {
-                    this.msgSuccess('提交成功');
+                    this.msgSuccess('收回成功');
                     this.handleQuery();
                 } else {
                     this.msgError(res.message);

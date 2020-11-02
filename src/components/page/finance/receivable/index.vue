@@ -17,29 +17,28 @@
             <el-dropdown trigger="click" style="margin:0 10px;">
                 <el-button class="el-dropdown-link" size="small" type="primary"> 提交<i class="el-icon-arrow-down el-icon--right"></i> </el-button>
                 <el-dropdown-menu slot="dropdown">
-                    <el-dropdown-item icon="el-icon-top" @click.native="handleSubmit">提交</el-dropdown-item>
-                    <el-dropdown-item icon="el-icon-bottom" @click.native="handleNoSubmit">收回</el-dropdown-item>
+                    <el-dropdown-item icon="el-icon-top" @click.native="handleSubmit" :disabled="single">提交</el-dropdown-item>
+                    <el-dropdown-item icon="el-icon-bottom" @click.native="handleNoSubmit" :disabled="single">收回</el-dropdown-item>
                 </el-dropdown-menu>
             </el-dropdown>
             <el-button type="primary" size="small" icon="el-icon-finished" class="handle-del mr10" :disabled="single" @click="handleAudit">审核</el-button>
-            <el-button type="warning" size="small" icon="el-icon-edit-outline" class="handle-del mr10" :disabled="single" @click="handleCollection">收款</el-button>
+            <!-- <el-button type="warning" size="small" icon="el-icon-edit-outline" class="handle-del mr10" :disabled="single" @click="handleCollection">收款</el-button> -->
         </div>
         <el-table v-loading="loading" :data="listData" ref="listData" @row-click="selectionRowClick" highlight-current-row @row-dblclick="handlePreview" @selection-change="handleSelectionChange">
             <el-table-column type="selection" width="55" align="center" />
             <el-table-column label="应收单号" prop="receivableNum" align="center" :show-overflow-tooltip="true" width="180" />
             <el-table-column label="客户编码" prop="clienteleNum" align="center" :show-overflow-tooltip="true" />
             <el-table-column label="客户名称" prop="clienteleName" align="center" :show-overflow-tooltip="true" />
-            <el-table-column label="应收金额" prop="receivePrice" :show-overflow-tooltip="true" align="center" />
+            <el-table-column label="应收金额" prop="totalPrice" :show-overflow-tooltip="true" align="center" />
             <el-table-column label="财务日期" prop="financeTime" :show-overflow-tooltip="true" align="center" />
             <el-table-column label="录入人" prop="createBy" align="center" :show-overflow-tooltip="true" />
             <el-table-column label="录入日期" prop="createTime" :show-overflow-tooltip="true" align="center" />
             <el-table-column label="状态" prop="status" align="center" width="120" :formatter="auditStatusFormatter" />
             <el-table-column label="审核人" prop="auditBy" align="center" :show-overflow-tooltip="true" />
             <el-table-column label="审核日期" prop="auditTime" :show-overflow-tooltip="true" align="center" />
-            <el-table-column label="操作" width="200" fixed="right" align="center">
+            <el-table-column label="操作" width="180" fixed="right" align="center">
                 <template slot-scope="scope">
                     <el-button type="text" icon="el-icon-edit" @click="handleUpdate(scope.row)">修改</el-button>
-                    <!-- <el-button type="text" icon="el-icon-edit-outline" @click="handleCollection(scope.row)">收款</el-button> -->
                     <el-button type="text" icon="el-icon-delete" style="color:#fd5656" @click="handleDelete(scope.row)">删除</el-button>
                 </template>
             </el-table-column>
@@ -139,6 +138,10 @@ export default {
             this.$router.push({ path: '/page/finance/receivable/add' });
         },
         handleUpdate(row) {
+            if (row.sourceType == '0') {
+                this.msgError('不允许操作');
+                return;
+            }
             if ('1' === row.status || '4' === row.status) {
                 this.msgError('已提交，不能修改');
                 return;
@@ -152,6 +155,10 @@ export default {
             this.$router.push({ path: '/page/finance/receivable/preview', query: { rid: row.receivableId } });
         },
         handleSubmit() {
+            if (this.selection.sourceType == '0') {
+                this.msgError('不允许操作');
+                return;
+            }
             if (this.verifyStatus('1', '已提交') || this.verifyStatus('4', '已提交') || this.verifyStatus('3', '已审核')) {
                 return;
             }
@@ -165,6 +172,10 @@ export default {
             });
         },
         handleNoSubmit() {
+            if (this.selection.sourceType == '0') {
+                this.msgError('不允许操作');
+                return;
+            }
             if (this.verifyStatus('0', '请先提交') || this.verifyStatus('2', '已收回') || this.verifyStatus('3', '已审核，不能收回')) {
                 return;
             }
@@ -191,6 +202,11 @@ export default {
             this.$router.push({ path: '/page/finance/receivable/receipt', query: { rid: this.selection.receivableId } });
         },
         handleDelete(row) {
+            console.log(row);
+            if (row.sourceType == '0') {
+                this.msgError('不允许操作');
+                return;
+            }
             if ('1' === row.status || '4' === row.status) {
                 this.msgError('已提交，请收回删除');
                 return;

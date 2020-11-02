@@ -16,7 +16,13 @@
          params: params
      });
  }
-
+ export function listReturnOrder(params) {
+     return request({
+         url: '/sales/order/returns',
+         method: 'get',
+         params: params
+     });
+ }
 
  export function getOrder(params) {
      return request({
@@ -63,6 +69,21 @@
      });
  }
 
+ export function checkCloseOrderSub(params) {
+     return request({
+         url: '/sales/order/checkClose',
+         method: 'get',
+         params: params
+     });
+ }
+
+ export function closeOrder(params) {
+     return request({
+         url: '/sales/order/close',
+         method: 'put',
+         data: params
+     });
+ }
  // =====================================以下是订单子表操作================================================//
  export function listOrderSub(params) {
      return request({
@@ -80,6 +101,13 @@
      });
  }
 
+ export function listSignOrderSub(params) {
+     return request({
+         url: '/sales/orderSub/sign',
+         method: 'get',
+         params: params
+     });
+ }
  export function deleteOrderSub(params) {
      return request({
          url: '/sales/orderSub/' + params,

@@ -49,19 +49,20 @@
             <el-dialog :title="title" :visible.sync="open" width="600px" append-to-body>
                 <el-form ref="form" :model="form" :rules="rules" label-width="80px">
                     <el-row>
-                        <el-col :span="24" v-if="form.parentId !== 0">
+                        <el-col :span="24" v-if="form.parentId !== 0 && isShow">
                             <el-form-item label="归属上级" prop="parentId">
                                 <treeselect v-model="form.parentId" :options="deptOptions" :normalizer="normalizer" placeholder="选择上级" />
                             </el-form-item>
                         </el-col>
+
                         <el-col :span="12">
-                            <el-form-item label="部门编码" prop="deptNum">
-                                <el-input v-model="form.deptNum" maxlength="10" show-word-limit placeholder="请输入部门名称" />
+                            <el-form-item label="编码" prop="deptNum">
+                                <el-input v-model="form.deptNum" maxlength="10" show-word-limit placeholder="请输入名称" />
                             </el-form-item>
                         </el-col>
                         <el-col :span="12">
-                            <el-form-item label="部门名称" prop="deptName">
-                                <el-input v-model="form.deptName" placeholder="请输入部门名称" />
+                            <el-form-item label="名称" prop="deptName">
+                                <el-input v-model="form.deptName" placeholder="请输入名称" />
                             </el-form-item>
                         </el-col>
                         <el-col :span="12">
@@ -191,7 +192,8 @@ export default {
                 pageNum: 1,
                 pageSize: 10
             },
-            total: 0
+            total: 0,
+            isShow: true
         };
     },
     created() {
@@ -245,6 +247,12 @@ export default {
             this.reset();
             if (row != undefined) {
                 this.form.parentId = row.deptId;
+            }
+            console.log(this.deptOptions);
+            if (this.deptOptions.length === 0) {
+                this.isShow = false;
+            } else {
+                this.isShow = true;
             }
             this.isAdd = true;
             this.open = true;

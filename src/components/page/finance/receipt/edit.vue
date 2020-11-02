@@ -30,7 +30,7 @@
                         <el-input
                             v-model="clienteleForm.receiptPrice"
                             size="small"
-                            oninput="if(isNaN(value)) { value = null } if(value.indexOf('.')>0){value=value.slice(0,value.indexOf('.')+8)}"
+                            oninput="if(isNaN(value)) { value = null } if(value.indexOf('.')>0){value=value.slice(0,value.indexOf('.')+3)}"
                             maxLength="9"
                         />
                     </el-form-item>
@@ -52,7 +52,7 @@
                 </el-col>
                 <el-col :span="6">
                     <el-form-item label="付款方式" prop="paymentType">
-                        <el-select v-model="clienteleForm.status" clearable size="small">
+                        <el-select v-model="clienteleForm.paymentType" clearable size="small">
                             <el-option v-for="dict in paymentTypeOptions" :key="dict.dictValue" :label="dict.dictLabel" :value="dict.dictValue" />
                         </el-select>
                     </el-form-item>
@@ -183,8 +183,8 @@ export default {
                 receiptPrice: [{ required: true, message: '金额不能为空', trigger: 'blur' }],
                 clienteleName: [{ required: true, message: '客户名称不能为空', trigger: 'blur' }],
                 clienteleNum: [{ required: true, message: '客户编码不能为空', trigger: 'blur' }],
-                personnelName: [{ required: true, message: '客户名称不能为空', trigger: 'blur' }],
-                deptName: [{ required: true, message: '客户名称不能为空', trigger: 'blur' }],
+                // personnelName: [{ required: true, message: '客户名称不能为空', trigger: 'blur' }],
+                // deptName: [{ required: true, message: '客户名称不能为空', trigger: 'blur' }],
                 paymentType: [{ required: true, message: '付款方式不能为空', trigger: 'blur' }]
             },
             //表单参数

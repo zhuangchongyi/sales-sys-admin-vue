@@ -27,12 +27,13 @@
         <el-table v-loading="loading" :data="listData" @selection-change="handleSelectionChange" ref="listData" @row-click="selectionRowClick" highlight-current-row @row-dblclick="handledblclickRow">
             <el-table-column type="selection" width="50" fixed="left" align="center" />
             <el-table-column prop="returnsNum" label="退货单号" align="center" width="180" />
+            <el-table-column prop="returnsTime" label="退货日期" align="center" width="120" />
             <el-table-column prop="clienteleNum" label="客户编号" align="center" width="120" />
             <el-table-column prop="clienteleName" label="客户名称" align="center" :show-overflow-tooltip="true" width="120" />
+            <el-table-column prop="orderNum" label="订单号" align="center" width="180" />
             <el-table-column prop="totalPrice" label="退货金额" align="center" width="120" />
-            <el-table-column prop="returnsTime" label="退货日期" align="center" width="120" />
-            <el-table-column prop="remark" label="退货原因" align="desc" :show-overflow-tooltip="true" width="200" />
             <el-table-column prop="status" label="状态" :formatter="auditStatusFormatter" align="center" width="120" />
+            <el-table-column prop="remark" label="退货原因" align="desc" :show-overflow-tooltip="true" width="200" />
             <el-table-column prop="createBy" label="录入人" align="center" width="120" />
             <el-table-column prop="createTime" label="录入时间" align="center" width="160" />
             <el-table-column prop="auditBy" label="审核人" align="center" width="120" />
@@ -164,11 +165,11 @@ export default {
             }).then(function() {
                 deleteReturns(returnsId).then(res => {
                     if (res.success) {
-                        this.msgSuccess('删除成功');
-                        this.handleQuery();
+                        that.msgSuccess('删除成功');
                     } else {
-                        this.msgError(res.message);
+                        that.msgError(res.message);
                     }
+                    that.handleQuery();
                 });
             });
         },

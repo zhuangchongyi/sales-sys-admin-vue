@@ -43,7 +43,7 @@
                     <el-button type="primary" size="small" icon="el-icon-plus" class="handle-del mr10" v-hasPermi="['basis:materiel:add']" @click="handleQuotationAdd">报价产品录入</el-button>
                 </div>
                 <el-table v-loading="loading" :data="materielListData">
-                    <el-table-column type="index" width="50" fixed="left" align="center" />
+                    <el-table-column label="序号" type="index" width="50" align="center" />
                     <el-table-column label="产品编码" align="center" prop="materielNum" width="100" />
                     <el-table-column label="产品名称" align="center" prop="materielName" :show-overflow-tooltip="true" width="120" />
                     <el-table-column label="产品类别" align="center" prop="categoryName" :show-overflow-tooltip="true" width="120" />
@@ -381,9 +381,6 @@
                     </el-row>
                     <el-row>
                         <el-col :span="24">
-                            <!-- <el-form-item label="型号" prop="modelName">
-                                <el-input v-model="materielForm.modelName" placeholder="请输入型号" />
-                            </el-form-item> -->
                             <el-form-item label="型号" prop="modelNames">
                                 <el-tag :key="index" v-for="(tag, index) in modelNames" closable :disable-transitions="false" @close="handleClose(tag)">
                                     {{ tag }}
@@ -461,17 +458,6 @@
                         </el-col>
                     </el-row>
                 </el-form>
-                <div slot="footer" class="dialog-footer">
-                    <el-button type="primary" @click="submitFormQuotation">确 定</el-button>
-                    <el-button @click="cancelDialog">取 消</el-button>
-                </div>
-            </el-dialog>
-            <el-dialog title="新增为型号" :visible.sync="modelNameOpen" width="600px" append-to-body>
-                <el-table v-loading="imageLoading" :data="selectionMaterielData">
-                    <el-table-column label="名称" align="center" :show-overflow-tooltip="true" prop="name" />
-                    <el-table-column label="上传时间" align="center" :show-overflow-tooltip="true" prop="createTime" />
-                    <el-table-column label="标注" align="center" :show-overflow-tooltip="true" prop="remark" />
-                </el-table>
                 <div slot="footer" class="dialog-footer">
                     <el-button type="primary" @click="submitFormQuotation">确 定</el-button>
                     <el-button @click="cancelDialog">取 消</el-button>
@@ -777,7 +763,7 @@ export default {
             this.$refs.unitsBlur.blur();
         },
         getUnitsList() {
-            console.log(this.unitsQuery);
+            // console.log(this.unitsQuery);
             listUnits(this.unitsQuery).then(res => {
                 this.unitsLoading = false;
                 this.unitsListData = res.data.records;
@@ -785,7 +771,7 @@ export default {
             });
         },
         getCurrentRow(row) {
-            console.log('选中行', row);
+            // console.log('选中行', row);
             this.selectedUnits = row;
         },
         handlePageChangeDialog(val) {
@@ -807,12 +793,12 @@ export default {
         submitFormDialog() {
             this.form.unitsId = this.selectedUnits.unitsId;
             this.form.unitsNum = this.selectedUnits.unitsNum;
-            this.form.unitsName = this.selectedUnits.unitsName;
+            this.$set(this.form, 'unitsName', this.selectedUnits.unitsName);
             this.$refs.form.clearValidate('unitsName');
             if (this.materielOpen) {
                 this.materielForm.unitsId = this.selectedUnits.unitsId;
                 this.materielForm.unitsNum = this.selectedUnits.unitsNum;
-                this.materielForm.unitsName = this.selectedUnits.unitsName;
+                this.$set(this.materielForm, 'unitsName', this.selectedUnits.unitsName);
                 this.$refs.materielForm.clearValidate('unitsName');
             }
             this.unitsOpen = false;
@@ -862,7 +848,7 @@ export default {
             }
         },
         beforeUpload(file) {
-            console.log(file);
+            // console.log(file);
             const isTypeTrue = /^image\/(jpeg|png|jpg|gif)$/.test(file.type);
             if (!isTypeTrue) {
                 this.msgError('只允许上传jpeg|png|jpg|gif 格式的图片');
@@ -875,7 +861,7 @@ export default {
         },
         handleUpdateFile(row) {
             this.remarkForm = {};
-            console.log('remark', row);
+            // console.log('remark', row);
             this.remarkForm = row;
             this.remarkOpen = true;
         },
@@ -902,7 +888,7 @@ export default {
             });
         },
         handleDownloadFile(row) {
-            console.log('handleDownloadFile', row);
+            // console.log('handleDownloadFile', row);
             this.imageLoading = true;
             downloadFile(row.pkId)
                 .then(res => {
@@ -955,7 +941,6 @@ export default {
                 });
         },
         handleAddQuotationMateriel(row) {
-            console.log(row);
             this.materielOpen = true;
             this.modelNames = [];
             this.resetForm('materielForm');
@@ -963,7 +948,6 @@ export default {
             this.materielForm = row;
         },
         handleAddQuotationModelName(row) {
-            console.log(row);
             this.modelNameOpen = true;
         },
         submitFormQuotation() {

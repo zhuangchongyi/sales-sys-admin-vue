@@ -17,13 +17,7 @@
                 <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">刷新</el-button>
             </el-form-item>
         </el-form>
-        <div class="handle-box">
-            <!-- <el-button type="primary" size="mini" icon="el-icon-plus" class="handle-del mr10" @click="handleAdd">新增</el-button>
-            <el-button type="success" size="mini" icon="el-icon-edit" class="handle-del mr10" :disabled="single" @click="handleUpdate">修改</el-button>
-            <el-button type="warning" size="mini" icon="el-icon-finished" class="handle-del mr10" :disabled="multiple" @click="handleAudit">审核</el-button>
-            <el-button type="danger" size="mini" icon="el-icon-delete" class="handle-del mr10" @click="handleDelete" :disabled="multiple">删除</el-button>
-            <el-button type="primary" size="mini" icon="el-icon-printer" class="handle-del mr10" @click="handlePrint" :disabled="single">打印</el-button> -->
-        </div>
+        <div class="handle-box"></div>
         <el-table v-loading="loading" :data="clienteleList" @selection-change="handleSelectionChange">
             <el-table-column type="selection" width="50" align="center" />
             <el-table-column label="交易单号" align="center" prop="clienteleId" />
@@ -106,7 +100,6 @@
 </template>
 
 <script>
-import { listData, treeselect } from '@/api/basis/clientele.js';
 import Treeselect from '@riophae/vue-treeselect';
 import '@riophae/vue-treeselect/dist/vue-treeselect.css';
 export default {
@@ -192,10 +185,7 @@ export default {
             }
         };
     },
-    created() {
-        this.getList();
-        this.getTreeselect();
-    },
+    created() {},
     watch: {
         // 根据名称筛选部门树
         deptName(val) {

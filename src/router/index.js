@@ -126,12 +126,12 @@
                  }
              },
              {
-                 name: '/page/sales/order/schedule',
-                 path: '/page/sales/order/schedule',
-                 component: () => import('@/components/page/sales/order/schedule.vue'),
+                 name: '/page/sales/order/preview2',
+                 path: '/page/sales/order/preview2',
+                 component: () => import('@/components/page/sales/order/preview2.vue'),
                  meta: {
                      title: '查看订单进度',
-                     permission: 'sales:order:schedule'
+                     permission: 'sales:order:preview2'
                  }
              },
              {
@@ -238,6 +238,14 @@
                  }
              },
              {
+                 name: '/page/warehouse/storage/preview',
+                 path: '/page/warehouse/storage/preview',
+                 component: () => import('@/components/page/warehouse/storage/preview.vue'),
+                 meta: {
+                     title: '查看产品入库单'
+                 }
+             },
+             {
                  name: '/page/warehouse/otherOutbound/preview',
                  path: '/page/warehouse/otherOutbound/preview',
                  component: () => import('@/components/page/warehouse/otherOutbound/preview.vue'),
@@ -274,6 +282,14 @@
                  component: () => import('@/components/page/warehouse/outbound/preview.vue'),
                  meta: {
                      title: '查看出库单'
+                 }
+             },
+             {
+                 name: '/page/warehouse/outbound/edit',
+                 path: '/page/warehouse/outbound/edit',
+                 component: () => import('@/components/page/warehouse/outbound/edit.vue'),
+                 meta: {
+                     title: '修改出库单'
                  }
              },
              {
@@ -410,14 +426,6 @@
                  }
              },
              {
-                 name: '/page/finance/receivable/receipt',
-                 path: '/page/finance/receivable/receipt',
-                 component: () => import('@/components/page/finance/receivable/receipt.vue'),
-                 meta: {
-                     title: '收款'
-                 }
-             },
-             {
                  path: '/page/finance/receipt/add',
                  component: () => import('@/components/page/finance/receipt/add.vue'),
                  meta: {
@@ -439,12 +447,21 @@
                  meta: {
                      title: '查看收款单'
                  }
-             }, {
-                 name: '/page/finance/receipt/verifica',
-                 path: '/page/finance/receipt/verifica',
-                 component: () => import('@/components/page/finance/receipt/verifica.vue'),
+             },
+             {
+                 name: '/page/finance/writeoff/add',
+                 path: '/page/finance/writeoff/add',
+                 component: () => import('@/components/page/finance/writeoff/add.vue'),
                  meta: {
-                     title: '核销收款单'
+                     title: '新增核销'
+                 }
+             },
+             {
+                 name: '/page/finance/writeoff/preview',
+                 path: '/page/finance/writeoff/preview',
+                 component: () => import('@/components/page/finance/writeoff/preview.vue'),
+                 meta: {
+                     title: '查看核销'
                  }
              },
          ]

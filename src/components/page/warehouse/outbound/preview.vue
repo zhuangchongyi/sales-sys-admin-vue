@@ -5,11 +5,6 @@
             <el-button type="primary" icon="el-icon-close" :loading="btnLoading" @click="cancelAuditForm">反审核</el-button>
         </div>
         <el-divider><strong>客户信息</strong></el-divider>
-        <!-- <div class="handle-box">
-            <el-button type="primary" size="small" icon="el-icon-paperclip" class="handle-del mr10" @click="handleAddClientele"
-                >客户订单</el-button
-            >
-        </div> -->
         <el-form :model="clienteleForm" ref="clienteleForm" :rules="rules" label-position="right" label-width="auto" :inline="true">
             <el-row>
                 <el-col :span="4">
@@ -69,7 +64,7 @@
                 </el-col>
                 <el-col :span="4">
                     <el-form-item label="仓库编码" prop="warehouseNum">
-                        <el-input v-model="clienteleForm.warehouseNum" size="small" placeholder="选择出库仓库" :disabled="!isAudit" @focus="handleAddWarehouse" style="width: 155px;" />
+                        <el-input v-model="clienteleForm.warehouseNum" size="small" placeholder="选择出库仓库" readonly style="width: 155px;" />
                     </el-form-item>
                 </el-col>
                 <el-col :span="4">
@@ -79,7 +74,7 @@
                 </el-col>
                 <el-col :span="4">
                     <el-form-item label="出库日期" prop="outboundTime">
-                        <el-date-picker v-model="clienteleForm.outboundTime" :disabled="!isAudit" style="width:155px;" value-format="yyyy-MM-dd" format="yyyy-MM-dd" placeholder="选择日期" />
+                        <el-date-picker v-model="clienteleForm.outboundTime" style="width:155px;" value-format="yyyy-MM-dd" format="yyyy-MM-dd" placeholder="选择日期" readonly />
                     </el-form-item>
                 </el-col>
             </el-row>
@@ -92,27 +87,19 @@
             </el-row>
         </el-form>
         <el-divider><strong>产品信息</strong></el-divider>
-        <!-- <div class="handle-box">
-            <el-button type="primary" size="small" icon="el-icon-plus" class="handle-del mr10" v-show="false" @click="handleAddMateriel"
-                >新增产品</el-button
-            >
-            <el-button type="primary" size="small" icon="el-icon-paperclip" class="handle-del mr10" @click="handleAddLinkMateriel"
-                >产品</el-button
-            >
-        </div> -->
         <el-table v-loading="loading" :data="materielListData">
-            <el-table-column type="selection" width="50" align="center" />
+            <!-- <el-table-column type="selection" width="50" align="center" /> -->
             <el-table-column prop="materielNum" label="产品编码" align="center" :show-overflow-tooltip="true" />
             <el-table-column prop="materielName" label="产品名称" align="center" :show-overflow-tooltip="true" />
-            <el-table-column prop="specification" label="规格" align="center" :show-overflow-tooltip="true" width="100"></el-table-column>
-            <el-table-column prop="modelName" label="型号" align="center" width="100" :show-overflow-tooltip="true"></el-table-column>
-            <el-table-column prop="needTorque" label="所需扭矩" align="center" width="100" :show-overflow-tooltip="true"></el-table-column>
-            <el-table-column prop="outTorque" label="输出扭矩" align="center" width="100" :show-overflow-tooltip="true"></el-table-column>
-            <el-table-column prop="unitsName" label="单位" width="100" align="center"></el-table-column>
-            <el-table-column prop="price" label="单价" width="150" align="center"> </el-table-column>
-            <el-table-column prop="number" label="订购数量" width="150" align="center"> </el-table-column>
-            <el-table-column prop="shipmentNum" label="发货数量" width="150" align="center"> </el-table-column>
-            <el-table-column prop="outboundNum" width="150" label="本次出库数量" align="center"> </el-table-column>
+            <el-table-column prop="specification" label="规格" align="center" :show-overflow-tooltip="true"></el-table-column>
+            <el-table-column prop="modelName" label="型号" align="center" :show-overflow-tooltip="true"></el-table-column>
+            <el-table-column prop="needTorque" label="所需扭矩" align="center" :show-overflow-tooltip="true"></el-table-column>
+            <el-table-column prop="outTorque" label="输出扭矩" align="center" :show-overflow-tooltip="true"></el-table-column>
+            <el-table-column prop="unitsName" label="单位" align="center"></el-table-column>
+            <el-table-column prop="price" label="单价" align="center"> </el-table-column>
+            <el-table-column prop="number" label="订购数量" align="center"> </el-table-column>
+            <el-table-column prop="shipmentNum" label="发货数量" align="center"> </el-table-column>
+            <el-table-column prop="outboundNum" label="本次出库数量" align="center"> </el-table-column>
         </el-table>
 
         <!--  添加客户窗口 -->
@@ -408,7 +395,7 @@
 
 <script>
 import { listOrderPage, getOrderSub } from '@/api/sales/order.js';
-import { addAndUpdateShipments, getShipments, listShipmentsSub, auditShipments } from '@/api/sales/shipments.js';
+import { addAndUpdateShipments, getShipments, listShipmentsSub, auditOutbound } from '@/api/sales/shipments.js';
 import { warehouseListPage } from '@/api/basis/warehouse.js';
 import { treeselect } from '@/api/basis/category.js';
 import { listClientele } from '@/api/basis/clientele.js';
@@ -567,19 +554,18 @@ export default {
                         warehouseName: this.clienteleForm.warehouseName,
                         warehouseNum: this.clienteleForm.warehouseNum,
                         outboundTime: this.clienteleForm.outboundTime,
-                        status: '3',
                         auditStatus: '3'
                     };
                     this.btnLoading = true;
-                    auditShipments(data)
+                    auditOutbound(data)
                         .then(res => {
                             this.btnLoading = false;
                             if (res.success) {
                                 this.msgSuccess('审核成功');
-                                this.getShipmentsData();
                             } else {
                                 this.msgError(res.message);
                             }
+                            this.getShipmentsData();
                         })
                         .catch(e => {
                             console.log(e);
@@ -589,7 +575,7 @@ export default {
             });
         },
         cancelAuditForm() {
-            if (this.clienteleForm.auditStatus === '4') {
+            if (this.clienteleForm.auditStatus === '4' || this.clienteleForm.auditStatus === '1') {
                 this.msgError('已反审核');
                 return;
             }
@@ -600,11 +586,10 @@ export default {
                         warehouseId: this.clienteleForm.warehouseId,
                         warehouseName: this.clienteleForm.warehouseName,
                         warehouseNum: this.clienteleForm.warehouseNum,
-                        auditStatus: '1',
-                        status: '4'
+                        auditStatus: '1'
                     };
                     this.btnLoading = true;
-                    auditShipments(data)
+                    auditOutbound(data)
                         .then(res => {
                             this.btnLoading = false;
                             if (res.success) {
@@ -612,6 +597,7 @@ export default {
                             } else {
                                 this.msgError(res.message);
                             }
+                            this.getShipmentsData();
                         })
                         .catch(e => {
                             console.log(e);
@@ -649,7 +635,7 @@ export default {
         getOrderSubList() {
             let param = { orderId: this.clienteleForm.orderId };
             getOrderSub(param).then(res => {
-                this.materielListData = res.data || [];
+                this.materielListData = res.data;
                 this.calculateTotalAll();
             });
         },

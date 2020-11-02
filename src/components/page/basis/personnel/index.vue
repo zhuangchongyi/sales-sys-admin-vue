@@ -168,12 +168,12 @@
                 <el-row>
                     <el-col :span="12">
                         <el-form-item label="出生日期" prop="birthday">
-                            <el-date-picker type="date" placeholder="选择日期" v-model="form.birthday" style="width: 100%;"></el-date-picker>
+                            <el-date-picker type="date" placeholder="选择日期" v-model="form.birthday" style="width: 100%;" value-format="yyyy-MM-dd" format="yyyy-MM-dd"></el-date-picker>
                         </el-form-item>
                     </el-col>
                     <el-col :span="12">
                         <el-form-item label="入职时间" prop="entryTime">
-                            <el-date-picker type="date" placeholder="选择日期" v-model="form.entryTime" value-format="yyyy-MM-dd" style="width: 100%;"></el-date-picker>
+                            <el-date-picker type="date" placeholder="选择日期" v-model="form.entryTime" style="width: 100%;" value-format="yyyy-MM-dd" format="yyyy-MM-dd"></el-date-picker>
                         </el-form-item>
                     </el-col>
                     <el-col :span="12">
@@ -185,7 +185,7 @@
                     </el-col>
                     <el-col :span="12">
                         <el-form-item label="离职日期" v-if="form.jobStatus == 1" prop="resignationTime">
-                            <el-date-picker type="date" placeholder="选择日期" v-model="form.resignationTime" value-format="yyyy-MM-dd" style="width: 100%;"></el-date-picker>
+                            <el-date-picker type="date" placeholder="选择日期" v-model="form.resignationTime" style="width: 100%;" value-format="yyyy-MM-dd" format="yyyy-MM-dd"></el-date-picker>
                         </el-form-item>
                     </el-col>
                 </el-row>

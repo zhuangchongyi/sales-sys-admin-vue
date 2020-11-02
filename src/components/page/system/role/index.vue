@@ -2,13 +2,13 @@
     <div>
         <div class="container">
             <el-form :model="queryRoleParams" ref="queryRoleParams" :inline="true">
-                <el-form-item label="" prop="roleNum">
+                <el-form-item prop="roleNum">
                     <el-input v-model="queryRoleParams.roleNum" placeholder="角色编码" clearable size="small" style="width: 200px" @keyup.enter.native="handleQuery" />
                 </el-form-item>
-                <el-form-item label="" prop="roleName">
+                <el-form-item prop="roleName">
                     <el-input v-model="queryRoleParams.roleName" placeholder="角色名称" clearable size="small" style="width: 200px" @keyup.enter.native="handleQuery" />
                 </el-form-item>
-                <el-form-item label="" prop="status">
+                <el-form-item prop="status">
                     <el-select v-model="queryRoleParams.status" placeholder="状态" clearable size="small" style="width: 200px">
                         <el-option v-for="dict in statusOptions" :key="dict.dictValue" :label="dict.dictLabel" :value="dict.dictValue" />
                     </el-select>
@@ -22,29 +22,18 @@
                 <el-button type="primary" size="small" icon="el-icon-plus" class="handle-del mr10" v-hasPermi="['system:role:add']" @click="handleAdd">新增</el-button>
             </div>
             <el-table v-loading="loading" :data="dataList" class="table" ref="dataList" header-cell-class-name="table-header" highlight-current-row>
-                <el-table-column type="index" width="55" align="center"></el-table-column>
-                <!-- <el-table-column type="selection"
-                         width="55"
-                         align="center"></el-table-column> -->
                 <el-table-column prop="roleNum" label="角色编码" align="center"></el-table-column>
                 <el-table-column prop="roleName" label="角色名称" align="center"></el-table-column>
-                <el-table-column prop="status" label="状态" width="100" :formatter="statusFormatter"></el-table-column>
-                <!-- <el-table-column prop="remark"
-                         label="备注"
-                         align="center"></el-table-column> -->
+                <el-table-column prop="status" label="状态" :formatter="statusFormatter"></el-table-column>
+                <el-table-column prop="remark" label="备注" align="center"></el-table-column>
                 <el-table-column prop="createTime" label="创建时间" align="center"></el-table-column>
-                <el-table-column prop="createBy" label="创建人" align="center" width="150"></el-table-column>
-                <el-table-column label="操作" align="center">
+                <el-table-column prop="createBy" label="创建人" align="center"></el-table-column>
+                <el-table-column label="操作" align="center" width="400">
                     <template slot-scope="scope">
                         <el-button type="text" icon="el-icon-edit" v-hasPermi="['system:role:edit']" @click="handleUpdate(scope.row)">修改</el-button>
                         <el-button type="text" icon="el-icon-circle-check" style="color:#67c23a" v-hasPermi="['system:role:permission']" @click="handleMenu(scope.row)">菜单权限</el-button>
-                        <!-- <el-button
-                            type="text"
-                            icon="el-icon-circle-check"
-                            style="color:#e6a23c"
-                            @click="handleData(scope.$index, scope.row)"
-                        >数据权限</el-button>-->
-                        <el-button type="text" icon="el-icon-s-data" style="color:#e6a23c" v-hasPermi="['system:role:user']" @click="handleLookUser(scope.row)">查看用户</el-button>
+                        <!-- <el-button type="text" icon="el-icon-circle-check" style="color:#e6a23c" @click="handleDataSource(scope.$index, scope.row)">数据权限</el-button> -->
+                        <el-button type="text" icon="el-icon-s-data" style="color:#e6a23c" v-hasPermi="['system:role:user']" @click="handleLookUser(scope.row)">角色用户</el-button>
                         <el-button type="text" icon="el-icon-delete" style="color:#fd5656" v-hasPermi="['system:role:detele']" @click="handleDelete(scope.row)">删除</el-button>
                     </template>
                 </el-table-column>
@@ -107,13 +96,12 @@
                         <el-option v-for="item in dataScopeOptions" :key="item.value" :label="item.label" :value="item.value"></el-option>
                     </el-select>
                 </el-form-item>
-                <el-form-item label="数据权限" v-show="form.dataScope == 4">
-                    <!-- el-tree default-expand-all打开树列表 -->
-                    <el-tree :data="deptOptions" show-checkbox ref="dept" node-key="id" empty-text="加载中，请稍后" :props="defaultProps"></el-tree>
+                <el-form-item label="数据权限" v-show="form.dataScope == 2">
+                    <el-tree :data="deptOptions" show-checkbox default-expand-all ref="dept" node-key="id" empty-text="加载中，请稍后" :props="defaultProps"></el-tree>
                 </el-form-item>
             </el-form>
             <div slot="footer" class="dialog-footer">
-                <el-button type="primary" @click="submitForm">确 定</el-button>
+                <el-button type="primary" @click="submitDataScope">确 定</el-button>
                 <el-button @click="cancel">取 消</el-button>
             </div>
         </el-dialog>
@@ -127,14 +115,8 @@
                 <el-table-column label="部门" align="center" prop="dept.deptName" />
             </el-table>
             <div class="pagination">
-                <el-pagination
-                    background
-                    layout="total, prev, pager, next"
-                    :current-page="query.current"
-                    :page-size="query.size"
-                    :total="query.total"
-                    @current-change="handlePageChangeDialog"
-                ></el-pagination>
+                <el-pagination background layout="total, prev, pager, next" :current-page="query.current" :page-size="query.size" :total="query.total" @current-change="handlePageChangeDialog">
+                </el-pagination>
             </div>
         </el-dialog>
     </div>
@@ -143,7 +125,7 @@
 <script>
 import { rolePageList, getRole, addRole, updateRole, deleteRole, roleUserList, addRoleMenu } from '@/api/system/role.js';
 import { menuPermission } from '@/api/system/menu.js';
-import { deptTreeselect } from '@/api/system/dept.js';
+import { treeselect } from '@/api/system/dept.js';
 export default {
     name: 'system-role',
     data() {
@@ -206,15 +188,19 @@ export default {
                 },
                 {
                     value: '2',
-                    label: '本部门数据权限'
+                    label: '自定数据权限'
                 },
                 {
                     value: '3',
-                    label: '仅本人数据权限'
+                    label: '本部门数据权限'
                 },
                 {
                     value: '4',
-                    label: '自定数据权限'
+                    label: '本部门及以下数据权限'
+                },
+                {
+                    value: '5',
+                    label: '仅本人数据权限'
                 }
             ],
             checkedKeys: [],
@@ -387,20 +373,35 @@ export default {
                 this.query.total = res.data.total;
             });
         },
-        handleData(index, row) {
-            this.title = '分配数据权限';
-            this.dataOpen = true;
-            this.form = row;
-        },
         handlePageChangeDialog(val) {
             this.$set(this.query, 'current', val);
             this.getData();
+        },
+        /** 查询部门树结构 */
+        getDeptTreeselect() {
+            treeselect().then(response => {
+                this.deptOptions = response.data;
+            });
+        },
+        handleDataSource(index, row) {
+            this.title = '分配数据权限';
+            this.dataOpen = true;
+            this.form = row;
+            this.getDeptTreeselect();
+        },
+        submitDataScope() {
+            this.msgError('暂未开发');
         }
     }
 };
 </script>
 
 <style scoped>
+.el-table--mini,
+.el-table--small,
+.el-table__expand-icon {
+    font-size: 14px;
+}
 .el-form .el-form-item__label {
     font-weight: bold;
 }
@@ -408,6 +409,7 @@ export default {
 .handle-box {
     margin-bottom: 8px;
 }
+
 .table {
     width: 100%;
     font-size: 14px;

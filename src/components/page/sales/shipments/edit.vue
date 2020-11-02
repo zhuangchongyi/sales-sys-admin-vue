@@ -533,7 +533,7 @@ export default {
         getOrderSubList() {
             let param = { orderId: this.clienteleForm.orderId };
             getOrderSub(param).then(res => {
-                this.materielListData = res.data || [];
+                this.materielListData = res.data;
                 this.calculateTotalAll();
             });
         },

@@ -164,10 +164,10 @@
              text = '反审核';
              break;
          case '5':
-             text = '已审核';
+             text = '已特批';
              break;
          case '6':
-             text = '反审核';
+             text = '取消特批';
              break;
          case '7':
              text = '已关闭';
@@ -179,25 +179,6 @@
      return text;
  }
 
- // 销售签收拒收处理类型
- export function processModeTypeFormatter(val) {
-     let text = '';
-     switch (val) {
-         case '0':
-             text = '报废';
-             break;
-         case '1':
-             text = '退回';
-             break;
-         case '2':
-             text = '赠送';
-             break;
-         default:
-             text = '无';
-             break;
-     }
-     return text;
- }
 
  // 性别
  export function getGenderFormatter(val) {
@@ -213,23 +194,6 @@
      return text;
  }
 
-
- // 收款核销类型状态
- export function verificationFormatter(val) {
-     let text = '';
-     switch (val) {
-         case '0':
-             text = '已核销';
-             break;
-         case '1':
-             text = '未核销';
-             break;
-         default:
-             text = '其他';
-             break;
-     }
-     return text;
- }
 
  //  校验单据状态
  export function checkAuditStatus(array, cloumn, status, msg) {
@@ -247,4 +211,9 @@
          }
      }
      return false;
+ }
+
+ // 保留几位小数
+ export function parseFloatFormatter(val, suff) {
+     return parseFloat(val).toFixed(suff);
  }

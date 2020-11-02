@@ -1,28 +1,15 @@
 <template>
     <div class="container">
         <el-form :model="queryParams" ref="queryParams" :inline="true">
-            <el-form-item label="" prop="orderNum">
+            <el-form-item prop="orderNum">
                 <el-input v-model="queryParams.orderNum" placeholder="订单号" clearable size="small" style="width: 200px" @keyup.enter.native="handleQuery" />
             </el-form-item>
-            <el-form-item label="" prop="clienteleNum">
+            <el-form-item prop="clienteleNum">
                 <el-input v-model="queryParams.clienteleNum" placeholder="客户编码" clearable size="small" style="width: 200px" @keyup.enter.native="handleQuery" />
             </el-form-item>
-            <el-form-item label="" prop="clienteleName">
+            <el-form-item prop="clienteleName">
                 <el-input v-model="queryParams.clienteleName" placeholder="客户名称" clearable size="small" style="width: 200px" @keyup.enter.native="handleQuery" />
             </el-form-item>
-            <!-- <el-form-item label="状态"
-                    prop="status">
-        <el-select v-model="queryParams.status"
-                   placeholder="状态"
-                   clearable
-                   size="small"
-                   style="width: 200px">
-          <el-option v-for="dict in statusOptions"
-                     :key="dict.dictValue"
-                     :label="dict.dictLabel"
-                     :value="dict.dictValue" />
-        </el-select>
-      </el-form-item> -->
             <el-form-item>
                 <el-button type="primary" icon="el-icon-search" size="small" @click="handleQuery">搜索</el-button>
                 <el-button icon="el-icon-refresh" size="small" @click="resetQuery">刷新</el-button>
@@ -54,9 +41,9 @@
             <el-table-column type="selection" width="50" fixed="left" align="center" />
             <el-table-column label="订单号" align="center" prop="orderNum" fixed="left" :show-overflow-tooltip="true" width="200" />
             <el-table-column label="订单日期" align="center" prop="orderTime" :show-overflow-tooltip="true" width="150" />
-            <el-table-column label="状态" prop="status" :formatter="auditStatusFormatter" align="center" width="120" />
-            <el-table-column label="客户编号" align="center" prop="clienteleNum" :show-overflow-tooltip="true" width="80" />
-            <el-table-column label="客户名称" align="center" prop="clienteleName" :show-overflow-tooltip="true" width="100" />
+            <el-table-column label="状态" prop="status" :formatter="auditStatusFormatter" align="center" width="100" />
+            <el-table-column label="客户编号" align="center" prop="clienteleNum" :show-overflow-tooltip="true" width="100" />
+            <el-table-column label="客户名称" align="center" prop="clienteleName" :show-overflow-tooltip="true" width="150" />
             <el-table-column label="客户联系人" align="center" prop="leader" :show-overflow-tooltip="true" width="100" />
             <el-table-column label="联系人电话" align="center" prop="phone" :show-overflow-tooltip="true" width="150" />
             <el-table-column label="手机" align="center" prop="mobilephone" :show-overflow-tooltip="true" width="150" />
@@ -74,8 +61,8 @@
             <el-table-column label="操作" align="center" width="200" class-name="small-padding fixed-width" fixed="right">
                 <template slot-scope="scope">
                     <el-button size="mini" type="text" icon="el-icon-edit" v-hasPermi="['sales:order:edit']" @click="handleUpdate(scope.row)">修改</el-button>
-                    <el-button size="mini" type="text" icon="el-icon-edit" v-hasPermi="['sales:order:edit']" style="color:#e6a23c" @click="handleShipments(scope.row)">发货</el-button>
-                    <!-- <el-button size="mini" type="text" icon="el-icon-info" style="color:#e6a23c" v-hasPermi="['sales:order:schedule']" @click="handleSchedule(scope.row)">查看进度</el-button> -->
+                    <!-- <el-button size="mini" type="text" icon="el-icon-edit" v-hasPermi="['sales:order:edit']" style="color:#e6a23c" @click="handleShipments(scope.row)">发货</el-button> -->
+                    <el-button size="mini" type="text" icon="el-icon-info" style="color:#e6a23c" v-hasPermi="['sales:order:preview2']" @click="handleSchedule(scope.row)">查看进度</el-button>
                     <el-button size="mini" type="text" icon="el-icon-delete" style="color:#fd5656" v-hasPermi="['sales:order:delete']" @click="handleDelete(scope.row)">删除</el-button>
                 </template>
             </el-table-column>
@@ -105,12 +92,12 @@
                 <el-table-column prop="unitsName" label="单位" align="center" />
                 <el-table-column prop="number" label="订购数量" width="150" :show-overflow-tooltip="true" align="center" />
                 <el-table-column prop="hasShipmentNum" label="已发货数量" width="150" :show-overflow-tooltip="true" align="center" />
-                <el-table-column prop="shipmentNum" label="本次可发货数量" width="150" align="center">
+                <el-table-column prop="shipmentNum" label="本次发货数量" width="150" align="center">
                     <template slot-scope="scope">
                         <el-input
-                            size="small"
-                            :readonly="scope.row.number == scope.row.hasShipmentNum"
+                            size="mini"
                             @input="calculateTotal(scope.row)"
+                            :readonly="scope.row.number == scope.row.hasShipmentNum"
                             oninput="value=value.replace(/[^\d]/g,'')"
                             maxLength="9"
                             v-model="scope.row.shipmentNum"
@@ -127,7 +114,7 @@
 </template>
 
 <script>
-import { listOrder, deleteOrder, submitOrder, auditOrder, getOrderSub } from '@/api/sales/order.js';
+import { listOrder, deleteOrder, submitOrder, auditOrder, getOrderSub, checkCloseOrderSub, closeOrder } from '@/api/sales/order.js';
 import { addAndUpdateShipments } from '@/api/sales/shipments.js';
 import Treeselect from '@riophae/vue-treeselect';
 import '@riophae/vue-treeselect/dist/vue-treeselect.css';
@@ -308,15 +295,13 @@ export default {
         handlePreview(row) {
             this.$router.push({ path: '/page/sales/order/preview', query: { id: row.orderId, isShow: false } });
         },
-        handleAudit(row) {
-            let status = row.status || this.selection.status;
+        handleAudit() {
+            console.log(status);
             if (this.verifyStatus('7', '已关闭')) return;
-            if (status == '0' || status == '2') {
-                this.msgError('请先提交');
+            if (this.verifyStatus('0', '请先提交') || this.verifyStatus('2', '请先提交')) {
                 return;
             }
-            let orderId = row.orderId || this.selection.orderId;
-            this.$router.push({ path: '/page/sales/order/preview', query: { id: orderId, isShow: false, isAudit: true } });
+            this.$router.push({ path: '/page/sales/order/preview', query: { id: this.selection.orderId, isShow: false, isAudit: true } });
         },
         // 关闭按钮
         handleClose() {
@@ -325,7 +310,40 @@ export default {
                 orderId: this.selection.orderId,
                 status: '7'
             };
-            auditOrder(data).then(res => {
+            let that = this;
+            this.$confirm('请确认是否关闭？', '警告', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning'
+            }).then(function() {
+                checkCloseOrderSub(data).then(res => {
+                    if (res.success) {
+                        if (res.data) {
+                            const confirmText = [res.data, '请确认是否关闭？'];
+                            const newDatas = [];
+                            const h = that.$createElement;
+                            for (const i in confirmText) {
+                                newDatas.push(h('p', null, confirmText[i]));
+                            }
+                            that.$confirm('警告', {
+                                confirmButtonText: '确定',
+                                cancelButtonText: '取消',
+                                type: 'warning',
+                                message: h('div', null, newDatas)
+                            }).then(function() {
+                                that.submitCloseOrder(data);
+                            });
+                        } else {
+                            that.submitCloseOrder(data);
+                        }
+                    } else {
+                        that.msgError(res.message);
+                    }
+                });
+            });
+        },
+        submitCloseOrder(data) {
+            closeOrder(data).then(res => {
                 if (res.success) {
                     this.msgSuccess(res.message);
                     this.handleQuery();
@@ -335,14 +353,13 @@ export default {
             });
         },
         handleSchedule(row) {
-            this.$router.push({ path: '/page/sales/order/schedule', query: { id: row.orderId } });
+            this.$router.push({ path: '/page/sales/order/preview2', query: { oid: row.orderId } });
         },
 
         // 发货按钮
         handleShipments() {
             if (this.verifyStatus('7', '已关闭')) return;
-            let status = parseInt(this.selection.status || 0);
-            if (status == 6 || status == 4 || status < 3) {
+            if (this.selection.status != '3') {
                 this.msgError('请先审核');
                 return;
             }
@@ -350,8 +367,7 @@ export default {
             // 查询子表
             let param = { orderId: this.selection.orderId };
             getOrderSub(param).then(res => {
-                this.materielListData = res.data || [];
-                this.calculateTotalAll();
+                this.materielListData = res.data;
             });
             this.open = true;
             this.selectionShipments = [];
@@ -365,18 +381,13 @@ export default {
         cancelForm() {
             this.open = false;
         },
-        // 计算数量
-        calculateTotalAll() {
-            this.materielListData.forEach(item => {
-                item.shipmentNum = parseInt(item.number || 0) - parseInt(item.hasShipmentNum || 0);
-            });
-        },
         calculateTotal(row) {
             let shipmentNum = parseInt(row.number || 0) - parseInt(row.hasShipmentNum || 0);
             let newShipmentNum = parseInt(row.shipmentNum || 0);
             if (newShipmentNum > shipmentNum) {
                 row.shipmentNum = shipmentNum;
             }
+            return shipmentNum;
         },
         submitForm() {
             if (this.selectionShipments.length == 0) {

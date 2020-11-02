@@ -9,7 +9,7 @@
      parseTime,
      download,
      checkAuditStatus,
-     processModeTypeFormatter,
+     parseFloatFormatter
  } from "@/utils/common.js";
 
  // 全局方法挂载
@@ -20,8 +20,8 @@
  Vue.prototype.download = download; //下载转换
  Vue.prototype.approvalStatusFormatter = approvalStatusFormatter; //审核状态
  Vue.prototype.getGenderFormatter = getGenderFormatter; //性别
- Vue.prototype.checkAuditStatus = checkAuditStatus; //性别
- Vue.prototype.processModeTypeFormatter = processModeTypeFormatter //签收拒收处理类型状态
+ Vue.prototype.checkAuditStatus = checkAuditStatus; //校验单据状态
+ Vue.prototype.parseFloatFormatter = parseFloatFormatter; //保留小数位
 
  Vue.prototype.msgSuccess = function (msg) {
      this.$message({

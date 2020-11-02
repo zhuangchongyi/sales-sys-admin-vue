@@ -21,6 +21,7 @@
         </div>
         <el-table v-loading="loading" :data="listData" ref="listData" @row-click="selectionRowClick" highlight-current-row @row-dblclick="handledblclickRow" @selection-change="handleSelectionChange">
             <el-table-column type="selection" width="50" fixed="left" align="center" />
+            <el-table-column label="签收单号" prop="shipmentsNum" align="center" width="200" />
             <el-table-column label="发货单号" prop="shipmentsNum" align="center" width="200" />
             <el-table-column label="客户编码" prop="clienteleNum" align="center" width="120" />
             <el-table-column label="客户名称" prop="clienteleName" align="center" width="120" :show-overflow-tooltip="true" />
@@ -84,7 +85,13 @@ export default {
                 clienteleName: undefined
             },
             multipleSelection: [],
-            selection: undefined
+            selection: undefined,
+            processModeOptions: [
+                { dictValue: '0', dictLabel: '报废' },
+                { dictValue: '1', dictLabel: '退回' },
+                { dictValue: '2', dictLabel: '赠送' },
+                { dictValue: '3', dictLabel: '无' }
+            ]
         };
     },
     created() {
@@ -128,7 +135,11 @@ export default {
         },
         /** 修改按钮操作 */
         handleUpdate(row) {
-            this.$router.push({ path: '/page/sales/signBack/edit', query: { signId: row.signbackId } });
+            if (row.signbackStatus !== '1') {
+                this.$router.push({ path: '/page/sales/signBack/edit', query: { signId: row.signbackId } });
+            } else {
+                this.msgError('已签收');
+            }
         },
         handlePreview(row) {
             this.$router.push({ path: '/page/sales/signBack/preview', query: { signId: row.signbackId } });
@@ -144,13 +155,14 @@ export default {
             this.msgSuccess('打印成功');
         },
         selectionRowClick(row) {
-            this.$refs['listData'].toggleRowSelection(row);
+            this.$refs.listData.clearSelection();
+            this.$refs.listData.toggleRowSelection(row);
         },
         handledblclickRow(row, event, column) {
             this.handlePreview(row);
         },
         processModeFormatter(row) {
-            return this.processModeTypeFormatter(row.processMode);
+            return this.selectDictLabel(this.processModeOptions, row.processMode);
         },
         auditStatusFormatter(row, column) {
             return this.approvalStatusFormatter(row.status);

@@ -1,10 +1,17 @@
  /* jshint esversion: 6 */
  import request from '@/utils/request';
 
- // 查询报价单信息
  export function listShipments(params) {
      return request({
          url: '/sales/shipments',
+         method: 'get',
+         params: params
+     });
+ }
+
+ export function listOutbound(params) {
+     return request({
+         url: '/sales/shipments/outbound',
          method: 'get',
          params: params
      });
@@ -54,6 +61,22 @@
      });
  }
 
+ // =====================================出库操作================================================//
+
+ export function updateOutbound(params) {
+     return request({
+         url: '/sales/shipments/outbound',
+         method: 'put',
+         data: params
+     });
+ }
+ export function auditOutbound(params) {
+     return request({
+         url: '/sales/shipments/outbound/audit',
+         method: 'put',
+         data: params
+     });
+ }
  // =====================================以下是订单子表操作================================================//
  export function listShipmentsSub(params) {
      return request({

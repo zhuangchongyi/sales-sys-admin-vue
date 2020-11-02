@@ -45,25 +45,6 @@
                 </el-col>
             </el-row>
         </el-form>
-        <el-divider><strong>订单信息</strong></el-divider>
-        <div class="handle-box" v-show="isShow">
-            <el-button type="primary" size="small" icon="el-icon-paperclip" class="handle-del mr10" @click="handleAddOrder">订单</el-button>
-            <el-button type="primary" size="small" icon="el-icon-plus" class="handle-del mr10" @click="handleAdd"></el-button>
-        </div>
-        <el-table v-loading="loading" :data="orderListData">
-            <el-table-column label="订单号" prop="orderNum" align="center"></el-table-column>
-            <el-table-column label="订单日期" prop="orderTime" align="center"></el-table-column>
-            <el-table-column label="签回单号" prop="signbackNum" align="center"></el-table-column>
-            <el-table-column label="签回日期" prop="signbackTime" align="center"></el-table-column>
-            <el-table-column label="原始单号" prop="originNum" align="center"></el-table-column>
-            <el-table-column label="原始日期" prop="originTime" align="center"></el-table-column>
-            <el-table-column label="操作" align="center" class-name="small-padding fixed-width" fixed="right" width="300">
-                <template slot-scope="scope">
-                    <el-button size="mini" type="text" icon="el-icon-edit" @click="handleUpdate(scope.$index, scope.row)">编辑</el-button>
-                    <el-button size="mini" type="text" icon="el-icon-delete" style="color:#f56c6c;" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
-                </template>
-            </el-table-column>
-        </el-table>
 
         <!--  客户 -->
         <el-dialog title="客户" :visible.sync="open" width="600px" append-to-body>
@@ -217,7 +198,6 @@ export default {
             openOrder: false,
             orderForm: {},
             orderFormRules: {},
-            isShow: false,
             // 订单
             shipmentsListData: [],
             orderQueryParams: { current: 0, size: 10, signNum: undefined, orderNum: undefined },
@@ -233,8 +213,7 @@ export default {
             this.$refs['clienteleForm'].validate(valid => {
                 if (valid) {
                     let data = {
-                        clienteleForm: JSON.stringify(this.clienteleForm),
-                        orderList: JSON.stringify(this.orderListData)
+                        clienteleForm: JSON.stringify(this.clienteleForm)
                     };
                     addFinanceInit(data).then(res => {
                         if (res.success) {
@@ -250,7 +229,6 @@ export default {
             this.clienteleForm = {};
             this.clienteleQueryParams = {};
             this.orderListData = [];
-            this.isShow = false;
             this.resetForm('clienteleForm');
         },
         // 取消按钮
@@ -291,7 +269,6 @@ export default {
             this.clienteleForm = row;
             this.clienteleForm.remark = '';
             this.open = false;
-            this.isShow = true;
         },
         handleAddClientele() {
             this.open = true;

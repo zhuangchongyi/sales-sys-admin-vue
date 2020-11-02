@@ -92,7 +92,8 @@ export default {
                 { dictValue: '0', dictLabel: '进口' },
                 { dictValue: '1', dictLabel: '生产' },
                 { dictValue: '2', dictLabel: '采购' },
-                { dictValue: '3', dictLabel: '其他' }
+                { dictValue: '3', dictLabel: '退货' },
+                { dictValue: '4', dictLabel: '其他' }
             ],
             ids: []
         };

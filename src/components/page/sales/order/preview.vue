@@ -75,7 +75,7 @@
                 </el-col>
                 <el-col :span="4">
                     <el-form-item label="总计金额" prop="totalPrice">
-                        <el-input v-model="totalPrice" size="small" readonly style="width: 155px;" />
+                        <el-input v-model="clienteleForm.totalPrice" size="small" readonly style="width: 155px;" />
                     </el-form-item>
                 </el-col>
                 <el-col :span="4">
@@ -137,32 +137,18 @@
         <el-table v-loading="loading" :data="materielListData">
             <el-table-column type="selection" width="50" align="center" />
             <el-table-column label="产品编码" align="center" :show-overflow-tooltip="true" prop="materielNum" />
-            <el-table-column label="产品名称" align="center" prop="materielName" :show-overflow-tooltip="true" width="200" />
-            <el-table-column label="规格" align="center" :show-overflow-tooltip="true" width="100" prop="specification"></el-table-column>
-            <el-table-column label="型号" align="center" width="100" :show-overflow-tooltip="true" prop="modelName"></el-table-column>
-            <el-table-column label="所需扭矩" align="center" width="100" :show-overflow-tooltip="true" prop="needTorque"></el-table-column>
-            <el-table-column label="输出扭矩" align="center" width="100" :show-overflow-tooltip="true" prop="outTorque"></el-table-column>
-            <el-table-column prop="unitsName" label="单位" width="100" align="center"></el-table-column>
-            <el-table-column prop="price" label="单价" width="150" align="center"> </el-table-column>
-            <el-table-column prop="number" width="150" label="数量" align="center"> </el-table-column>
-            <el-table-column prop="totalPrice" label="金额" width="200" align="center"> </el-table-column>
-            <el-table-column prop="demand" label="技术要求" width="300" align="center"> </el-table-column>
-            <!-- <el-table-column label="操作" align="center" class-name="small-padding fixed-width" fixed="right" width="260">
-                <template slot-scope="scope"> -->
-            <!-- <el-button size="small"
-                     type="text"
-                     icon="el-icon-edit"
-                     v-show="isShow"
-                     @click="handleUpdateMateriel(scope.$index,scope.row)">编辑</el-button> -->
-            <!-- <el-button size="small" type="text" icon="el-icon-upload" style="color:#e6a23c;" v-show="scope.row.subId" @click="handleUpload(scope.row)">图纸</el-button> -->
-            <!-- <el-button size="small"
-                     type="text"
-                     icon="el-icon-delete"
-                     style="color:#f56c6c;"
-                     v-show="isShow"
-                     @click="handleDelete(scope.$index,scope.row)">删除</el-button> -->
-            <!-- </template>
-            </el-table-column> -->
+            <el-table-column label="产品名称" align="center" prop="materielName" :show-overflow-tooltip="true" />
+            <el-table-column label="规格" align="center" :show-overflow-tooltip="true" prop="specification"></el-table-column>
+            <el-table-column label="型号" align="center" :show-overflow-tooltip="true" prop="modelName"></el-table-column>
+            <el-table-column label="所需扭矩" align="center" :show-overflow-tooltip="true" prop="needTorque"></el-table-column>
+            <el-table-column label="输出扭矩" align="center" :show-overflow-tooltip="true" prop="outTorque"></el-table-column>
+            <el-table-column prop="unitsName" label="单位" align="center"></el-table-column>
+            <el-table-column prop="price" label="单价" align="center"> </el-table-column>
+            <el-table-column prop="number" label="订购数量" align="center"> </el-table-column>
+            <el-table-column prop="totalPrice" label="金额" align="center"> </el-table-column>
+            <el-table-column prop="hasOutboundNum" label="已发货数量" align="center"> </el-table-column>
+            <el-table-column prop="hasSignbackNum" label="已签收数量" align="center"> </el-table-column>
+            <el-table-column prop="hasReturnNum" label="退货数量" align="center"> </el-table-column>
         </el-table>
 
         <!--  添加客户窗口 -->
@@ -313,7 +299,7 @@
                         </el-form-item>
                     </el-col>
                     <el-col :span="12">
-                        <el-form-item label="数量" prop="number">
+                        <el-form-item label="订购数量" prop="number">
                             <el-input v-model="form.number" oninput="if(isNaN(value)) { value = null }" maxLength="9" placeholder="请输入数量"> </el-input>
                         </el-form-item>
                     </el-col>
@@ -496,7 +482,6 @@ export default {
             },
             clienteleTotal: 0,
             clienteleTypeOptions: [], //客户类别
-            totalPrice: 0,
             orderNum: undefined,
             orderId: undefined,
             //添加人员
@@ -723,7 +708,6 @@ export default {
             this.clienteleForm = {};
             this.form = {};
             this.materielListData = [];
-            this.totalPrice = 0;
             this.clienteleForm.personnelName = this.$store.getters.name;
             this.clienteleForm.personnelId = this.$store.getters.userId;
             this.clienteleForm.orderTime = this.parseTime(new Date());
@@ -846,7 +830,7 @@ export default {
                 item.totalPrice = price.toFixed(2);
                 total = parseFloat(total) + price;
             });
-            this.totalPrice = total.toFixed(2);
+            this.$set(this.clienteleForm, 'totalPrice', total.toFixed(2));
         },
         handleDelete(index, row) {
             if (row.subId) {

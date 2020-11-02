@@ -52,3 +52,19 @@
          data: params
      });
  }
+
+ export function getReceiptList(params) {
+     return request({
+         url: '/finance/receipt/clientele',
+         method: 'get',
+         params: params
+     });
+ }
+
+ export function getClienteleReceiptList(params) {
+     return request({
+         url: '/finance/receipt/clienteleList',
+         method: 'get',
+         params: params
+     });
+ }
