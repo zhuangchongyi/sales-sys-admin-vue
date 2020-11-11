@@ -198,11 +198,11 @@
 </template>
 
 <script>
-import { warehouseListPage } from '@/api/basis/warehouse.js';
+import { warehouseListDialog } from '@/api/basis/warehouse.js';
 import { listAllMateriel } from '@/api/basis/materiel.js';
 import { treeselect } from '@/api/basis/category.js';
 import { getScrap, addAndUpdateScrap, listScrapSub } from '@/api/warehouse/scrap.js';
-import { userListPage } from '@/api/system/user.js';
+import { userListDialog } from '@/api/system/user.js';
 import { listRepertoryData } from '@/api/warehouse/repertory.js';
 
 import Treeselect from '@riophae/vue-treeselect';
@@ -303,7 +303,7 @@ export default {
             this.handleQueryWarehouse();
         },
         getWarehouseListData() {
-            warehouseListPage(this.warehouseParams).then(res => {
+            warehouseListDialog(this.warehouseParams).then(res => {
                 this.warehouseListData = res.data.records;
                 this.warehouseTotal = res.data.total;
             });
@@ -431,7 +431,7 @@ export default {
         },
         // ===========人员================
         getPersonnelList() {
-            userListPage(this.personnelQueryParams).then(res => {
+            userListDialog(this.personnelQueryParams).then(res => {
                 this.personnelLoading = false;
                 this.personnelListData = res.data.records;
                 this.personnelTotal = res.data.total;

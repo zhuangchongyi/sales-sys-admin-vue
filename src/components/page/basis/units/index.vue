@@ -59,7 +59,7 @@
         <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
             <el-form ref="form" :model="form" :rules="rules" label-width="80px">
                 <el-form-item label="单位编码" prop="unitsNum">
-                    <el-input v-model="form.unitsNum" placeholder="请输入单位编码" maxlength="10" show-word-limit />
+                    <el-input v-model="form.unitsNum" placeholder="请输入单位编码" maxlength="10" show-word-limit :readonly="isEdit" />
                 </el-form-item>
                 <el-form-item label="单位名称" prop="unitsName">
                     <el-input v-model="form.unitsName" placeholder="请输入单位名称" />
@@ -124,7 +124,8 @@ export default {
                     { max: 10, message: '长度不能超过10个字符', trigger: 'blur' }
                 ],
                 unitsName: [{ required: true, message: '单位名称不能为空', trigger: 'blur' }]
-            }
+            },
+            isEdit: false
         };
     },
     created() {
@@ -181,6 +182,7 @@ export default {
         handleAdd() {
             this.reset();
             this.open = true;
+            this.isEdit = false;
             this.title = '新增单位';
         },
         /** 修改按钮操作 */
@@ -189,6 +191,7 @@ export default {
             getUnits(row.unitsId).then(res => {
                 this.form = res.data;
                 this.open = true;
+                this.isEdit = true;
                 this.title = '修改单位';
             });
         },

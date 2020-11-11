@@ -450,9 +450,9 @@ import { addOrder, getOrder } from '@/api/sales/order.js';
 import { listOrderSub, addOrderSub, updateOrderSub, deleteOrderSub } from '@/api/sales/order.js';
 import { listMaterielFile, downloadFile } from '@/api/basis/materielFile.js';
 import { treeselect } from '@/api/basis/category.js';
-import { listClientele } from '@/api/basis/clientele.js';
-import { userListPage } from '@/api/system/user.js';
-import { listProduct } from '@/api/basis/clienteleProduct.js';
+import { listClienteleDialog } from '@/api/basis/clientele.js';
+import { userListDialog } from '@/api/system/user.js';
+import { listProductDialog } from '@/api/basis/clienteleProduct.js';
 import { listUnits } from '@/api/basis/units.js';
 import Treeselect from '@riophae/vue-treeselect';
 import '@riophae/vue-treeselect/dist/vue-treeselect.css';
@@ -650,7 +650,7 @@ export default {
         },
         handleQueryClientele() {
             this.clienteleQueryParams.clienteleNum = this.clienteleQueryParams.clienteleName;
-            listClientele(this.clienteleQueryParams).then(res => {
+            listClienteleDialog(this.clienteleQueryParams).then(res => {
                 if (res.success) {
                     this.clienteleListData = res.data.records;
                     this.clienteleTotal = res.data.total;
@@ -705,7 +705,7 @@ export default {
         },
 
         getPersonnelList() {
-            userListPage(this.personnelQueryParams).then(res => {
+            userListDialog(this.personnelQueryParams).then(res => {
                 this.personnelLoading = false;
                 this.personnelListData = res.data.records;
                 this.personnelTotal = res.data.total;
@@ -771,7 +771,7 @@ export default {
         getMaterielList() {
             this.linkMaterielListData = [];
             this.materielTotal = 0;
-            listProduct(this.materielQueryParams).then(res => {
+            listProductDialog(this.materielQueryParams).then(res => {
                 this.linkMaterielListData = res.data.records;
                 this.materielTotal = res.data.total;
                 this.linkMaterielLoading = false;

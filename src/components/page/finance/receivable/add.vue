@@ -142,7 +142,7 @@
 
 <script>
 import { treeselect } from '@/api/basis/category.js';
-import { listClientele } from '@/api/basis/clientele.js';
+import { listClienteleDialog } from '@/api/basis/clientele.js';
 import { addReceivable } from '@/api/finance/receivable.js';
 import Treeselect from '@riophae/vue-treeselect';
 import '@riophae/vue-treeselect/dist/vue-treeselect.css';
@@ -194,7 +194,7 @@ export default {
         },
         handleQuery() {
             this.clienteleQueryParams.clienteleNum = this.clienteleQueryParams.clienteleName;
-            listClientele(this.clienteleQueryParams).then(res => {
+            listClienteleDialog(this.clienteleQueryParams).then(res => {
                 if (res.success) {
                     this.clienteleListData = res.data.records;
                     this.clienteleTotal = res.data.total;

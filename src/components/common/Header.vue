@@ -5,20 +5,36 @@
             <i v-if="!collapse" class="el-icon-s-fold"></i>
             <i v-else class="el-icon-s-unfold"></i>
         </div>
-        <div class="logo">{{ title }}</div>
+        <div class="logo">{{ $t('login.title') }}</div>
         <div class="header-right">
             <div class="header-user-con">
                 <!-- 全屏显示 -->
                 <div class="btn-fullscreen" @click="handleFullScreen">
-                    <el-tooltip effect="dark" :content="fullscreen ? `取消全屏` : `全屏`" placement="bottom"><i class="el-icon-rank"></i></el-tooltip>
+                    <el-tooltip effect="dark" :content="fullscreen ? $t('header.nuFullscreen') : $t('header.fullscreen')" placement="bottom"><i class="el-icon-rank"></i></el-tooltip>
                 </div>
                 <!-- 消息中心 -->
                 <div class="btn-bell">
-                    <el-tooltip effect="dark" :content="message ? `有${message}条未读消息` : `消息中心`" placement="bottom">
+                    <el-tooltip effect="dark" :content="message ? `${message} ${$t('header.unreadMessage')}` : $t('header.message')" placement="bottom">
                         <router-link to="/page/messageTabs"><i class="el-icon-bell"></i></router-link>
                     </el-tooltip>
                     <span class="btn-bell-badge" v-if="message"></span>
                 </div>
+                <!-- 中英文转换 -->
+                <el-dropdown class="btn-international" trigger="click" @command="handleSetLanguage">
+                    <el-tooltip effect="dark" :content="$t('switchMsg')" placement="bottom">
+                        <div>
+                            <svg-icon class-name="international-icon" icon-class="language" />
+                        </div>
+                    </el-tooltip>
+                    <el-dropdown-menu slot="dropdown">
+                        <el-dropdown-item :disabled="language === 'zh'" command="zh">
+                            中文
+                        </el-dropdown-item>
+                        <el-dropdown-item :disabled="language === 'en'" command="en">
+                            English
+                        </el-dropdown-item>
+                    </el-dropdown-menu>
+                </el-dropdown>
                 <!-- 用户头像 -->
                 <div class="user-avator"><img src="../../assets/img/avatar.gif" /></div>
                 <!-- 用户名下拉菜单 -->
@@ -28,26 +44,50 @@
                         <i class="el-icon-caret-bottom"></i>
                     </span>
                     <el-dropdown-menu slot="dropdown">
-                        <el-dropdown-item divided command="changePwd">修改密码</el-dropdown-item>
-                        <el-dropdown-item divided command="logout">退出登录</el-dropdown-item>
+                        <el-dropdown-item divided command="changePwd">{{ $t('header.changePwd.title') }}</el-dropdown-item>
+                        <el-dropdown-item divided command="logout">{{ $t('header.logout') }}</el-dropdown-item>
                     </el-dropdown-menu>
                 </el-dropdown>
                 <!-- 侧边弹出栏 -->
-                <el-drawer :visible.sync="drawer" size="15%" :with-header="false">
+                <el-drawer :visible.sync="drawer" size="20%" :with-header="false">
                     <div class="demo-drawer-content" style="margin-top: 16px;">
-                        <el-form :model="form" ref="form" :rules="rules" label-position="center" label-width="100px">
-                            <el-form-item label="原密码" prop="password">
-                                <el-input v-model="form.password" placeholder="请输入原密码" style="width:160px" type="password" clearable show-password autocomplete="off"></el-input>
+                        <el-form :model="form" ref="form" :rules="rules" label-position="center" label-width="auto">
+                            <el-form-item :label="$t('header.changePwd.password')" prop="password">
+                                <el-input
+                                    v-model="form.password"
+                                    :placeholder="$t('header.changePwd.password')"
+                                    style="width:160px"
+                                    type="password"
+                                    clearable
+                                    show-password
+                                    autocomplete="off"
+                                ></el-input>
                             </el-form-item>
-                            <el-form-item label="新密码" prop="newPassword">
-                                <el-input v-model="form.newPassword" placeholder="请输入新密码" type="password" style="width:160px" clearable show-password autocomplete="off"></el-input>
+                            <el-form-item :label="$t('header.changePwd.newPassword')" prop="newPassword">
+                                <el-input
+                                    v-model="form.newPassword"
+                                    :placeholder="$t('header.changePwd.newPassword')"
+                                    type="password"
+                                    style="width:160px"
+                                    clearable
+                                    show-password
+                                    autocomplete="off"
+                                ></el-input>
                             </el-form-item>
-                            <el-form-item label="确认密码" prop="checkPassword">
-                                <el-input v-model="form.checkPassword" placeholder="请输入确认密码" type="password" clearable show-password style="width:160px" autocomplete="off"></el-input>
+                            <el-form-item :label="$t('header.changePwd.checkPassword')" prop="checkPassword">
+                                <el-input
+                                    v-model="form.checkPassword"
+                                    :placeholder="$t('header.changePwd.checkPassword')"
+                                    type="password"
+                                    clearable
+                                    show-password
+                                    style="width:160px"
+                                    autocomplete="off"
+                                ></el-input>
                             </el-form-item>
                         </el-form>
                         <div class="demo-drawer-footer" style="margin-left: 32px;">
-                            <el-button type="primary" @click="submitForm" :loading="loading">{{ loading ? '提交中 ...' : '确 定' }}</el-button>
+                            <el-button type="primary" @click="submitForm" :loading="loading">{{ loading ? $t('header.changePwd.submiting') : $t('header.changePwd.submit') }}</el-button>
                         </div>
                     </div>
                 </el-drawer>
@@ -72,10 +112,10 @@ export default {
             loading: false,
             form: {},
             rules: {
-                password: [{ required: true, message: '请输入原始密码', trigger: 'blur' }],
-                newPassword: [{ required: true, message: '请输入新密码', trigger: 'blur' }],
+                password: [{ required: true, message: this.$t('header.changePwd.passwordHint'), trigger: 'blur' }],
+                newPassword: [{ required: true, message: this.$t('header.changePwd.newPasswordHint'), trigger: 'blur' }],
                 checkPassword: [
-                    { required: true, message: '请输入确认密码', trigger: 'blur' },
+                    { required: true, message: this.$t('header.changePwd.checkPasswordHint'), trigger: 'blur' },
                     { validator: this.validatePwd, trigger: 'blur' }
                 ]
             },
@@ -84,6 +124,9 @@ export default {
         };
     },
     computed: {
+        language() {
+            return this.$store.getters.language;
+        },
         username() {
             return this.$store.getters.username;
         },
@@ -95,11 +138,14 @@ export default {
         }
     },
     methods: {
+        //切换语言
+        handleSetLanguage(lang) {
+            this.$i18n.locale = lang;
+            this.$store.dispatch('app/setLanguage', lang);
+        },
         validatePwd(rule, value, callback) {
-            if (value === '') {
-                callback(new Error('请输入确认密码'));
-            } else if (value !== this.form.newPassword) {
-                callback(new Error('两次输入密码不一致!'));
+            if (value !== this.form.newPassword) {
+                callback(new Error(this.$t('header.changePwd.twoPasswordHint')));
             } else {
                 callback();
             }
@@ -213,6 +259,10 @@ export default {
 };
 </script>
 <style scoped>
+.btn-international {
+    color: #fff;
+    font-size: 22px;
+}
 .header {
     position: relative;
     box-sizing: border-box;
@@ -229,7 +279,7 @@ export default {
 }
 .header .logo {
     float: left;
-    width: 250px;
+    /* width: 250px; */
     line-height: 70px;
 }
 .header-right {
@@ -243,9 +293,9 @@ export default {
 }
 .btn-fullscreen {
     transform: rotate(45deg);
-    margin-right: 5px;
     font-size: 24px;
 }
+.btn-international,
 .btn-bell,
 .btn-fullscreen {
     position: relative;
@@ -254,6 +304,7 @@ export default {
     text-align: center;
     border-radius: 15px;
     cursor: pointer;
+    margin-right: 5px;
 }
 .btn-bell-badge {
     position: absolute;

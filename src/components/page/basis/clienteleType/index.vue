@@ -54,7 +54,7 @@
                         </el-col>
                         <el-col :span="12">
                             <el-form-item label="类别编码" prop="categoryNum">
-                                <el-input v-model="form.categoryNum" placeholder="请输入客户类别名称" maxlength="10" show-word-limit />
+                                <el-input v-model="form.categoryNum" placeholder="请输入客户类别名称" maxlength="10" show-word-limit :readonly="isEdit" />
                             </el-form-item>
                         </el-col>
                         <el-col :span="12">
@@ -125,7 +125,8 @@ export default {
                 categoryName: [{ required: true, message: '客户类别名称不能为空', trigger: 'blur' }],
                 categoryNum: [{ required: true, message: '菜单顺序不能为空', trigger: 'blur' }]
             },
-            isShow: true
+            isShow: true,
+            isEdit: false
         };
     },
     created() {
@@ -185,6 +186,7 @@ export default {
                 this.isShow = false;
             } else this.isShow = true;
             this.open = true;
+            this.isEdit = false;
             this.title = '新增客户类别';
         },
         /** 修改按钮操作 */
@@ -193,6 +195,7 @@ export default {
             getCategory(row.categoryId).then(res => {
                 this.form = res.data;
                 this.open = true;
+                this.isEdit = true;
                 this.title = '修改客户类别';
             });
         },

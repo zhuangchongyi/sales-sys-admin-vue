@@ -30,16 +30,18 @@
         </el-form>
         <div class="handle-box">
             <el-button type="primary" size="small" icon="el-icon-plus" class="handle-del mr10" v-hasPermi="['sales:quotation:add']" @click="handleAdd">新增</el-button>
-            <el-dropdown trigger="click" style="margin: 0 10px;">
+            <el-dropdown trigger="click" style="margin: 0 10px;" v-hasPermi="['sales:quotation:submit']">
                 <el-button class="el-dropdown-link" size="small" type="primary"> 提交<i class="el-icon-arrow-down el-icon--right"></i> </el-button>
                 <el-dropdown-menu slot="dropdown">
                     <el-dropdown-item icon="el-icon-top" @click.native="handleSubmit">提交</el-dropdown-item>
                     <el-dropdown-item icon="el-icon-bottom" @click.native="handleNoSubmit">收回</el-dropdown-item>
                 </el-dropdown-menu>
             </el-dropdown>
-            <el-button type="primary" size="small" icon="el-icon-finished" class="handle-del mr10" :disabled="single" @click="handleAudit">审核</el-button>
-            <el-button type="primary" size="small" icon="el-icon-finished" class="handle-del mr10" :disabled="single" @click="handleGenerate">生成订单</el-button>
-            <el-button type="primary" size="small" icon="el-icon-printer" class="handle-del mr10" :disabled="single" @click="handlePrint">打印</el-button>
+            <el-button type="primary" size="small" icon="el-icon-finished" class="handle-del mr10" :disabled="single" @click="handleAudit" v-hasPermi="['sales:quotation:audit']">审核</el-button>
+            <el-button type="primary" size="small" icon="el-icon-finished" class="handle-del mr10" :disabled="single" @click="handleGenerate" v-hasPermi="['sales:quotation:order']"
+                >生成订单</el-button
+            >
+            <el-button type="primary" size="small" icon="el-icon-printer" class="handle-del mr10" :disabled="single" @click="handlePrint" v-hasPermi="['sales:quotation:print']">打印</el-button>
         </div>
         <el-table v-loading="loading" :data="dataList" ref="dataList" @row-click="selectionRowClick" highlight-current-row @row-dblclick="handledblclickRow" @selection-change="handleSelectionChange">
             <el-table-column type="selection" width="50" fixed="left" align="center" />
@@ -133,6 +135,9 @@ export default {
         };
     },
     created() {
+        this.getList();
+    },
+    activated() {
         this.getList();
     },
     methods: {

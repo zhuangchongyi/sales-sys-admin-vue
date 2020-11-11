@@ -13,8 +13,8 @@
             </el-form-item>
         </el-form>
         <div class="handle-box">
-            <el-button type="primary" size="small" icon="el-icon-plus" class="handle-del mr10" @click="handleAdd">新增</el-button>
-            <el-button type="primary" size="small" icon="el-icon-finished" class="handle-del mr10" :disabled="single" @click="handleAudit">核销</el-button>
+            <el-button type="primary" size="small" icon="el-icon-plus" class="handle-del mr10" @click="handleAdd" v-hasPermi="['finance:writeoff:add']">新增</el-button>
+            <el-button type="primary" size="small" icon="el-icon-finished" class="handle-del mr10" :disabled="single" @click="handleAudit" v-hasPermi="['finance:writeoff:audit']">核销</el-button>
         </div>
         <el-table v-loading="loading" :data="listData" ref="listData" @row-click="selectionRowClick" highlight-current-row @row-dblclick="handlePreview" @selection-change="handleSelectionChange">
             <el-table-column type="selection" width="55" align="center" />
@@ -27,7 +27,7 @@
             <el-table-column label="录入日期" prop="createTime" align="center" :show-overflow-tooltip="true" />
             <el-table-column label="操作" width="100" fixed="right" align="center">
                 <template slot-scope="scope">
-                    <el-button type="text" icon="el-icon-delete" style="color:#fd5656" @click="handleDelete(scope.row)">删除</el-button>
+                    <el-button type="text" icon="el-icon-delete" style="color:#fd5656" @click="handleDelete(scope.row)" v-hasPermi="['finance:writeoff:delete']">删除</el-button>
                 </template>
             </el-table-column>
         </el-table>
@@ -77,6 +77,9 @@ export default {
         };
     },
     created() {
+        this.getList();
+    },
+    activated() {
         this.getList();
     },
     methods: {

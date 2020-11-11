@@ -130,7 +130,7 @@
                 <el-row>
                     <el-col :span="12">
                         <el-form-item label="员工编码" prop="userNum">
-                            <el-input v-model="form.userNum" placeholder="请输入员工编码" maxlength="10" show-word-limit />
+                            <el-input v-model="form.userNum" placeholder="请输入员工编码" maxlength="10" show-word-limit :readonly="isEdit" />
                         </el-form-item>
                     </el-col>
                     <el-col :span="12">
@@ -233,6 +233,7 @@ export default {
             loading: true,
             // 是否显示弹出层
             open: false,
+            isEdit: true,
             // 弹窗标题
             title: '',
             // 选中数组
@@ -316,7 +317,6 @@ export default {
         };
     },
     created() {
-        this.getTreeselect();
         this.getList();
     },
     watch: {
@@ -337,6 +337,7 @@ export default {
         },
         // 查询用户列表
         getList() {
+            this.getTreeselect();
             userListPage(this.queryParams).then(res => {
                 this.userListData = res.data.records;
                 this.total = res.data.total || 0;
@@ -424,6 +425,7 @@ export default {
             this.getTreeselect();
             this.form.deptId = this.deptId;
             this.open = true;
+            this.isEdit = false;
             this.title = '新增员工';
         },
         /** 修改按钮操作 */
@@ -433,6 +435,7 @@ export default {
             getUser(row.userId).then(res => {
                 this.form = res.data;
                 this.open = true;
+                this.isEdit = true;
                 this.title = '修改员工';
             });
         },

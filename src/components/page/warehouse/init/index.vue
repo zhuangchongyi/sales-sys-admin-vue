@@ -13,7 +13,7 @@
             </el-form-item>
         </el-form>
         <div class="handle-box">
-            <el-button type="primary" size="small" icon="el-icon-plus" class="handle-del mr10" @click="handleAdd">新增</el-button>
+            <el-button type="primary" size="small" icon="el-icon-plus" class="handle-del mr10" @click="handleAdd" v-hasPermi="['warehouse:init:add']">新增</el-button>
         </div>
         <el-table v-loading="loading" @row-dblclick="handlePreview" :data="listData">
             <el-table-column type="selection" width="50" align="center" />
@@ -23,8 +23,8 @@
             <el-table-column label="创建时间" align="center" prop="createTime"></el-table-column>
             <el-table-column label="操作" align="center" class-name="small-padding fixed-width" fixed="right">
                 <template slot-scope="scope">
-                    <el-button size="mini" type="text" icon="el-icon-edit" @click="handleUpdate(scope.row)">修改</el-button>
-                    <el-button size="mini" type="text" style="color:#fd5656" icon="el-icon-delete" @click="handleDelete(scope.row)">删除</el-button>
+                    <el-button size="mini" type="text" icon="el-icon-edit" @click="handleUpdate(scope.row)" v-hasPermi="['warehouse:init:edit']">修改</el-button>
+                    <el-button size="mini" type="text" style="color:#fd5656" icon="el-icon-delete" @click="handleDelete(scope.row)" v-hasPermi="['warehouse:init:delete']">删除</el-button>
                 </template>
             </el-table-column>
         </el-table>
@@ -81,6 +81,9 @@ export default {
         };
     },
     created() {
+        this.getList();
+    },
+    activated() {
         this.getList();
     },
     methods: {

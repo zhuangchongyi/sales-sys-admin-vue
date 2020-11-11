@@ -98,7 +98,7 @@
                 <el-row>
                     <el-col :span="12">
                         <el-form-item label="客户编码" prop="clienteleNum">
-                            <el-input v-model="form.clienteleNum" placeholder="请输入客户编码" maxlength="10" show-word-limit />
+                            <el-input v-model="form.clienteleNum" placeholder="请输入客户编码" maxlength="10" show-word-limit :readonly="isEdit" />
                         </el-form-item>
                     </el-col>
                     <el-col :span="12">
@@ -250,7 +250,7 @@
 <script>
 import { listClientele, addClientele, updateClientele, deleteClientele, getClientele } from '@/api/basis/clientele.js';
 import { treeselect } from '@/api/basis/category.js';
-import { userListPage } from '@/api/system/user.js';
+import { userListDialog } from '@/api/system/user.js';
 import Treeselect from '@riophae/vue-treeselect';
 import '@riophae/vue-treeselect/dist/vue-treeselect.css';
 export default {
@@ -276,6 +276,7 @@ export default {
             clienteleListData: [],
             // 是否显示弹出层
             open: false,
+            isEdit: false,
             // 客户类别树选项
             categoryOptions: [],
             // 客户类别名称
@@ -357,7 +358,6 @@ export default {
     },
     created() {
         this.getList();
-        this.getTreeselect();
     },
     watch: {
         // 根据名称筛选部门树
@@ -372,6 +372,7 @@ export default {
         },
         // 查询客户列表
         getList() {
+            this.getTreeselect();
             listClientele(this.queryParams).then(res => {
                 this.clienteleListData = res.data.records;
                 this.total = res.data.total || 0;
@@ -449,6 +450,7 @@ export default {
             this.getTreeselect();
             this.form.categoryId = this.categoryId;
             this.open = true;
+            this.isEdit = false;
             this.title = '新增客户';
         },
         /** 修改按钮操作 */
@@ -458,6 +460,7 @@ export default {
             getClientele(row.clienteleId).then(res => {
                 this.form = res.data;
                 this.open = true;
+                this.isEdit = true;
                 this.title = '修改客户';
             });
         },
@@ -509,7 +512,7 @@ export default {
             // this.$refs.personnelBlur.blur();
         },
         getPersonnelList() {
-            userListPage(this.personnelQuery).then(res => {
+            userListDialog(this.personnelQuery).then(res => {
                 this.personnelLoading = false;
                 this.personnelListData = res.data.records;
                 this.personnelTotal = res.data.total;

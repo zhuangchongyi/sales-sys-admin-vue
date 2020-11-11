@@ -110,8 +110,8 @@
 
         <!-- 添加或修改参数配置对话框 -->
         <el-dialog :title="title" :visible.sync="openRole" width="500px" append-to-body>
-            <el-form ref="form" :model="form" label-width="auto">
-                <el-form-item label="角色">
+            <el-form ref="form" :model="form" :rules="rules" label-width="auto">
+                <el-form-item label="角色" prop="roleIds">
                     <el-select v-model="form.roleIds" multiple placeholder="请选择">
                         <el-option v-for="item in roleOptions" :key="item.roleId" :label="item.roleName" :value="item.roleId" :disabled="item.status == 1"></el-option>
                     </el-select>
@@ -196,12 +196,14 @@ export default {
                 nickname: undefined,
                 deptId: undefined,
                 userType: '1'
+            },
+            rules: {
+                roleIds: [{ required: true, message: '未选择角色', trigger: 'blur' }]
             }
         };
     },
     created() {
         this.getList();
-        this.getTreeselect();
     },
     computed: {
         userId() {
@@ -217,6 +219,7 @@ export default {
     methods: {
         // 查询用户列表
         getList() {
+            this.getTreeselect();
             userListPage(this.queryParams).then(res => {
                 this.dataList = res.data.records;
                 this.total = res.data.total || 0;
@@ -289,13 +292,15 @@ export default {
                 confirmButtonText: '确定',
                 cancelButtonText: '取消',
                 type: 'warning'
-            }).then(function() {
-                let user = {
-                    userId: row.userId,
-                    userType: '0'
-                };
-                return updateUserStatus(user).then(res => that.callbackFun(res));
-            });
+            })
+                .then(function() {
+                    let user = {
+                        userId: row.userId,
+                        userType: '0'
+                    };
+                    return updateUserStatus(user).then(res => that.callbackFun(res));
+                })
+                .catch(() => {});
         },
         // 查看用户权限
         handleLookMenu(row) {
@@ -324,7 +329,11 @@ export default {
         },
         /** 提交按钮 */
         submitForm() {
-            addUserRole(this.form).then(res => this.callbackFun(res));
+            this.$refs.form.validate(valid => {
+                if (valid) {
+                    addUserRole(this.form).then(res => this.callbackFun(res));
+                }
+            });
         },
         // 重置密码
         handleResetPassword(row) {

@@ -161,11 +161,10 @@
 import { listShipments, listShipmentsSub } from '@/api/sales/shipments.js';
 import { auditReturnsStorage, getReturns, listReturnsSub } from '@/api/sales/returns.js';
 import { treeselect } from '@/api/basis/category.js';
-import { listClientele } from '@/api/basis/clientele.js';
-import { userListPage } from '@/api/system/user.js';
+import { userListDialog } from '@/api/system/user.js';
 import { listAllMateriel } from '@/api/basis/materiel.js';
 import { listUnits } from '@/api/basis/units.js';
-import { warehouseListPage } from '@/api/basis/warehouse.js';
+import { warehouseListDialog } from '@/api/basis/warehouse.js';
 export default {
     name: 'sales-returns-edit',
     data() {
@@ -485,7 +484,7 @@ export default {
         },
 
         getPersonnelList() {
-            userListPage(this.personnelQueryParams).then(res => {
+            userListDialog(this.personnelQueryParams).then(res => {
                 this.personnelLoading = false;
                 this.personnelListData = res.data.records;
                 this.personnelTotal = res.data.total;
@@ -699,7 +698,7 @@ export default {
             this.handleQueryWarehouse();
         },
         getWarehouseListData() {
-            warehouseListPage(this.warehouseParams).then(res => {
+            warehouseListDialog(this.warehouseParams).then(res => {
                 this.warehouseListData = res.data.records;
                 this.warehouseTotal = res.data.total;
             });

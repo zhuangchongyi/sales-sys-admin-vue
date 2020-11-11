@@ -7,7 +7,7 @@
                         <img src="../../assets/img/avatar.gif" class="user-avator" alt />
                         <div class="user-info-cont">
                             <div class="user-info-name">{{ name }}</div>
-                            <div>{{ role }}</div>
+                            <div>{{ dept }}</div>
                         </div>
                     </div>
                     <div class="user-info-list">
@@ -43,9 +43,10 @@
                     <el-col :span="8">
                         <el-card shadow="hover" :body-style="{ padding: '0px' }">
                             <div class="grid-content grid-con-1">
-                                <i class="el-icon-lx-people grid-con-icon"></i>
+                                <!-- <i class="el-icon-lx-people grid-con-icon"></i> -->
+                                <i class="el-icon-user grid-con-icon"></i>
                                 <div class="grid-cont-right">
-                                    <div class="grid-num">0</div>
+                                    <div class="grid-num">{{ userVisits }}</div>
                                     <div>用户访问量</div>
                                 </div>
                             </div>
@@ -54,7 +55,8 @@
                     <el-col :span="8">
                         <el-card shadow="hover" :body-style="{ padding: '0px' }">
                             <div class="grid-content grid-con-2">
-                                <i class="el-icon-lx-notice grid-con-icon"></i>
+                                <!-- <i class="el-icon-lx-notice grid-con-icon"></i> -->
+                                <i class="el-icon-bell grid-con-icon"></i>
                                 <div class="grid-cont-right">
                                     <div class="grid-num">0</div>
                                     <div>系统消息</div>
@@ -65,7 +67,8 @@
                     <el-col :span="8">
                         <el-card shadow="hover" :body-style="{ padding: '0px' }">
                             <div class="grid-content grid-con-3">
-                                <i class="el-icon-lx-goods grid-con-icon"></i>
+                                <!-- <i class="el-icon-lx-goods grid-con-icon"></i> -->
+                                <i class="el-icon-goods grid-con-icon"></i>
                                 <div class="grid-cont-right">
                                     <div class="grid-num">0</div>
                                     <div>订单数量</div>
@@ -114,7 +117,7 @@
                 </el-card>
             </el-col>
         </el-row>
-
+        <!-- 事项弹窗 -->
         <el-dialog :title="title" :visible.sync="open" width="400px" append-to-body>
             <el-form ref="form" :model="form">
                 <el-input v-model="form.title" maxlength="150" type="textarea" />
@@ -129,11 +132,13 @@
 <script>
 import Schart from 'vue-schart';
 import bus from '../common/bus';
+import { countOnline } from '@/api/monitor/online';
 
 export default {
     name: 'dashboard',
     data() {
         return {
+            userVisits: 0,
             loginTime: undefined,
             loginAddress: undefined,
             ip: undefined,
@@ -193,19 +198,28 @@ export default {
         Schart
     },
     computed: {
-        role() {
+        dept() {
             this.name = this.$store.getters.name;
-            return this.$store.getters.username === 'admin' ? '超级管理员' : '普通用户';
+            return this.$store.getters.dept.deptName;
         }
+    },
+    activated() {
+        this.getUserVisits();
     },
     mounted() {
         this.loginTime = localStorage.getItem('loginTime');
         this.todoList = JSON.parse(localStorage.getItem('mySchedule')) || [{ title: '本地缓存', status: false }];
-        // let ipdate = JSON.parse(localStorage.getItem('ipdate'));
-        // this.loginAddress = ipdate.cityName;
-        // this.ip = ipdate.ip;
+        let ipdate = JSON.parse(localStorage.getItem('ipdate')) || {};
+        this.loginAddress = ipdate.cityName;
+        this.ip = ipdate.ip;
+        this.getUserVisits();
     },
     methods: {
+        getUserVisits() {
+            countOnline().then(res => {
+                this.userVisits = res.data || 0;
+            });
+        },
         // 添加待办任务
         addSchedule() {
             this.form = { status: false };

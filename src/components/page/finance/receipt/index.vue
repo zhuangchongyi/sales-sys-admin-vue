@@ -13,15 +13,15 @@
             </el-form-item>
         </el-form>
         <div class="handle-box">
-            <el-button type="primary" size="small" icon="el-icon-plus" class="handle-del mr10" @click="handleAdd">新增</el-button>
-            <el-dropdown trigger="click" style="margin: 0 10px;">
+            <el-button type="primary" size="small" icon="el-icon-plus" class="handle-del mr10" @click="handleAdd" v-hasPermi="['finance:receipt:add']">新增</el-button>
+            <el-dropdown trigger="click" style="margin: 0 10px;" v-hasPermi="['finance:receipt:submit']">
                 <el-button class="el-dropdown-link" size="small" type="primary"> 提交<i class="el-icon-arrow-down el-icon--right"></i> </el-button>
                 <el-dropdown-menu slot="dropdown">
                     <el-dropdown-item icon="el-icon-top" @click.native="handleSubmit">提交</el-dropdown-item>
                     <el-dropdown-item icon="el-icon-bottom" @click.native="handleNoSubmit">收回</el-dropdown-item>
                 </el-dropdown-menu>
             </el-dropdown>
-            <el-button type="primary" size="small" icon="el-icon-finished" class="handle-del mr10" :disabled="single" @click="handleAudit">审核</el-button>
+            <el-button type="primary" size="small" icon="el-icon-finished" class="handle-del mr10" :disabled="single" @click="handleAudit" v-hasPermi="['finance:receipt:audit']">审核</el-button>
         </div>
         <el-table v-loading="loading" :data="listData" ref="listData" @row-click="selectionRowClick" highlight-current-row @row-dblclick="handlePreview" @selection-change="handleSelectionChange">
             <el-table-column type="selection" width="55" align="center" />
@@ -43,9 +43,9 @@
             <el-table-column label="审核日期" prop="auditTime" :show-overflow-tooltip="true" width="160" align="center" />
             <el-table-column label="操作" width="180" fixed="right" align="center">
                 <template slot-scope="scope">
-                    <el-button type="text" icon="el-icon-edit" @click="handleUpdate(scope.$index, scope.row)">修改</el-button>
+                    <el-button type="text" icon="el-icon-edit" @click="handleUpdate(scope.$index, scope.row)" v-hasPermi="['finance:receipt:edit']">修改</el-button>
                     <!-- <el-button type="text" icon="el-icon-edit-outline" @click="handleVerifica(scope.row)">核销</el-button> -->
-                    <el-button type="text" icon="el-icon-delete" style="color:#fd5656" @click="handleDelete(scope.row)">删除</el-button>
+                    <el-button type="text" icon="el-icon-delete" style="color:#fd5656" @click="handleDelete(scope.row)" v-hasPermi="['finance:receipt:delete']">删除</el-button>
                 </template>
             </el-table-column>
         </el-table>
@@ -107,6 +107,9 @@ export default {
         };
     },
     created() {
+        this.getList();
+    },
+    activated() {
         this.getList();
     },
     methods: {

@@ -13,15 +13,15 @@
             </el-form-item>
         </el-form>
         <div class="handle-box">
-            <el-dropdown trigger="click" style="margin: 0 10px;">
+            <el-dropdown trigger="click" style="margin: 0 10px;" v-hasPermi="['warehouse:returns:submit']">
                 <el-button class="el-dropdown-link" size="small" type="primary"> 提交<i class="el-icon-arrow-down el-icon--right"></i> </el-button>
                 <el-dropdown-menu slot="dropdown">
                     <el-dropdown-item icon="el-icon-top" @click.native="handleSubmit">提交</el-dropdown-item>
                     <el-dropdown-item icon="el-icon-bottom" @click.native="handleNoSubmit">收回</el-dropdown-item>
                 </el-dropdown-menu>
             </el-dropdown>
-            <el-button type="primary" size="small" icon="el-icon-edit" class="handle-del mr10" :disabled="single" @click="handleAudit">审核</el-button>
-            <el-button type="primary" size="small" icon="el-icon-printer" class="handle-del mr10" @click="handlePrint" :disabled="single">打印</el-button>
+            <el-button type="primary" size="small" icon="el-icon-edit" class="handle-del mr10" :disabled="single" @click="handleAudit" v-hasPermi="['warehouse:returns:audit']">审核</el-button>
+            <el-button type="primary" size="small" icon="el-icon-printer" class="handle-del mr10" @click="handlePrint" :disabled="single" v-hasPermi="['warehouse:returns:print']">打印</el-button>
         </div>
         <el-table v-loading="loading" :data="listData" @selection-change="handleSelectionChange" ref="listData" @row-click="selectionRowClick" highlight-current-row @row-dblclick="handledblclickRow">
             <el-table-column type="selection" width="50" fixed="left" align="center" />
@@ -36,9 +36,9 @@
             <el-table-column prop="createTime" label="录入时间" align="center" width="160" />
             <el-table-column prop="auditBy" label="审核人" align="center" width="120" />
             <el-table-column prop="auditTime" label="审核时间" align="center" width="160" />
-            <el-table-column label="操作" align="center" width="180" class-name="small-padding fixed-width" fixed="right">
+            <el-table-column label="操作" align="center" width="150" class-name="small-padding fixed-width" fixed="right">
                 <template slot-scope="scope">
-                    <el-button size="mini" type="text" icon="el-icon-edit" @click="handleUpdate(scope.row)">修改</el-button>
+                    <el-button size="mini" type="text" icon="el-icon-edit" @click="handleUpdate(scope.row)" v-hasPermi="['warehouse:returns:edit']">修改</el-button>
                 </template>
             </el-table-column>
         </el-table>
@@ -96,6 +96,9 @@ export default {
         };
     },
     created() {
+        this.getList();
+    },
+    activated() {
         this.getList();
     },
     methods: {

@@ -2,7 +2,7 @@
     <div class="container">
         <div>
             <el-button type="primary" icon="el-icon-check" @click="submitAddForm">保 存</el-button>
-            <el-button icon="el-icon-close" @click="clearAddForm">清 空</el-button>
+            <!-- <el-button icon="el-icon-close" @click="clearAddForm">清 空</el-button> -->
         </div>
         <el-divider><strong>客户信息</strong></el-divider>
         <el-form :model="clienteleForm" ref="clienteleForm" :rules="rules" label-position="right" label-width="100px" :inline="true">
@@ -142,7 +142,7 @@
 
 <script>
 import { treeselect } from '@/api/basis/category.js';
-import { listClientele } from '@/api/basis/clientele.js';
+import { listClienteleDialog } from '@/api/basis/clientele.js';
 import { addReceivable } from '@/api/finance/receivable.js';
 import Treeselect from '@riophae/vue-treeselect';
 import '@riophae/vue-treeselect/dist/vue-treeselect.css';
@@ -194,7 +194,7 @@ export default {
         },
         handleQuery() {
             this.clienteleQueryParams.clienteleNum = this.clienteleQueryParams.clienteleName;
-            listClientele(this.clienteleQueryParams).then(res => {
+            listClienteleDialog(this.clienteleQueryParams).then(res => {
                 if (res.success) {
                     this.clienteleListData = res.data.records;
                     this.clienteleTotal = res.data.total;

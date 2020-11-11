@@ -21,6 +21,9 @@
                     <el-form-item label="应收款" prop="receivablePrice">
                         <el-input v-model="orderForm.receivablePrice" size="small" readonly />
                     </el-form-item>
+                    <el-form-item label="应付款" prop="payablePrice">
+                        <el-input v-model="orderForm.payablePrice" size="small" readonly />
+                    </el-form-item>
                     <el-form-item label="已收款" prop="hasReceiptPrice">
                         <el-input v-model="orderForm.hasReceiptPrice" size="small" readonly />
                     </el-form-item>
@@ -49,7 +52,7 @@
                     <el-table-column prop="demand" label="技术要求" align="center" :show-overflow-tooltip="true"></el-table-column>
                     <el-table-column prop="hasOutboundNum" label="已出库数量" align="center" :show-overflow-tooltip="true"></el-table-column>
                     <el-table-column prop="hasSignbackNum" label="已签收数量" align="center" :show-overflow-tooltip="true"></el-table-column>
-                    <el-table-column prop="hasReturnNum" label="退货数量" align="center" :show-overflow-tooltip="true"></el-table-column>
+                    <el-table-column prop="hasReturnNum" label="累计退货数量" align="center" :show-overflow-tooltip="true"></el-table-column>
                 </el-table>
             </el-col>
         </el-row>
@@ -124,16 +127,22 @@ export default {
                     // 应收款
                     getClienteleReceivableList(data).then(res => {
                         this.receivableListData = res.data;
-                        let receipt = 0;
-                        let receivable = 0;
+                        let payable = 0; // 累计应收款
+                        let receipt = 0; // 累计已收款
+                        let receivable = 0; // 累计应收款
                         this.receivableListData.forEach(item => {
-                            receivable = receivable + parseFloat(item.totalPrice || 0);
-                            receipt = receipt + parseFloat(item.hasVerificaPrice || 0) + parseFloat(item.hasVerificaPrice || 0);
+                            let price = parseFloat(item.totalPrice || 0);
+                            if (price > 0) {
+                                receivable = receivable + price;
+                            } else {
+                                payable = payable + price;
+                            }
+                            receipt = receipt + parseFloat(item.hasVerificaPrice || 0);
                         });
-                        console.log(receivable);
                         this.orderForm.receivablePrice = receivable.toFixed(2);
                         this.orderForm.hasReceiptPrice = receipt.toFixed(2);
-                        this.orderForm.notReceiptPrice = (parseFloat(this.orderForm.totalPrice) - receipt).toFixed(2);
+                        this.orderForm.notReceiptPrice = this.orderForm.totalPrice - receivable + payable;
+                        this.orderForm.payablePrice = -payable;
                     });
                 });
             }

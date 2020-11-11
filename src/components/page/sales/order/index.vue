@@ -17,17 +17,17 @@
         </el-form>
         <div class="handle-box">
             <el-button type="primary" size="small" icon="el-icon-plus" class="handle-del mr10" v-hasPermi="['sales:order:add']" @click="handleAdd">新增</el-button>
-            <el-dropdown trigger="click" style="margin: 0 10px;">
+            <el-dropdown trigger="click" style="margin: 0 10px;" v-hasPermi="['sales:order:submit']">
                 <el-button class="el-dropdown-link" size="small" type="primary"> 提交<i class="el-icon-arrow-down el-icon--right"></i> </el-button>
                 <el-dropdown-menu slot="dropdown">
                     <el-dropdown-item icon="el-icon-top" @click.native="handleSubmit">提交</el-dropdown-item>
                     <el-dropdown-item icon="el-icon-bottom" @click.native="handleNoSubmit">收回</el-dropdown-item>
                 </el-dropdown-menu>
             </el-dropdown>
-            <el-button type="primary" size="small" icon="el-icon-finished" class="handle-del mr10" :disabled="single" @click="handleAudit">审核</el-button>
-            <!-- <el-button type="primary" size="small" icon="el-icon-edit" class="handle-del mr10" :disabled="single" @click="handleShipments">发货</el-button> -->
-            <el-button type="primary" size="small" icon="el-icon-printer" class="handle-del mr10" @click="handlePrint" :disabled="single">打印</el-button>
-            <el-button type="warning" size="small" icon="el-icon-finished" class="handle-del mr10" :disabled="single" @click="handleClose">关闭</el-button>
+            <el-button type="primary" size="small" icon="el-icon-finished" class="handle-del mr10" :disabled="single" @click="handleAudit" v-hasPermi="['sales:order:audit']">审核</el-button>
+            <!-- <el-button type="primary" size="small" icon="el-icon-edit" class="handle-del mr10" :disabled="single" @click="handleShipments" v-hasPermi="['sales:order:shipments']">发货</el-button> -->
+            <el-button type="primary" size="small" icon="el-icon-printer" class="handle-del mr10" @click="handlePrint" :disabled="single" v-hasPermi="['sales:order:print']">打印</el-button>
+            <el-button type="warning" size="small" icon="el-icon-finished" class="handle-del mr10" :disabled="single" @click="handleClose" v-hasPermi="['sales:order:close']">关闭</el-button>
         </div>
         <el-table
             v-loading="loading"
@@ -62,7 +62,7 @@
                 <template slot-scope="scope">
                     <el-button size="mini" type="text" icon="el-icon-edit" v-hasPermi="['sales:order:edit']" @click="handleUpdate(scope.row)">修改</el-button>
                     <!-- <el-button size="mini" type="text" icon="el-icon-edit" v-hasPermi="['sales:order:edit']" style="color:#e6a23c" @click="handleShipments(scope.row)">发货</el-button> -->
-                    <el-button size="mini" type="text" icon="el-icon-info" style="color:#e6a23c" v-hasPermi="['sales:order:preview2']" @click="handleSchedule(scope.row)">查看进度</el-button>
+                    <el-button size="mini" type="text" icon="el-icon-info" style="color:#e6a23c" v-hasPermi="['sales:order:schedule']" @click="handleSchedule(scope.row)">查看进度</el-button>
                     <el-button size="mini" type="text" icon="el-icon-delete" style="color:#fd5656" v-hasPermi="['sales:order:delete']" @click="handleDelete(scope.row)">删除</el-button>
                 </template>
             </el-table-column>
@@ -159,6 +159,9 @@ export default {
         };
     },
     created() {
+        this.getList();
+    },
+    activated() {
         this.getList();
     },
     methods: {

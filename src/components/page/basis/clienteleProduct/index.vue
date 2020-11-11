@@ -57,7 +57,7 @@
             </div>
         </div>
 
-        <el-dialog :title="title" :visible.sync="addOpen" width="800px" append-to-body>
+        <el-dialog :title="title" :visible.sync="addOpen" width="800px" append-to-body v-dialogDrag>
             <el-form :model="query" ref="query" :inline="true">
                 <el-form-item label="产品类别" prop="categoryId">
                     <treeselect v-model="query.categoryId" :options="categoryOptions" :disable-branch-nodes="true" :show-count="true" style="width: 160px" placeholder="请选择类别" />
@@ -71,14 +71,14 @@
             </el-form>
             <el-table v-loading="loading" :data="materielListData" ref="materielListData" @selection-change="handleSelectionChangeDialog" @row-click="selectionRowClick" highlight-current-row>
                 <el-table-column type="selection" width="50" fixed="left" align="center" />
-                <el-table-column label="产品编码" align="center" prop="materielNum" width="100" />
-                <el-table-column label="产品名称" align="center" prop="materielName" :show-overflow-tooltip="true" width="100" />
-                <el-table-column prop="specification" label="规格" align="center" :show-overflow-tooltip="true" width="120"></el-table-column>
-                <el-table-column prop="modelName" label="型号" align="center" :show-overflow-tooltip="true" width="120"></el-table-column>
-                <el-table-column prop="needTorque" label="所需扭矩" align="center" :show-overflow-tooltip="true" width="100"></el-table-column>
-                <el-table-column prop="outTorque" :show-overflow-tooltip="true" label="输出扭矩" align="center" width="100"></el-table-column>
-                <el-table-column prop="unitsName" label="单位" :show-overflow-tooltip="true" align="center" width="100"></el-table-column>
-                <el-table-column prop="price" label="单价" align="center" width="200">
+                <el-table-column prop="materielNum" label="产品编码" align="center" :show-overflow-tooltip="true" />
+                <el-table-column prop="materielName" label="产品名称" align="center" :show-overflow-tooltip="true" />
+                <el-table-column prop="specification" label="规格" align="center" :show-overflow-tooltip="true"></el-table-column>
+                <el-table-column prop="modelName" label="型号" align="center" :show-overflow-tooltip="true"></el-table-column>
+                <el-table-column prop="needTorque" label="所需扭矩" align="center" :show-overflow-tooltip="true"></el-table-column>
+                <el-table-column prop="outTorque" label="输出扭矩" :show-overflow-tooltip="true" align="center"></el-table-column>
+                <el-table-column prop="unitsName" label="单位" :show-overflow-tooltip="true" align="center"></el-table-column>
+                <el-table-column prop="price" label="单价" align="center" :show-overflow-tooltip="true">
                     <template slot-scope="scope">
                         <el-input
                             size="mini"
@@ -251,7 +251,7 @@ export default {
                 .then(res => {
                     if (res.success) {
                         this.productListData = res.data.records;
-                        this.total = res.total || 0;
+                        this.total = res.data.total;
                     }
                     this.loading = false;
                 })

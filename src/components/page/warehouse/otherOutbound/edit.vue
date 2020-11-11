@@ -195,11 +195,11 @@
 </template>
 
 <script>
-import { warehouseListPage } from '@/api/basis/warehouse.js';
+import { warehouseListDialog } from '@/api/basis/warehouse.js';
 import { listAllMateriel } from '@/api/basis/materiel.js';
 import { treeselect } from '@/api/basis/category.js';
 import { getStorage, addAndUpdateStorage, listStorageSub } from '@/api/warehouse/storage.js';
-import { userListPage } from '@/api/system/user.js';
+import { userListDialog } from '@/api/system/user.js';
 
 import Treeselect from '@riophae/vue-treeselect';
 import '@riophae/vue-treeselect/dist/vue-treeselect.css';
@@ -297,14 +297,14 @@ export default {
             this.warehouseForm.storageTime = this.parseTime(new Date());
         },
         // ===================仓库============
-        handleAddWarehouse() {
+        warehouseListDialog() {
             this.open = true;
             this.title = '仓库';
             this.clearForm();
             this.handleQueryWarehouse();
         },
         getWarehouseListData() {
-            warehouseListPage(this.warehouseParams).then(res => {
+            warehouseListDialog(this.warehouseParams).then(res => {
                 this.warehouseListData = res.data.records;
                 this.warehouseTotal = res.data.total;
             });
@@ -416,7 +416,7 @@ export default {
         },
         // ===========人员================
         getPersonnelList() {
-            userListPage(this.personnelQueryParams).then(res => {
+            userListDialog(this.personnelQueryParams).then(res => {
                 this.personnelLoading = false;
                 this.personnelListData = res.data.records;
                 this.personnelTotal = res.data.total;

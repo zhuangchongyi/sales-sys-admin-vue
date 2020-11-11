@@ -1,7 +1,7 @@
 <template>
     <div>
         <div class="container">
-            <el-form :inline="true">
+            <el-form :inline="true" ref="queryDeptParams">
                 <el-form-item label="">
                     <el-input v-model="queryDeptParams.deptNum" placeholder="部门编码" clearable size="small" @keyup.enter.native="handleQuery" />
                 </el-form-item>
@@ -15,6 +15,7 @@
                 </el-form-item>
                 <el-form-item>
                     <el-button class="filter-item" type="primary" icon="el-icon-search" size="small" @click="handleQuery">搜索</el-button>
+                    <el-button class="filter-item" icon="el-icon-refresh" size="small" @click="resetQuery">刷新</el-button>
                 </el-form-item>
             </el-form>
             <div class="handle-box">
@@ -57,7 +58,7 @@
 
                         <el-col :span="12">
                             <el-form-item label="编码" prop="deptNum">
-                                <el-input v-model="form.deptNum" maxlength="10" show-word-limit placeholder="请输入名称" />
+                                <el-input v-model="form.deptNum" maxlength="10" show-word-limit placeholder="请输入名称" :readonly="!isAdd" />
                             </el-form-item>
                         </el-col>
                         <el-col :span="12">
@@ -80,15 +81,13 @@
                                 <el-input v-model="form.email" placeholder="请输入邮箱" />
                             </el-form-item>
                         </el-col>
-                        <el-col :span="12">
+                        <!-- <el-col :span="12">
                             <el-form-item label="类型" prop="deptType">
                                 <el-radio-group v-model="form.deptType">
                                     <el-radio v-for="dict in deptTypeOptions" :key="dict.dictValue" :label="dict.dictValue">{{ dict.dictLabel }}</el-radio>
                                 </el-radio-group>
                             </el-form-item>
-                        </el-col>
-                    </el-row>
-                    <el-row>
+                        </el-col> -->
                         <el-col :span="12">
                             <el-form-item label="状态" prop="status">
                                 <el-radio-group v-model="form.status">
@@ -208,7 +207,7 @@ export default {
             deptListData(this.queryDeptParams).then(res => {
                 this.loading = false;
                 this.deptListData = this.handleTree(res.data, 'deptId');
-                this.deptOptions = this.handleTree(res.data, 'deptId');
+                this.deptOptions = this.deptListData;
             });
         },
         // 表单刷新
@@ -226,6 +225,10 @@ export default {
         // 取消按钮
         cancel() {
             this.open = false;
+        },
+        resetQuery() {
+            this.resetForm('queryDeptParams');
+            this.getList();
         },
         // 搜索按钮
         handleQuery() {
@@ -275,9 +278,11 @@ export default {
                 confirmButtonText: '确定',
                 cancelButtonText: '取消',
                 type: 'warning'
-            }).then(function() {
-                return deleteDept(row.deptId).then(res => that.callbackFun(res));
-            });
+            })
+                .then(function() {
+                    return deleteDept(row.deptId).then(res => that.callbackFun(res));
+                })
+                .catch(() => {});
         },
         // 查看员工按钮
         handlePersonnel(row) {

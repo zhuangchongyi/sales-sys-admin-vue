@@ -156,7 +156,7 @@
 import { clienteleSignback } from '@/api/sales/signback.js';
 import { updateFinanceInit, getFinanceInit } from '@/api/finance/financeInit.js';
 import { treeselect } from '@/api/basis/category.js';
-import { listClientele } from '@/api/basis/clientele.js';
+import { listClienteleDialog } from '@/api/basis/clientele.js';
 import Treeselect from '@riophae/vue-treeselect';
 import '@riophae/vue-treeselect/dist/vue-treeselect.css';
 export default {
@@ -268,7 +268,7 @@ export default {
         handleQueryClientele() {
             this.getClienteleTreeselect();
             this.clienteleQueryParams.clienteleNum = this.clienteleQueryParams.clienteleName;
-            listClientele(this.clienteleQueryParams).then(res => {
+            listClienteleDialog(this.clienteleQueryParams).then(res => {
                 if (res.success) {
                     this.clienteleListData = res.data.records;
                     this.clienteleTotal = res.data.total;

@@ -106,7 +106,7 @@
 </template>
 
 <script>
-import { warehouseListPage } from '@/api/basis/warehouse.js';
+import { warehouseListDialog } from '@/api/basis/warehouse.js';
 import { listAllMateriel } from '@/api/basis/materiel.js';
 import { treeselect } from '@/api/basis/category.js';
 import { getInit, addAndUpdateInit, listInitSub } from '@/api/warehouse/init.js';
@@ -179,7 +179,7 @@ export default {
             this.handleQueryWarehouse();
         },
         getWarehouseListData() {
-            warehouseListPage(this.warehouseParams).then(res => {
+            warehouseListDialog(this.warehouseParams).then(res => {
                 this.warehouseListData = res.data.records;
                 this.warehouseTotal = res.data.total;
             });

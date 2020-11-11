@@ -1,15 +1,14 @@
- /* jshint esversion: 6 */
  import Vue from 'vue';
  import {
-     resetForm,
-     selectDictLabel,
-     handleTree,
-     approvalStatusFormatter,
-     getGenderFormatter,
-     parseTime,
-     download,
-     checkAuditStatus,
-     parseFloatFormatter
+   resetForm,
+   selectDictLabel,
+   handleTree,
+   approvalStatusFormatter,
+   getGenderFormatter,
+   parseTime,
+   download,
+   checkAuditStatus,
+   parseFloatFormatter
  } from "@/utils/common.js";
 
  // 全局方法挂载
@@ -24,22 +23,22 @@
  Vue.prototype.parseFloatFormatter = parseFloatFormatter; //保留小数位
 
  Vue.prototype.msgSuccess = function (msg) {
-     this.$message({
-         showClose: true,
-         message: msg,
-         type: "success"
-     });
+   this.$message({
+     showClose: true,
+     message: msg,
+     type: "success"
+   });
  }
  Vue.prototype.msgError = function (msg) {
-     this.$message({
-         showClose: true,
-         message: msg,
-         type: "error"
-     });
+   this.$message({
+     showClose: true,
+     message: msg,
+     type: "error"
+   });
  }
  Vue.prototype.msgInfo = function (msg) {
-     this.$message.info(msg);
+   this.$message.info(msg);
  }
  Vue.prototype.msgAlert = function (title, msg) {
-     this.$alert(msg, title);
+   this.$alert(msg, title);
  }

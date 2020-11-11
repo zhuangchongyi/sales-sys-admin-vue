@@ -455,8 +455,8 @@ import { addQuotation, getQuotation } from '@/api/sales/quotation.js';
 import { listQuotationSub, addQuotationSub, updateQuotationSub, deleteQuotationSub } from '@/api/sales/quotation.js';
 import { listAccessory, updateAccessory, deleteAccessory, downloadFile } from '@/api/sales/accessory.js';
 import { treeselect } from '@/api/basis/category.js';
-import { listClientele } from '@/api/basis/clientele.js';
-import { userListPage } from '@/api/system/user.js';
+import { listClienteleDialog } from '@/api/basis/clientele.js';
+import { userListDialog } from '@/api/system/user.js';
 import { listClienteleMateriel } from '@/api/basis/clienteleProduct.js';
 import { listUnits } from '@/api/basis/units.js';
 import Treeselect from '@riophae/vue-treeselect';
@@ -658,7 +658,7 @@ export default {
         },
         handleQueryClientele() {
             this.clienteleQueryParams.clienteleNum = this.clienteleQueryParams.clienteleName;
-            listClientele(this.clienteleQueryParams).then(res => {
+            listClienteleDialog(this.clienteleQueryParams).then(res => {
                 if (res.success) {
                     this.clienteleListData = res.data.records;
                     this.clienteleTotal = res.data.total;
@@ -718,7 +718,7 @@ export default {
         },
 
         getPersonnelList() {
-            userListPage(this.personnelQueryParams).then(res => {
+            userListDialog(this.personnelQueryParams).then(res => {
                 this.personnelLoading = false;
                 this.personnelListData = res.data.records;
                 this.personnelTotal = res.data.total;

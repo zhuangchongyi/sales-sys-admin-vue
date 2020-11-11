@@ -13,16 +13,16 @@
             </el-form-item>
         </el-form>
         <div class="handle-box">
-            <el-button type="primary" size="small" icon="el-icon-plus" class="handle-del mr10" @click="handleAdd">新增</el-button>
-            <el-dropdown trigger="click" style="margin: 0 10px;">
+            <el-button type="primary" size="small" icon="el-icon-plus" class="handle-del mr10" @click="handleAdd" v-hasPermi="['sales:returns:add']">新增</el-button>
+            <el-dropdown trigger="click" style="margin: 0 10px;" v-hasPermi="['sales:returns:submit']">
                 <el-button class="el-dropdown-link" size="small" type="primary"> 提交<i class="el-icon-arrow-down el-icon--right"></i> </el-button>
                 <el-dropdown-menu slot="dropdown">
                     <el-dropdown-item icon="el-icon-top" @click.native="handleSubmit">提交</el-dropdown-item>
                     <el-dropdown-item icon="el-icon-bottom" @click.native="handleNoSubmit">收回</el-dropdown-item>
                 </el-dropdown-menu>
             </el-dropdown>
-            <el-button type="primary" size="small" icon="el-icon-edit" class="handle-del mr10" :disabled="single" @click="handleAudit">审核</el-button>
-            <el-button type="primary" size="small" icon="el-icon-printer" class="handle-del mr10" @click="handlePrint" :disabled="single">打印</el-button>
+            <el-button type="primary" size="small" icon="el-icon-edit" class="handle-del mr10" :disabled="single" @click="handleAudit" v-hasPermi="['sales:returns:audit']">审核</el-button>
+            <el-button type="primary" size="small" icon="el-icon-printer" class="handle-del mr10" @click="handlePrint" :disabled="single" v-hasPermi="['sales:returns:print']">打印</el-button>
         </div>
         <el-table v-loading="loading" :data="listData" @selection-change="handleSelectionChange" ref="listData" @row-click="selectionRowClick" highlight-current-row @row-dblclick="handledblclickRow">
             <el-table-column type="selection" width="50" fixed="left" align="center" />
@@ -31,6 +31,7 @@
             <el-table-column prop="clienteleNum" label="客户编号" align="center" width="120" />
             <el-table-column prop="clienteleName" label="客户名称" align="center" :show-overflow-tooltip="true" width="120" />
             <el-table-column prop="orderNum" label="订单号" align="center" width="180" />
+            <el-table-column prop="orderTime" label="订单日期" align="center" width="120" />
             <el-table-column prop="totalPrice" label="退货金额" align="center" width="120" />
             <el-table-column prop="status" label="状态" :formatter="auditStatusFormatter" align="center" width="120" />
             <el-table-column prop="remark" label="退货原因" align="desc" :show-overflow-tooltip="true" width="200" />
@@ -40,8 +41,8 @@
             <el-table-column prop="auditTime" label="审核时间" align="center" width="160" />
             <el-table-column label="操作" align="center" width="150" class-name="small-padding fixed-width" fixed="right">
                 <template slot-scope="scope">
-                    <el-button size="mini" type="text" icon="el-icon-edit" @click="handleUpdate(scope.row)">修改</el-button>
-                    <el-button size="mini" type="text" icon="el-icon-delete" style="color:#fd5656" @click="handleDelete(scope.row)">删除</el-button>
+                    <el-button size="mini" type="text" icon="el-icon-edit" @click="handleUpdate(scope.row)" v-hasPermi="['sales:returns:edit']">修改</el-button>
+                    <el-button size="mini" type="text" icon="el-icon-delete" style="color:#fd5656" @click="handleDelete(scope.row)" v-hasPermi="['sales:returns:delete']">删除</el-button>
                 </template>
             </el-table-column>
         </el-table>
@@ -95,6 +96,9 @@ export default {
         };
     },
     created() {
+        this.getList();
+    },
+    activated() {
         this.getList();
     },
     methods: {
@@ -216,7 +220,7 @@ export default {
             }
             submitReturns('2', this.ids).then(res => {
                 if (res.success) {
-                    this.msgSuccess('提交成功');
+                    this.msgSuccess('收回成功');
                     this.handleQuery();
                 } else {
                     this.msgError(res.message);

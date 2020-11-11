@@ -54,7 +54,7 @@
                         </el-col>
                         <el-col :span="12">
                             <el-form-item label="类别编码" prop="categoryNum">
-                                <el-input v-model="form.categoryNum" placeholder="请输入产品类别编码" maxlength="10" show-word-limit />
+                                <el-input v-model="form.categoryNum" placeholder="请输入产品类别编码" maxlength="10" show-word-limit :readonly="isEdit" />
                             </el-form-item>
                         </el-col>
                         <el-col :span="12">
@@ -125,7 +125,8 @@ export default {
                 categoryNum: [{ required: true, message: '类别编码不能为空', trigger: 'blur' }],
                 status: [{ required: true, message: '状态不能为空', trigger: 'blur' }]
             },
-            isShow: true
+            isShow: true,
+            isEdit: false
         };
     },
     created() {
@@ -190,6 +191,7 @@ export default {
                 this.isShow = true;
             }
             this.open = true;
+            this.isEdit = false;
             this.title = '新增产品类别';
         },
         /** 修改按钮操作 */
@@ -198,6 +200,7 @@ export default {
             getCategory(row.categoryId).then(res => {
                 this.form = res.data;
                 this.open = true;
+                this.isEdit = true;
                 this.title = '修改产品类别';
             });
         },

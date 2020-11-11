@@ -73,7 +73,7 @@
 
 <script>
 import { listRepertoryPage } from '@/api/warehouse/repertory.js';
-import { warehouseListPage } from '@/api/basis/warehouse.js';
+import { warehouseListDialog } from '@/api/basis/warehouse.js';
 export default {
     name: 'warehouse-repertory', //现存量
     data() {
@@ -149,7 +149,7 @@ export default {
 
         // =====================仓库=====================
         getWarehouseList() {
-            warehouseListPage(this.query).then(res => {
+            warehouseListDialog(this.query).then(res => {
                 this.warehouseListData = res.data.records;
                 this.pageTotal = res.data.total;
             });

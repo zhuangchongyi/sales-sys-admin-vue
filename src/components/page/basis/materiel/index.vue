@@ -93,7 +93,7 @@
                     </el-col>
                     <el-col :span="12">
                         <el-form-item label="产品编码" prop="materielNum">
-                            <el-input v-model="form.materielNum" placeholder="请输入产品编码" maxlength="10" show-word-limit />
+                            <el-input v-model="form.materielNum" placeholder="请输入产品编码" maxlength="10" show-word-limit :readonly="isEdit" />
                         </el-form-item>
                     </el-col>
                     <el-col :span="12">
@@ -592,12 +592,12 @@ export default {
             materielOpen: false,
             modelNameOpen: false,
             selectionMaterielData: [],
-            materielForm: {}
+            materielForm: {},
+            isEdit: false
         };
     },
     created() {
         this.getList();
-        this.getTreeselect();
     },
     watch: {
         // 根据名称筛选部门树
@@ -612,6 +612,7 @@ export default {
         },
         // 查询产品列表
         getList() {
+            this.getTreeselect();
             listMateriel(this.queryParams).then(res => {
                 this.materielListData = res.data.records;
                 this.total = res.data.total || 0;
@@ -691,6 +692,7 @@ export default {
             this.getTreeselect();
             this.form.categoryId = this.categoryId;
             this.open = true;
+            this.isEdit = false;
             this.title = '新增产品';
         },
         /** 修改按钮操作 */
@@ -702,6 +704,7 @@ export default {
                 this.form = res.data;
                 this.modelNames = res.data.materielModels;
                 this.open = true;
+                this.isEdit = true;
                 this.title = '修改产品';
             });
         },

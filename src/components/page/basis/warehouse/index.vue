@@ -54,7 +54,7 @@
         <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
             <el-form ref="form" :model="form" :rules="rules" label-width="80px">
                 <el-form-item label="仓库编码" prop="warehouseNum">
-                    <el-input v-model="form.warehouseNum" placeholder="请输入仓库编码" maxlength="10" show-word-limit />
+                    <el-input v-model="form.warehouseNum" placeholder="请输入仓库编码" maxlength="10" show-word-limit :readonly="isEdit" />
                 </el-form-item>
                 <el-form-item label="仓库名称" prop="warehouseName">
                     <el-input v-model="form.warehouseName" placeholder="请输入仓库名称" />
@@ -118,7 +118,8 @@ export default {
                     { required: true, message: '仓库编码不能为空', trigger: 'blur' },
                     { max: 10, message: '长度不能超过10个字符', trigger: 'blur' }
                 ]
-            }
+            },
+            isEdit: false
         };
     },
     created() {
@@ -178,6 +179,7 @@ export default {
         handleAdd() {
             this.reset();
             this.open = true;
+            this.isEdit = false;
             this.title = '新增仓库';
             this.getTreeselect();
         },
@@ -188,6 +190,7 @@ export default {
             getWarehouse(row.warehouseId).then(res => {
                 this.form = res.data;
                 this.open = true;
+                this.isEdit = true;
                 this.title = '修改仓库';
             });
         },

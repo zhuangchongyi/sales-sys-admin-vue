@@ -351,8 +351,8 @@
 import { listOrderPage, getOrderSub } from '@/api/sales/order.js';
 import { addAndUpdateShipments, getShipments, listShipmentsSub, auditShipments } from '@/api/sales/shipments.js';
 import { treeselect } from '@/api/basis/category.js';
-import { listClientele } from '@/api/basis/clientele.js';
-import { userListPage } from '@/api/system/user.js';
+import { listClienteleDialog } from '@/api/basis/clientele.js';
+import { userListDialog } from '@/api/system/user.js';
 import { listAllMateriel } from '@/api/basis/materiel.js';
 import { listUnits } from '@/api/basis/units.js';
 
@@ -472,8 +472,8 @@ export default {
     },
     watch: {
         $route(to, form) {
-            if (to.path === '/page/sales/shipments/preview' && this.shipmentsId !== to.query.id) {
-                this.shipmentsId = this.$route.query.id || 0;
+            if (to.path === '/page/sales/shipments/preview' && this.shipmentsId !== this.$route.query.id) {
+                this.shipmentsId = this.$route.query.id;
                 this.isAudit = JSON.parse(this.$route.query.isAudit || false);
                 this.isShow = JSON.parse(this.$route.query.isShow || false);
                 this.getShipmentsData();
@@ -482,7 +482,7 @@ export default {
     },
     created() {
         this.getTreeselectClienteleType();
-        this.shipmentsId = this.$route.query.id || 0;
+        this.shipmentsId = this.$route.query.id;
         this.isAudit = JSON.parse(this.$route.query.isAudit || false);
         this.isShow = JSON.parse(this.$route.query.isShow || false);
         this.getShipmentsData();
@@ -524,7 +524,8 @@ export default {
                     if (res.success) {
                         this.msgSuccess('审核成功');
                     } else {
-                        this.msgError(res.message);
+                        // this.msgError(res.message);
+                        this.msgAlert('提示', res.message);
                     }
                     this.getShipmentsData();
                 })
@@ -538,9 +539,13 @@ export default {
                 this.msgError('已反审核');
                 return;
             }
+            if (this.clienteleForm.status !== '3' && this.clienteleForm.status !== '5') {
+                this.msgError('未审核');
+                return;
+            }
             let data = {
                 shipmentsId: this.shipmentsId,
-                status: this.clienteleForm.status == '3' ? '4' : '6'
+                status: this.clienteleForm.status === '3' ? '4' : '6'
             };
             this.btnLoading = true;
             auditShipments(data)
@@ -615,7 +620,7 @@ export default {
         },
         handleQueryClientele() {
             this.clienteleQueryParams.clienteleNum = this.clienteleQueryParams.clienteleName;
-            listClientele(this.clienteleQueryParams).then(res => {
+            listClienteleDialog(this.clienteleQueryParams).then(res => {
                 if (res.success) {
                     this.clienteleListData = res.data.records;
                     this.clienteleTotal = res.data.total;
@@ -685,7 +690,7 @@ export default {
         },
 
         getPersonnelList() {
-            userListPage(this.personnelQueryParams).then(res => {
+            userListDialog(this.personnelQueryParams).then(res => {
                 this.personnelLoading = false;
                 this.personnelListData = res.data.records;
                 this.personnelTotal = res.data.total;

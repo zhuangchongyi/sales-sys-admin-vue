@@ -162,7 +162,7 @@
 <script>
 import { editSignback, getSignback, listSignbackSub } from '@/api/sales/signback.js';
 import { treeselect } from '@/api/basis/category.js';
-import { userListPage } from '@/api/system/user.js';
+import { userListDialog } from '@/api/system/user.js';
 import Treeselect from '@riophae/vue-treeselect';
 import '@riophae/vue-treeselect/dist/vue-treeselect.css';
 export default {
@@ -286,7 +286,7 @@ export default {
         },
         // 业务员
         getPersonnelList() {
-            userListPage(this.personnelQueryParams).then(res => {
+            userListDialog(this.personnelQueryParams).then(res => {
                 this.personnelLoading = false;
                 this.personnelListData = res.data.records;
                 this.personnelTotal = res.data.total;

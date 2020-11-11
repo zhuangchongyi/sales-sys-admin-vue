@@ -60,8 +60,7 @@
 <script>
 import { getWriteoff, listWriteoffSub, auditWriteoff } from '@/api/finance/writeoff.js';
 import { treeselect } from '@/api/basis/category.js';
-import { listClientele } from '@/api/basis/clientele.js';
-import { userListPage } from '@/api/system/user.js';
+import { userListDialog } from '@/api/system/user.js';
 import Treeselect from '@riophae/vue-treeselect';
 import '@riophae/vue-treeselect/dist/vue-treeselect.css';
 export default {

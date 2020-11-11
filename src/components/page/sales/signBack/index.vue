@@ -16,8 +16,8 @@
             </el-form-item>
         </el-form>
         <div class="handle-box">
-            <el-button type="primary" size="small" icon="el-icon-edit" class="handle-del mr10" :disabled="single" @click="handleAudit">审核</el-button>
-            <el-button type="primary" size="small" icon="el-icon-printer" class="handle-del mr10" :disabled="single" @click="handlePrint">打印</el-button>
+            <el-button type="primary" size="small" icon="el-icon-edit" class="handle-del mr10" :disabled="single" @click="handleAudit" v-hasPermi="['sales:signback:audit']">审核</el-button>
+            <el-button type="primary" size="small" icon="el-icon-printer" class="handle-del mr10" :disabled="single" @click="handlePrint" v-hasPermi="['sales:signback:print']">打印</el-button>
         </div>
         <el-table v-loading="loading" :data="listData" ref="listData" @row-click="selectionRowClick" highlight-current-row @row-dblclick="handledblclickRow" @selection-change="handleSelectionChange">
             <el-table-column type="selection" width="50" fixed="left" align="center" />
@@ -35,7 +35,7 @@
             <el-table-column label="审核时间" align="center" prop="auditTime" width="160" />
             <el-table-column label="操作" align="center" class-name="small-padding fixed-width" fixed="right">
                 <template slot-scope="scope">
-                    <el-button size="mini" type="text" icon="el-icon-edit" @click="handleUpdate(scope.row)">签收</el-button>
+                    <el-button size="mini" type="text" icon="el-icon-edit" @click="handleUpdate(scope.row)" v-hasPermi="['sales:signback:edit']">签收</el-button>
                 </template>
             </el-table-column>
         </el-table>
@@ -97,6 +97,9 @@ export default {
     created() {
         this.getList();
     },
+    activated() {
+        this.getList();
+    },
     methods: {
         getList() {
             this.queryParams.clienteleNum = this.queryParams.clienteleName;
@@ -135,7 +138,7 @@ export default {
         },
         /** 修改按钮操作 */
         handleUpdate(row) {
-            if (row.signbackStatus !== '1') {
+            if (row.signbackStatus == '0') {
                 this.$router.push({ path: '/page/sales/signBack/edit', query: { signId: row.signbackId } });
             } else {
                 this.msgError('已签收');

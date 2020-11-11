@@ -91,7 +91,7 @@
             <el-table-column prop="number" label="订购数量" align="center" width="100"></el-table-column>
             <el-table-column prop="hasOutboundNum" label="已发货数量" align="center" width="100"></el-table-column>
             <el-table-column prop="hasSignbackNum" label="已签收数量" align="center" width="100"></el-table-column>
-            <el-table-column prop="hasReturnNum" label="已退货数量" align="center" width="100"></el-table-column>
+            <el-table-column prop="hasReturnNum" label="累计退货数量" align="center" width="100"></el-table-column>
             <el-table-column prop="returnsNum" label="本次退货数量" align="center" width="120"> </el-table-column>
             <el-table-column prop="totalPrice" label="本次退货金额" align="center" width="120"></el-table-column>
         </el-table>
@@ -99,8 +99,8 @@
         <!--  添加客户窗口 -->
         <el-dialog title="客户订单" :visible.sync="open" width="800px" append-to-body>
             <el-form :model="queryParams" ref="queryParams" :inline="true">
-                <el-form-item label="发货单号" prop="orderNum">
-                    <el-input v-model="queryParams.orderNum" placeholder="发货单号" clearable size="small" style="width: 155px;" @keyup.enter.native="handleQueryOrder" />
+                <el-form-item label="订单号" prop="orderNum">
+                    <el-input v-model="queryParams.orderNum" placeholder="订单号" clearable size="small" style="width: 155px;" @keyup.enter.native="handleQueryOrder" />
                 </el-form-item>
                 <el-form-item label="客户" prop="clienteleName">
                     <el-input v-model="queryParams.clienteleName" placeholder="请输入编码或名称" clearable size="small" style="width: 155px;" @keyup.enter.native="handleQueryOrder" />
@@ -115,7 +115,7 @@
                         <el-radio :label="scope.$index + 1" v-model="radio" @change.native="getCurrentRow(scope.row)"></el-radio>
                     </template>
                 </el-table-column>
-                <el-table-column label="发货单号" align="center" prop="orderNum" :show-overflow-tooltip="true" />
+                <el-table-column label="订单号" align="center" prop="orderNum" :show-overflow-tooltip="true" />
                 <el-table-column label="发货日期" align="center" prop="orderTime" :show-overflow-tooltip="true" />
                 <el-table-column label="客户编码" align="center" prop="clienteleNum" :show-overflow-tooltip="true" />
                 <el-table-column label="客户名称" align="center" prop="clienteleName" :show-overflow-tooltip="true" />
@@ -178,8 +178,8 @@
 import { listReturnOrder, listSignOrderSub } from '@/api/sales/order.js';
 import { auditReturns, getReturns, listReturnsSub } from '@/api/sales/returns.js';
 import { treeselect } from '@/api/basis/category.js';
-import { listClientele } from '@/api/basis/clientele.js';
-import { userListPage } from '@/api/system/user.js';
+import { listClienteleDialog } from '@/api/basis/clientele.js';
+import { userListDialog } from '@/api/system/user.js';
 import { listAllMateriel } from '@/api/basis/materiel.js';
 import { listUnits } from '@/api/basis/units.js';
 import Treeselect from '@riophae/vue-treeselect';
@@ -430,7 +430,7 @@ export default {
         },
 
         getPersonnelList() {
-            userListPage(this.personnelQueryParams).then(res => {
+            userListDialog(this.personnelQueryParams).then(res => {
                 this.personnelLoading = false;
                 this.personnelListData = res.data.records;
                 this.personnelTotal = res.data.total;

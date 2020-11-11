@@ -64,7 +64,7 @@
                 </el-col>
                 <el-col :span="4">
                     <el-form-item label="仓库编码" prop="warehouseNum">
-                        <el-input v-model="clienteleForm.warehouseNum" size="small" placeholder="选择出库仓库" @focus="handleAddWarehouse" style="width: 155px;" />
+                        <el-input v-model="clienteleForm.warehouseNum" size="small" placeholder="选择出库仓库" @focus="warehouseListDialog" style="width: 155px;" />
                     </el-form-item>
                 </el-col>
                 <el-col :span="4">
@@ -224,10 +224,10 @@
 <script>
 import { listOrderPage, getOrderSub } from '@/api/sales/order.js';
 import { updateOutbound, getShipments, listShipmentsSub } from '@/api/sales/shipments.js';
-import { warehouseListPage } from '@/api/basis/warehouse.js';
+import { warehouseListDialog } from '@/api/basis/warehouse.js';
 import { treeselect } from '@/api/basis/category.js';
-import { listClientele } from '@/api/basis/clientele.js';
-import { userListPage } from '@/api/system/user.js';
+import { listClienteleDialog } from '@/api/basis/clientele.js';
+import { userListDialog } from '@/api/system/user.js';
 import { listAllMateriel } from '@/api/basis/materiel.js';
 import { listUnits } from '@/api/basis/units.js';
 
@@ -358,7 +358,7 @@ export default {
         },
         handleQueryClientele() {
             this.clienteleQueryParams.clienteleNum = this.clienteleQueryParams.clienteleName;
-            listClientele(this.clienteleQueryParams).then(res => {
+            listClienteleDialog(this.clienteleQueryParams).then(res => {
                 if (res.success) {
                     this.clienteleListData = res.data.records;
                     this.clienteleTotal = res.data.total;
@@ -417,7 +417,7 @@ export default {
         },
 
         getPersonnelList() {
-            userListPage(this.personnelQueryParams).then(res => {
+            userListDialog(this.personnelQueryParams).then(res => {
                 this.personnelLoading = false;
                 this.personnelListData = res.data.records;
                 this.personnelTotal = res.data.total;
@@ -458,13 +458,13 @@ export default {
             this.$refs.clienteleForm.clearValidate('personnelName');
         },
 
-        handleAddWarehouse() {
+        warehouseListDialog() {
             this.warehouseOpen = true;
             this.title = '仓库';
             this.handleQueryWarehouse();
         },
         getWarehouseListData() {
-            warehouseListPage(this.warehouseParams).then(res => {
+            warehouseListDialog(this.warehouseParams).then(res => {
                 this.warehouseListData = res.data.records;
                 this.warehouseTotal = res.data.total;
             });
