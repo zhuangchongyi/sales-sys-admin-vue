@@ -21,13 +21,10 @@
                     <el-form-item label="应收款" prop="receivablePrice">
                         <el-input v-model="orderForm.receivablePrice" size="small" readonly />
                     </el-form-item>
-                    <el-form-item label="应付款" prop="payablePrice">
-                        <el-input v-model="orderForm.payablePrice" size="small" readonly />
-                    </el-form-item>
                     <el-form-item label="已收款" prop="hasReceiptPrice">
                         <el-input v-model="orderForm.hasReceiptPrice" size="small" readonly />
                     </el-form-item>
-                    <el-form-item label="待收款" prop="notReceiptPrice">
+                    <el-form-item label="未收款" prop="notReceiptPrice">
                         <el-input v-model="orderForm.notReceiptPrice" size="small" readonly />
                     </el-form-item>
                 </el-form>
@@ -127,22 +124,16 @@ export default {
                     // 应收款
                     getClienteleReceivableList(data).then(res => {
                         this.receivableListData = res.data;
-                        let payable = 0; // 累计应收款
                         let receipt = 0; // 累计已收款
                         let receivable = 0; // 累计应收款
                         this.receivableListData.forEach(item => {
                             let price = parseFloat(item.totalPrice || 0);
-                            if (price > 0) {
-                                receivable = receivable + price;
-                            } else {
-                                payable = payable + price;
-                            }
+                            receivable = receivable + price;
                             receipt = receipt + parseFloat(item.hasVerificaPrice || 0);
                         });
                         this.orderForm.receivablePrice = receivable.toFixed(2);
                         this.orderForm.hasReceiptPrice = receipt.toFixed(2);
-                        this.orderForm.notReceiptPrice = this.orderForm.totalPrice - receivable + payable;
-                        this.orderForm.payablePrice = -payable;
+                        this.orderForm.notReceiptPrice = this.orderForm.totalPrice - receivable;
                     });
                 });
             }
