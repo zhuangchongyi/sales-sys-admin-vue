@@ -305,6 +305,9 @@ export default {
             this.$refs['form'].validate(valid => {
                 if (valid) {
                     if (this.isAdd) {
+                        if (!this.form.parentId) {
+                            this.form.parentId = 0;
+                        }
                         addDept(this.form).then(res => this.callbackFun(res));
                     } else {
                         updateDept(this.form).then(res => this.callbackFun(res));

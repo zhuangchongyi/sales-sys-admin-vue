@@ -299,7 +299,6 @@ export default {
             this.$router.push({ path: '/page/sales/order/preview', query: { id: row.orderId, isShow: false } });
         },
         handleAudit() {
-            console.log(status);
             if (this.verifyStatus('7', '已关闭')) return;
             if (this.verifyStatus('0', '请先提交') || this.verifyStatus('2', '请先提交')) {
                 return;
