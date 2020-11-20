@@ -137,10 +137,7 @@
    var url = window.URL.createObjectURL(blob);
    a.href = url;
    a.download = filename;
-   var body = document.getElementsByTagName('body')[0];
-   body.appendChild(a);
    a.click();
-   body.removeChild(a);
    window.URL.revokeObjectURL(url);
  }
 

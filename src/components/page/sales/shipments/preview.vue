@@ -472,7 +472,7 @@ export default {
     },
     watch: {
         $route(to, form) {
-            if (to.path === '/page/sales/shipments/preview' && this.shipmentsId !== this.$route.query.id) {
+            if (to.path === '/page/sales/shipments/preview') {
                 this.shipmentsId = this.$route.query.id;
                 this.isAudit = JSON.parse(this.$route.query.isAudit || false);
                 this.isShow = JSON.parse(this.$route.query.isShow || false);

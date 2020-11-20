@@ -96,7 +96,7 @@
     </div>
 </template>
 <script>
-import bus from '../common/bus';
+import bus from './bus';
 import { Logout } from '@/api/auth.js';
 import { removeToken } from '@/utils/auth.js';
 import { changePassword } from '@/api/system/user.js';
@@ -169,13 +169,13 @@ export default {
                             this.loading = false;
                             if (res.success) {
                                 this.drawer = false;
+                                this.$cookie.delete('password');
+                                this.$store.dispatch('Logout').then(() => {});
                                 this.$alert('修改成功，请重新登录', '提示', {
                                     confirmButtonText: '确定',
                                     type: 'warning'
                                 }).then(() => {
-                                    this.$store.dispatch('Logout').then(() => {
-                                        location.href = '/';
-                                    });
+                                    location.href = '/';
                                 });
                             } else {
                                 this.msgError(res.message);
@@ -183,7 +183,6 @@ export default {
                         })
                         .catch(e => {
                             this.drawer = false;
-                            console.log(e);
                             this.msgError(e);
                         });
                 }

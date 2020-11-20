@@ -348,6 +348,7 @@
                         list-type="picture"
                         :show-file-list="false"
                         multiple
+                        :headers="headers"
                         :before-upload="beforeUpload"
                         :on-progress="uploadProgress"
                         :on-success="uploadSuccess"
@@ -568,6 +569,9 @@ export default {
             filePreviewOpen: false,
             imageUrl: undefined,
             imageName: undefined,
+            headers: {
+                Authorization: this.$store.getters.token
+            },
             // 添加产品
             materielSelection: [], //选中产品
             fileList: [],
@@ -1011,12 +1015,12 @@ export default {
             this.imageLoading = true;
             downloadFile(row.pkId)
                 .then(res => {
-                    console.log('下载成功');
-                    var filename = row.name;
-                    this.download(res, filename);
+                    this.download(res, row.name);
                     this.imageLoading = false;
+                    console.log('下载成功');
                 })
                 .catch(e => {
+                    this.imageLoading = false;
                     this.msgError('下载失败');
                 });
         },

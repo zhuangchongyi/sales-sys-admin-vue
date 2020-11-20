@@ -962,6 +962,7 @@ export default {
                     this.imageLoading = false;
                 })
                 .catch(e => {
+                    this.imageLoading = false;
                     this.msgError('下载失败');
                 });
         },

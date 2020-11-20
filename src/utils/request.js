@@ -21,15 +21,14 @@
  // 请求拦截器
  service.interceptors.request.use(
    config => {
-     const isToken = (config.headers || {}).isToken === false;
-     if (getToken() && !isToken) {
+     if (getToken()) {
        config.headers[TokenKey] = getToken() || '';
      }
      return config;
    },
    error => {
      console.log(error);
-     return Promise.reject();
+     Promise.reject();
    }
  );
  // 响应拦截器
@@ -37,7 +36,7 @@
    response => {
      // console.log("response", response)
      let res = response.data;
-     let code = res.code;
+     let code = res.code || 200;
      let msg = res.message || 'Error';
      if (code === 403) {
        MessageBox.confirm(

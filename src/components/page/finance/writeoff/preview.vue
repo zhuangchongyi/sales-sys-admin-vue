@@ -37,7 +37,7 @@
             </el-row>
         </el-form>
         <div>
-            <el-table :data="writeoffListData" ref="writeoffListData" border show-summary :summary-method="getSummaries" highlight-current-row>
+            <el-table :data="writeoffListData" ref="writeoffListData" border show-summary :summary-method="getSummaries" highlight-current-row height="400">
                 <el-table-column label="编号" prop="writeoffSubId" :show-overflow-tooltip="true" align="center" width="60" />
                 <el-table-column label="收款单号" prop="receiptNum" :show-overflow-tooltip="true" align="center" width="180" />
                 <el-table-column label="应收单号" prop="receivableNum" :show-overflow-tooltip="true" align="center" width="180" />
@@ -109,6 +109,11 @@ export default {
     created() {
         this.isAudit = JSON.parse(this.$route.query.isAudit || false);
         this.getWriteoffListDato();
+    },
+    updated() {
+        this.$nextTick(() => {
+            this.$refs['writeoffListData'].doLayout();
+        });
     },
     methods: {
         getSummaries(param) {

@@ -256,6 +256,7 @@
                     <el-upload
                         class="avatar-uploader"
                         :action="actionUrl"
+                        :headers="headers"
                         list-type="picture"
                         :show-file-list="false"
                         multiple
@@ -577,7 +578,9 @@ export default {
             filePreviewOpen: false,
             imageUrl: undefined,
             imageName: undefined,
-
+            headers: {
+                Authorization: this.$store.getters.token
+            },
             // 报价产品
             quotaionOpen: false,
             loadingQuotation: false,
@@ -895,12 +898,12 @@ export default {
             this.imageLoading = true;
             downloadFile(row.pkId)
                 .then(res => {
+                    this.download(res, row.name);
                     this.imageLoading = false;
                     console.log('下载成功');
-                    var filename = row.name;
-                    this.download(res, filename);
                 })
                 .catch(e => {
+                    this.imageLoading = false;
                     this.msgError('下载失败');
                 });
         },
