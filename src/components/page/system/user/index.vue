@@ -22,13 +22,13 @@
             <!--用户数据-->
             <el-col :span="20" :xs="24">
                 <el-form :model="queryParams" ref="queryParams" :inline="true">
-                    <el-form-item label="" prop="userNum">
+                    <el-form-item prop="userNum">
                         <el-input v-model="queryParams.userNum" placeholder="用户编码" clearable size="small" style="width: 200px" @keyup.enter.native="handleQuery" />
                     </el-form-item>
-                    <el-form-item label="" prop="nickname">
+                    <el-form-item prop="nickname">
                         <el-input v-model="queryParams.nickname" placeholder="用户名称" clearable size="small" style="width: 200px" @keyup.enter.native="handleQuery" />
                     </el-form-item>
-                    <el-form-item label="" prop="startStatus">
+                    <el-form-item prop="startStatus">
                         <el-select v-model="queryParams.startStatus" placeholder="状态" clearable size="small" style="width: 200px">
                             <el-option v-for="dict in startStatusOptions" :key="dict.dictValue" :label="dict.dictLabel" :value="dict.dictValue" />
                         </el-select>

@@ -1,14 +1,14 @@
 <template>
     <div>
         <div class="container">
-            <el-form :inline="true" ref="queryDeptParams">
-                <el-form-item label="">
+            <el-form :inline="true" ref="queryDeptParams" :model="queryDeptParams">
+                <el-form-item>
                     <el-input v-model="queryDeptParams.deptNum" placeholder="部门编码" clearable size="small" @keyup.enter.native="handleQuery" />
                 </el-form-item>
-                <el-form-item label="">
+                <el-form-item>
                     <el-input v-model="queryDeptParams.deptName" placeholder="部门名称" clearable size="small" @keyup.enter.native="handleQuery" />
                 </el-form-item>
-                <el-form-item label="">
+                <el-form-item>
                     <el-select v-model="queryDeptParams.status" placeholder="状态" clearable size="small">
                         <el-option v-for="dict in statusOptions" :key="dict.dictValue" :label="dict.dictLabel" :value="dict.dictValue" />
                     </el-select>
@@ -227,6 +227,7 @@ export default {
             this.open = false;
         },
         resetQuery() {
+            this.queryDeptParams = {};
             this.resetForm('queryDeptParams');
             this.getList();
         },

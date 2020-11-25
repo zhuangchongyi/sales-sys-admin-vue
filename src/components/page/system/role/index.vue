@@ -193,11 +193,11 @@ export default {
                 {
                     value: '4',
                     label: '本部门及以下数据权限'
-                },
-                {
-                    value: '5',
-                    label: '仅本人数据权限'
                 }
+                // {
+                //     value: '5',
+                //     label: '仅本人数据权限'
+                // }
             ],
             query: {
                 current: 1,
@@ -365,9 +365,9 @@ export default {
         },
         // 所有菜单节点数据
         getMenuAllCheckedKeys() {
-            // 目前被选中的菜单节点
-            let checkedKeys = this.$refs.menu.getHalfCheckedKeys();
             // 半选中的菜单节点
+            let checkedKeys = this.$refs.menu.getHalfCheckedKeys();
+            // 目前被选中的菜单节点
             let halfCheckedKeys = this.$refs.menu.getCheckedKeys();
             checkedKeys.unshift.apply(checkedKeys, halfCheckedKeys);
             return checkedKeys;
@@ -390,8 +390,6 @@ export default {
         handleDataSource(row) {
             this.reset();
             getDataScope(row.roleId).then(res => {
-                console.log(res);
-                // debugger;
                 this.form.roleId = row.roleId;
                 this.form.dataScope = row.dataScope;
                 this.deptOptions = res.data.dept;
@@ -407,7 +405,6 @@ export default {
                 return;
             }
             this.form.deptIds = deptIds;
-            console.log(this.form);
             addDataScope(this.form).then(res => {
                 if (res.success) {
                     this.msgSuccess(res.message);
@@ -420,9 +417,9 @@ export default {
         },
         // 所有部门节点数据
         getRoleDeptAllCheckedKeys() {
-            // 目前被选中的部门节点
-            let deptIds = this.$refs.dept.getHalfCheckedKeys();
             // 半选中的部门节点
+            let deptIds = this.$refs.dept.getHalfCheckedKeys();
+            // 目前被选中的部门节点
             let halfCheckedKeys = this.$refs.dept.getCheckedKeys();
             deptIds.unshift.apply(deptIds, halfCheckedKeys);
             return deptIds;
