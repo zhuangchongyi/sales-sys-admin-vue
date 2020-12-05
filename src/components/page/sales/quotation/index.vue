@@ -207,7 +207,7 @@ export default {
                 return;
             }
 
-            this.$router.push({ path: '/page/sales/quotation/order', query: { qId: this.selection.quotationId } });
+            this.$router.push({ path: '/page/sales/quotation/preview2', query: { qId: this.selection.quotationId } });
         },
         handleSubmit() {
             if (this.verifyStatus('1', '已提交') || this.verifyStatus('4', '已提交') || this.verifyStatus('3', '已审核')) {

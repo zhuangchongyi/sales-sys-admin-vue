@@ -340,7 +340,7 @@ export default {
         async getMaterielList() {
             listClienteleMateriel(this.query).then(res => {
                 this.materielListData = res.data.records;
-                this.total = res.data.total || 0;
+                this.productTotal = res.data.total;
             });
         },
         /** 新增产品按钮操作 */

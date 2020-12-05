@@ -172,7 +172,7 @@
 
 <script>
 import { warehouseListDialog } from '@/api/basis/warehouse.js';
-import { listAllMateriel } from '@/api/basis/materiel.js';
+import { listRepertoryPage } from '@/api/warehouse/repertory.js';
 import { treeselect } from '@/api/basis/category.js';
 import { getStorage, addAndUpdateStorage, listStorageSub, auditStorage } from '@/api/warehouse/storage.js';
 import { userListDialog } from '@/api/system/user.js';
@@ -380,7 +380,7 @@ export default {
             });
         },
         getMaterielListData() {
-            listAllMateriel(this.materielParams).then(res => {
+            listRepertoryPage({ warehouseId: this.warehouseForm.warehouseId }).then(res => {
                 this.materielListPageData = res.data.records;
                 this.materielTotal = res.data.total;
             });

@@ -1,6 +1,9 @@
 <template>
     <div class="container">
         <el-form :model="queryParams" ref="queryParams" :inline="true">
+            <el-form-item prop="signNum">
+                <el-input v-model="queryParams.signNum" placeholder="到货单号" clearable size="small" style="width: 200px" @keyup.enter.native="handleQuery" />
+            </el-form-item>
             <el-form-item prop="orderNum">
                 <el-input v-model="queryParams.orderNum" placeholder="订单号" clearable size="small" style="width: 200px" @keyup.enter.native="handleQuery" />
             </el-form-item>
@@ -16,16 +19,16 @@
             </el-form-item>
         </el-form>
         <div class="handle-box">
-            <el-button type="primary" size="small" icon="el-icon-plus" class="handle-del mr10" v-hasPermi="['purchase:order:add']" @click="handleAdd">新增</el-button>
-            <el-dropdown trigger="click" style="margin: 0 10px;" v-hasPermi="['purchase:order:submit']">
+            <el-button type="primary" size="small" icon="el-icon-plus" class="handle-del mr10" v-hasPermi="['purchase:sign:add']" @click="handleAdd">新增</el-button>
+            <el-dropdown trigger="click" style="margin: 0 10px;" v-hasPermi="['purchase:sign:submit']">
                 <el-button class="el-dropdown-link" size="small" type="primary"> 提交<i class="el-icon-arrow-down el-icon--right"></i> </el-button>
                 <el-dropdown-menu slot="dropdown">
                     <el-dropdown-item icon="el-icon-top" @click.native="handleSubmit">提交</el-dropdown-item>
                     <el-dropdown-item icon="el-icon-bottom" @click.native="handleNoSubmit">收回</el-dropdown-item>
                 </el-dropdown-menu>
             </el-dropdown>
-            <el-button type="primary" size="small" icon="el-icon-finished" class="handle-del mr10" :disabled="single" @click="handleAudit" v-hasPermi="['purchase:order:audit']">审核</el-button>
-            <el-button type="primary" size="small" icon="el-icon-printer" class="handle-del mr10" @click="handlePrint" :disabled="single" v-hasPermi="['purchase:order:print']">打印</el-button>
+            <el-button type="primary" size="small" icon="el-icon-finished" class="handle-del mr10" :disabled="single" @click="handleAudit" v-hasPermi="['purchase:sign:audit']">审核</el-button>
+            <el-button type="primary" size="small" icon="el-icon-printer" class="handle-del mr10" @click="handlePrint" :disabled="single" v-hasPermi="['purchase:sign:print']">打印</el-button>
         </div>
         <el-table
             v-loading="loading"
@@ -37,7 +40,9 @@
             @selection-change="handleSelectionChange"
         >
             <el-table-column type="selection" width="50" fixed="left" align="center" />
-            <el-table-column label="订单号" align="center" prop="orderNum" fixed="left" :show-overflow-tooltip="true" width="200" />
+            <el-table-column label="到货单号" align="center" prop="signNum" :show-overflow-tooltip="true" width="200" />
+            <el-table-column label="到货日期" align="center" prop="signTime" :show-overflow-tooltip="true" width="150" />
+            <el-table-column label="订单号" align="center" prop="orderNum" :show-overflow-tooltip="true" width="200" />
             <el-table-column label="订单日期" align="center" prop="orderTime" :show-overflow-tooltip="true" width="150" />
             <el-table-column label="状态" prop="status" :formatter="auditStatusFormatter" align="center" width="100" />
             <el-table-column label="供应商编号" align="center" prop="supplierNum" :show-overflow-tooltip="true" width="100" />
@@ -45,15 +50,14 @@
             <el-table-column label="联系人" align="center" prop="leader" :show-overflow-tooltip="true" width="100" />
             <el-table-column label="联系人电话" align="center" prop="phone" :show-overflow-tooltip="true" width="150" />
             <el-table-column label="手机" align="center" prop="mobilephone" :show-overflow-tooltip="true" width="150" />
-            <el-table-column label="总计金额" align="center" :show-overflow-tooltip="true" prop="totalPrice" width="160" />
             <el-table-column label="录入人" prop="createBy" :show-overflow-tooltip="true" align="center" width="120" />
             <el-table-column label="录入时间" prop="createTime" :show-overflow-tooltip="true" align="center" width="160" />
             <el-table-column label="审核人" align="center" prop="auditBy" :show-overflow-tooltip="true" width="120" />
             <el-table-column label="审核时间" align="center" :show-overflow-tooltip="true" prop="auditTime" width="160" />
             <el-table-column label="操作" align="center" width="200" class-name="small-padding fixed-width" fixed="right">
                 <template slot-scope="scope">
-                    <el-button size="mini" type="text" icon="el-icon-edit" v-hasPermi="['purchase:order:edit']" @click="handleUpdate(scope.row)">修改</el-button>
-                    <el-button size="mini" type="text" icon="el-icon-delete" style="color:#fd5656" v-hasPermi="['purchase:order:delete']" @click="handleDelete(scope.row)">删除</el-button>
+                    <el-button size="mini" type="text" icon="el-icon-edit" v-hasPermi="['purchase:sign:edit']" @click="handleUpdate(scope.row)">修改</el-button>
+                    <el-button size="mini" type="text" icon="el-icon-delete" style="color:#fd5656" v-hasPermi="['purchase:sign:delete']" @click="handleDelete(scope.row)">删除</el-button>
                 </template>
             </el-table-column>
         </el-table>
@@ -73,7 +77,7 @@
 </template>
 
 <script>
-import { listPurchaseOrder, deletePurchaseOrder, submitPurchaseOrder, auditPurchaseOrder, getPurchaseOrderSub, checkClosePurchaseOrderSub, closePurchaseOrder } from '@/api/purchase/order.js';
+import { listPurchaseSign, deletePurchaseSign, submitPurchaseSign, auditPurchaseSign, getPurchaseSignSub, checkClosePurchaseSignSub, closePurchaseSign } from '@/api/purchase/sign.js';
 export default {
     data() {
         return {
@@ -121,7 +125,7 @@ export default {
             return this.approvalStatusFormatter(row.status);
         },
         getList() {
-            listPurchaseOrder(this.queryParams).then(res => {
+            listPurchaseSign(this.queryParams).then(res => {
                 if (res.success) {
                     this.orderListData = res.data.records;
                     this.total = res.data.total;
@@ -150,7 +154,7 @@ export default {
         },
         // 多选框选中数据
         handleSelectionChange(selection) {
-            this.ids = selection.map(item => item.orderId);
+            this.ids = selection.map(item => item.signId);
             this.single = selection.length != 1;
             this.multiple = !selection.length;
             this.selection = selection[0];
@@ -173,10 +177,10 @@ export default {
                 return;
             }
             let data = {
-                order: { status: '1' },
+                sign: { status: '1' },
                 ids: this.ids
             };
-            submitPurchaseOrder(data).then(res => {
+            submitPurchaseSign(data).then(res => {
                 if (res.success) {
                     this.msgSuccess('提交成功');
                     this.handleQuery();
@@ -191,10 +195,10 @@ export default {
                 return;
             }
             let data = {
-                order: { status: '2' },
+                sign: { status: '2' },
                 ids: this.ids
             };
-            submitPurchaseOrder(data).then(res => {
+            submitPurchaseSign(data).then(res => {
                 if (res.success) {
                     this.msgSuccess('收回成功');
                     this.handleQuery();
@@ -205,7 +209,7 @@ export default {
         },
         /** 新增按钮操作 */
         handleAdd() {
-            this.$router.push('/page/purchase/order/add');
+            this.$router.push('/page/purchase/sign/add');
         },
         // 打印
         handlePrint() {
@@ -226,13 +230,13 @@ export default {
                 return;
             }
             let that = this;
-            let orderId = row.orderId;
+            let signId = row.signId;
             this.$confirm('请确认是否删除？', '警告', {
                 confirmButtonText: '确定',
                 cancelButtonText: '取消',
                 type: 'warning'
             }).then(function() {
-                deletePurchaseOrder(orderId).then(res => {
+                deletePurchaseSign(signId).then(res => {
                     if (res.success) {
                         that.msgSuccess(res.message);
                         that.handleQuery();
@@ -249,18 +253,18 @@ export default {
                 this.msgError('已提交不允许修改');
                 return;
             }
-            this.$router.push({ path: '/page/purchase/order/edit', query: { id: row.orderId } });
+            this.$router.push({ path: '/page/purchase/sign/edit', query: { id: row.signId } });
         },
         /** 明细按钮操作 */
         handlePreview(row) {
-            this.$router.push({ path: '/page/purchase/order/preview', query: { id: row.orderId, isShow: false } });
+            this.$router.push({ path: '/page/purchase/sign/preview', query: { id: row.signId, isShow: false } });
         },
         handleAudit() {
             if (this.verifyStatus('7', '已关闭')) return;
             if (this.verifyStatus('0', '请先提交') || this.verifyStatus('2', '请先提交')) {
                 return;
             }
-            this.$router.push({ path: '/page/purchase/order/preview', query: { id: this.selection.orderId, isShow: false, isAudit: true } });
+            this.$router.push({ path: '/page/purchase/sign/preview', query: { id: this.selection.signId, isShow: false, isAudit: true } });
         }
     }
 };

@@ -22,13 +22,13 @@
             <!--客户数据-->
             <el-col :span="20" :xs="24">
                 <el-form :model="queryParams" ref="queryParams" :inline="true">
-                    <el-form-item label="" prop="clienteleNum">
+                    <el-form-item prop="clienteleNum">
                         <el-input v-model="queryParams.clienteleNum" placeholder="客户编码" clearable size="small" @keyup.enter.native="handleQuery" />
                     </el-form-item>
-                    <el-form-item label="" prop="clienteleName">
+                    <el-form-item prop="clienteleName">
                         <el-input v-model="queryParams.clienteleName" placeholder="客户名称" clearable size="small" @keyup.enter.native="handleQuery" />
                     </el-form-item>
-                    <el-form-item label="" prop="status">
+                    <el-form-item prop="status">
                         <el-select v-model="queryParams.status" placeholder="状态" clearable size="small">
                             <el-option v-for="dict in statusOptions" :key="dict.dictValue" :label="dict.dictLabel" :value="dict.dictValue" />
                         </el-select>
@@ -40,9 +40,10 @@
                 </el-form>
                 <div class="handle-box">
                     <el-button type="primary" size="small" icon="el-icon-plus" class="handle-del mr10" v-hasPermi="['basis:clientele:add']" @click="handleAdd">新增</el-button>
+                    <el-button type="warning" size="small" class="handle-del mr10" v-hasPermi="['basis:clientele:supplier']" @click="handleAddSupplier">生成供应商</el-button>
                 </div>
-                <el-table v-loading="loading" :data="clienteleListData">
-                    <el-table-column type="index" width="50" fixed="left" align="center" />
+                <el-table v-loading="loading" :data="clienteleListData" ref="clienteleListData" highlight-current-row @row-click="selectionRowClick" @selection-change="handleSelectionChange">
+                    <el-table-column type="selection" width="55" align="center" />
                     <el-table-column label="客户编码" align="center" prop="clienteleNum" width="150" />
                     <el-table-column label="客户名称" align="center" prop="clienteleName" :show-overflow-tooltip="true" width="150" />
                     <el-table-column label="所属类别" align="center" prop="category.categoryName" :show-overflow-tooltip="true" width="150" />
@@ -248,7 +249,7 @@
 </template>
 
 <script>
-import { listClientele, addClientele, updateClientele, deleteClientele, getClientele } from '@/api/basis/clientele.js';
+import { listClientele, addClientele, updateClientele, deleteClientele, getClientele, addClienteleSupplier } from '@/api/basis/clientele.js';
 import { treeselect } from '@/api/basis/category.js';
 import { userListDialog } from '@/api/system/user.js';
 import Treeselect from '@riophae/vue-treeselect';
@@ -353,7 +354,8 @@ export default {
                         trigger: 'blur'
                     }
                 ]
-            }
+            },
+            selectionClientele: []
         };
     },
     created() {
@@ -443,7 +445,30 @@ export default {
             this.resetForm('form');
         },
         handleQuotationAdd() {},
-
+        handleSelectionChange(selection) {
+            this.selectionClientele = selection;
+        },
+        selectionRowClick(row) {
+            this.$refs['clienteleListData'].toggleRowSelection(row);
+        },
+        //生成供应商
+        handleAddSupplier() {
+            console.log('selectionClientele', this.selectionClientele);
+            if (this.selectionClientele && this.selectionClientele.length !== 0) {
+                let names = this.selectionClientele.map(item => item.clienteleName);
+                let cids = this.selectionClientele.map(item => item.clienteleId);
+                let that = this;
+                this.$confirm(`请确认 [${names}] 是否生成供应商？`, '警告', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(function() {
+                    addClienteleSupplier(cids).then(res => that.callbackFun(res));
+                });
+            } else {
+                this.msgError('未选择客户');
+            }
+        },
         /** 新增按钮操作 */
         handleAdd() {
             this.reset();

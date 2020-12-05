@@ -1,7 +1,7 @@
 <template>
     <div class="login-wrap">
         <!--引入粒子特效 https://blog.csdn.net/Fly_1213/article/details/105798197-->
-        <vue-particles
+        <!-- <vue-particles
             color="#fff"
             :particleOpacity="0.7"
             :particlesNumber="60"
@@ -18,7 +18,7 @@
             :clickEffect="true"
             clickMode="push"
         >
-        </vue-particles>
+        </vue-particles> -->
 
         <div class="ms-login">
             <div class="ms-title">{{ $t('login.title') }}</div>

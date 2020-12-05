@@ -285,7 +285,7 @@ export default {
         /** 修改按钮操作 */
         handleUpdate(row) {
             let status = parseInt(row.status || 0);
-            if ('' === row.status) {
+            if ('7' === row.status) {
                 this.msgError('已关闭，不允许修改');
                 return;
             } else if (status == 1 || status > 2) {

@@ -19,3 +19,6 @@ npm run build
 
 npm uninstall vue-quill-editor
 npm uninstall mavon-editor
+
+粒子特效插件（不兼容 IE）
+npm install --save vue-particles

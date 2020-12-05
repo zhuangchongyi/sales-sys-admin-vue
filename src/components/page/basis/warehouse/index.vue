@@ -32,7 +32,7 @@
                 <el-table-column label="操作" width="300" align="center">
                     <template slot-scope="scope">
                         <el-button type="text" icon="el-icon-edit" v-hasPermi="['basis:warehouse:edit']" @click="handleUpdate(scope.row)">修改</el-button>
-                        <el-button type="text" icon="el-icon-delete" style="color:#fd5656" v-hasPermi="['basis:warehouse:delete']" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+                        <el-button type="text" icon="el-icon-delete" style="color:#fd5656" v-hasPermi="['basis:warehouse:delete']" @click="handleDelete(scope.row)">删除</el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -195,7 +195,7 @@ export default {
             });
         },
         /** 删除按钮操作 */
-        handleDelete() {
+        handleDelete(row) {
             let that = this;
             this.$confirm('请确认是否删除？', '警告', {
                 confirmButtonText: '确定',

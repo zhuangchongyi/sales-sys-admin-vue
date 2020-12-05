@@ -12,6 +12,9 @@
  } from 'element-ui';
 
  axios.defaults.headers['Content-Type'] = 'application/json;charset=utf-8';
+ //  问题：IE浏览器缓存了GET请求数据。解决方式：
+ axios.defaults.headers['Cache-Control'] = 'no-cache';
+ axios.defaults.headers['Pragma'] = 'no-cache';
 
  const service = axios.create({
    baseURL: process.env.VUE_APP_BASE_API,

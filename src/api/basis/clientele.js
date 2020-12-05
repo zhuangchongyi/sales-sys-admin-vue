@@ -54,3 +54,11 @@ export function getProductClientele(params) {
     params: params
   });
 };
+
+export function addClienteleSupplier(params) {
+  return request({
+    url: '/basis/clientele/supplier',
+    method: 'post',
+    data: params
+  });
+};

@@ -43,7 +43,6 @@
                     <el-button type="primary" size="small" icon="el-icon-plus" class="handle-del mr10" v-hasPermi="['basis:materiel:add']" @click="handleQuotationAdd">报价产品录入</el-button>
                 </div>
                 <el-table v-loading="loading" :data="materielListData">
-                    <el-table-column label="序号" type="index" width="50" align="center" />
                     <el-table-column label="产品编码" align="center" prop="materielNum" width="100" />
                     <el-table-column label="产品名称" align="center" prop="materielName" :show-overflow-tooltip="true" width="120" />
                     <el-table-column label="产品类别" align="center" prop="categoryName" :show-overflow-tooltip="true" width="120" />
@@ -51,17 +50,17 @@
                     <el-table-column prop="modelName" label="型号" align="center" :show-overflow-tooltip="true" width="200"></el-table-column>
                     <el-table-column prop="needTorque" label="所需扭矩" align="center" :show-overflow-tooltip="true" width="100"></el-table-column>
                     <el-table-column prop="outTorque" label="输出扭矩" align="center" :show-overflow-tooltip="true" width="100"></el-table-column>
-                    <!-- <el-table-column prop="unitsNum" label="单位编码" align="center" :show-overflow-tooltip="true" width="100"></el-table-column> -->
                     <el-table-column prop="unitsName" label="单位名称" align="center" :show-overflow-tooltip="true" width="100"></el-table-column>
                     <el-table-column prop="price" label="单价" align="center" :show-overflow-tooltip="true" width="100"></el-table-column>
                     <el-table-column prop="maxPrice" label="最高价" :show-overflow-tooltip="true" align="center" width="100"></el-table-column>
                     <el-table-column prop="minPrice" label="最低价" align="center" :show-overflow-tooltip="true" width="100"></el-table-column>
                     <el-table-column label="状态" prop="status" :formatter="statusFormatter" align="center"> </el-table-column>
                     <el-table-column label="创建时间" align="center" prop="createTime" width="150"></el-table-column>
-                    <el-table-column prop="createBy" label="创建人" align="center" width="100"></el-table-column>
-                    <el-table-column label="操作" align="center" width="200" class-name="small-padding fixed-width" fixed="right">
+                    <el-table-column label="创建人" prop="createBy" align="center" width="100"></el-table-column>
+                    <el-table-column label="操作" align="center" width="250" class-name="small-padding fixed-width" fixed="right">
                         <template slot-scope="scope">
                             <el-button size="mini" type="text" icon="el-icon-edit" v-hasPermi="['basis:materiel:edit']" @click="handleUpdate(scope.row)">修改</el-button>
+                            <el-button size="mini" type="text" icon="el-icon-edit" v-hasPermi="['basis:materiel:edit']" @click="handleUpdateModels(scope.row)">型号价格</el-button>
                             <el-button size="mini" type="text" icon="el-icon-lx-upload" style="color:#e6a23c" v-hasPermi="['basis:materiel:upload']" @click="handleUpload(scope.row)">图纸</el-button>
                             <el-button size="mini" type="text" icon="el-icon-delete" style="color:#fd5656" v-hasPermi="['basis:materiel:delete']" @click="handleDelete(scope.row)">删除</el-button>
                         </template>
@@ -465,11 +464,36 @@
                 </div>
             </el-dialog>
         </el-dialog>
+
+        <el-dialog :title="title" :visible.sync="openMaterielModel" width="400px" append-to-body v-dialogDrag>
+            <el-table :data="materielModelListData">
+                <!-- <el-table-column prop="specification" label="规格" align="center" :show-overflow-tooltip="true"></el-table-column> -->
+                <el-table-column prop="modelName" label="型号" align="center" :show-overflow-tooltip="true"></el-table-column>
+                <el-table-column label="单价" align="center" :show-overflow-tooltip="true">
+                    <template slot-scope="scope">
+                        <el-form ref="modelForm" :model="scope.row">
+                            <el-form-item prop="price" :rules="rules.price">
+                                <el-input
+                                    v-model="scope.row.price"
+                                    oninput="if(isNaN(value)) { value = null } if(value.indexOf('.')>0){value=value.slice(0,value.indexOf('.')+3)}"
+                                    maxlength="10"
+                                    placeholder="请输入"
+                                />
+                            </el-form-item>
+                        </el-form>
+                    </template>
+                </el-table-column>
+            </el-table>
+            <div slot="footer" class="dialog-footer">
+                <el-button type="primary" @click="submitFormModels">确 定</el-button>
+                <el-button @click="cancelDialog">取 消</el-button>
+            </div>
+        </el-dialog>
     </div>
 </template>
 
 <script>
-import { listMateriel, addMateriel, updateMateriel, deleteMateriel, getMateriel } from '@/api/basis/materiel.js';
+import { listMateriel, addMateriel, updateMateriel, deleteMateriel, getMateriel, getMaterielModels, updateMaterielModels } from '@/api/basis/materiel.js';
 import { listMaterielFile, updateMaterielFile, deleteMaterielFile, downloadFile } from '@/api/basis/materielFile.js';
 import { listQuotationMateriel } from '@/api/sales/quotation.js';
 import { treeselect } from '@/api/basis/category.js';
@@ -596,7 +620,9 @@ export default {
             modelNameOpen: false,
             selectionMaterielData: [],
             materielForm: {},
-            isEdit: false
+            isEdit: false,
+            openMaterielModel: false,
+            materielModelListData: []
         };
     },
     created() {
@@ -711,6 +737,29 @@ export default {
                 this.title = '修改产品';
             });
         },
+        // 获取型号价格
+        handleUpdateModels(row) {
+            this.reset();
+            getMaterielModels({ materielId: row.materielId }).then(res => {
+                this.title = row.materielName;
+                this.openMaterielModel = true;
+                this.materielModelListData = res.data;
+            });
+        },
+        submitFormModels() {
+            this.$refs.modelForm.validate(valid => {
+                if (valid) {
+                    updateMaterielModels(this.materielModelListData).then(res => {
+                        if (res.success) {
+                            this.msgSuccess(res.message);
+                            this.openMaterielModel = false;
+                        } else {
+                            this.msgError(res.message);
+                        }
+                    });
+                }
+            });
+        },
 
         /** 提交按钮 */
         submitForm() {
@@ -749,7 +798,7 @@ export default {
         handleInputConfirm() {
             let inputValue = this.inputValue;
             if (inputValue) {
-                if (this.modelNames.indexOf(inputValue) != 0) {
+                if (this.modelNames.indexOf(inputValue) === -1) {
                     this.modelNames.push(inputValue);
                 } else {
                     this.msgError('型号不能重复');
@@ -813,6 +862,7 @@ export default {
             this.unitsOpen = false;
             this.materielOpen = false;
             this.modelNameOpen = false;
+            this.openMaterielModel = false;
         },
         unitsTypeFormatter(row, column) {
             return this.selectDictLabel(this.unitsTypeOptions, row.unitsType);

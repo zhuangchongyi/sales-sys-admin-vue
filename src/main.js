@@ -19,13 +19,12 @@
  // 自定义指令
  import directive from './directive';
  //粒子动画
- import VueParticles from 'vue-particles'
-
+ //  import VueParticles from 'vue-particles'
  // cookie设置为全局变量
  Vue.prototype.$cookie = cookie;
  Vue.use(VueI18n);
  Vue.use(directive);
- Vue.use(VueParticles)
+ //  Vue.use(VueParticles)
  Vue.use(ElementUI, {
    size: 'small',
    i18n: (key, value) => i18n.t(key, value)

@@ -2,11 +2,11 @@
     <div class="container">
         <!--供应商数据-->
         <el-form :model="queryParams" ref="queryParams" :inline="true">
-            <el-form-item prop="clienteleNum">
-                <el-input v-model="queryParams.clienteleNum" placeholder="供应商编码" clearable size="small" @keyup.enter.native="handleQuery" />
+            <el-form-item prop="supplierNum">
+                <el-input v-model="queryParams.supplierNum" placeholder="供应商编码" clearable size="small" @keyup.enter.native="handleQuery" />
             </el-form-item>
-            <el-form-item prop="clienteleName">
-                <el-input v-model="queryParams.clienteleName" placeholder="供应商名称" clearable size="small" @keyup.enter.native="handleQuery" />
+            <el-form-item prop="supplierName">
+                <el-input v-model="queryParams.supplierName" placeholder="供应商名称" clearable size="small" @keyup.enter.native="handleQuery" />
             </el-form-item>
             <el-form-item>
                 <el-button type="primary" icon="el-icon-search" size="small" @click="handleQuery">搜索</el-button>
@@ -16,9 +16,9 @@
         <div class="handle-box">
             <el-button type="primary" size="small" icon="el-icon-plus" class="handle-del mr10" v-hasPermi="['purchase:supplier:add']" @click="handleAdd">新增</el-button>
         </div>
-        <el-table v-loading="loading" :data="clienteleListData">
-            <el-table-column label="供应商编码" align="center" prop="clienteleNum" width="150" />
-            <el-table-column label="供应商名称" align="center" prop="clienteleName" :show-overflow-tooltip="true" width="150" />
+        <el-table v-loading="loading" :data="supplierListData">
+            <el-table-column label="供应商编码" align="center" prop="supplierNum" width="150" />
+            <el-table-column label="供应商名称" align="center" prop="supplierName" :show-overflow-tooltip="true" width="150" />
             <el-table-column label="联系人" align="center" prop="leader" width="150"></el-table-column>
             <el-table-column label="联系电话" align="center" prop="phone" width="150"></el-table-column>
             <el-table-column label="手机号码" align="center" prop="mobilephone" width="150"></el-table-column>
@@ -59,13 +59,13 @@
                 </el-row> -->
                 <el-row>
                     <el-col :span="12">
-                        <el-form-item label="供应商编码" prop="clienteleNum">
-                            <el-input v-model="form.clienteleNum" placeholder="请输入供应商编码" maxlength="10" show-word-limit :readonly="isEdit" />
+                        <el-form-item label="供应商编码" prop="supplierNum">
+                            <el-input v-model="form.supplierNum" placeholder="请输入供应商编码" maxlength="10" show-word-limit :readonly="isEdit" />
                         </el-form-item>
                     </el-col>
                     <el-col :span="12">
-                        <el-form-item label="供应商名称" prop="clienteleName">
-                            <el-input v-model="form.clienteleName" placeholder="请输入供应商名称" />
+                        <el-form-item label="供应商名称" prop="supplierName">
+                            <el-input v-model="form.supplierName" placeholder="请输入供应商名称" />
                         </el-form-item>
                     </el-col>
                     <el-col :span="12">
@@ -122,7 +122,7 @@
 </template>
 
 <script>
-import { listClientele, addClientele, updateClientele, deleteClientele, getClientele } from '@/api/basis/clientele.js';
+import { listSupplier, addSupplier, updateSupplier, deleteSupplier, getSupplier } from '@/api/purchase/supplier.js';
 import { treeselect } from '@/api/basis/category.js';
 import { userListDialog } from '@/api/system/user.js';
 import Treeselect from '@riophae/vue-treeselect';
@@ -137,8 +137,8 @@ export default {
             queryParams: {
                 current: 1,
                 size: 10,
-                clienteleNum: undefined,
-                clienteleName: undefined,
+                supplierNum: undefined,
+                supplierName: undefined,
                 status: undefined,
                 categoryId: undefined
             },
@@ -146,7 +146,7 @@ export default {
             total: 0,
             // 弹窗标题
             title: '',
-            clienteleListData: [],
+            supplierListData: [],
             // 是否显示弹出层
             open: false,
             isEdit: false,
@@ -157,9 +157,9 @@ export default {
             categoryId: undefined,
             //表单参数
             form: {
-                clienteleId: undefined,
-                clienteleName: undefined,
-                clienteleNum: undefined,
+                supplierId: undefined,
+                supplierName: undefined,
+                supplierNum: undefined,
                 categoryId: undefined,
                 userId: undefined,
                 status: '0',
@@ -177,8 +177,8 @@ export default {
             // 表单校验
             rules: {
                 status: [{ required: true, message: '状态不能为空', trigger: 'blur' }],
-                clienteleNum: [{ required: true, message: '供应商编码不能为空', trigger: 'blur' }],
-                clienteleName: [{ required: true, message: '供应商名称不能为空', trigger: 'blur' }],
+                supplierNum: [{ required: true, message: '供应商编码不能为空', trigger: 'blur' }],
+                supplierName: [{ required: true, message: '供应商名称不能为空', trigger: 'blur' }],
                 categoryId: [{ required: true, message: '请选择供应商类别', trigger: 'blur' }],
                 corporationTime: [{ required: true, message: '请选择合作时间', trigger: 'blur' }],
                 email: [
@@ -214,10 +214,9 @@ export default {
         },
         // 查询供应商列表
         getList() {
-            this.getTreeselect();
-            listClientele(this.queryParams).then(res => {
-                this.clienteleListData = res.data.records;
-                this.total = res.data.total || 0;
+            listSupplier(this.queryParams).then(res => {
+                this.supplierListData = res.data.records;
+                this.total = res.data.total;
                 this.loading = false;
             });
         },
@@ -229,23 +228,6 @@ export default {
         handleSizeChange(val) {
             this.$set(this.queryParams, 'size', val);
             this.getList();
-        },
-        /** 查询部门下拉树结构 */
-        getTreeselect() {
-            treeselect({ category: '1' }).then(res => {
-                this.categoryOptions = res.data;
-            });
-        },
-        // 节点单击事件
-        handleNodeClick(data) {
-            this.queryParams.categoryId = data.id;
-            this.categoryId = data.id;
-            this.getList();
-        },
-        // 筛选节点
-        filterNode(value, data) {
-            if (!value) return true;
-            return data.label.indexOf(value) !== -1;
         },
         /** 搜索按钮操作 */
         handleQuery() {
@@ -265,23 +247,20 @@ export default {
         // 表单刷新
         reset() {
             this.form = {
-                clienteleId: undefined,
-                clienteleName: undefined,
-                clienteleNum: undefined,
+                supplierId: undefined,
+                supplierName: undefined,
+                supplierNum: undefined,
                 categoryId: undefined,
                 userId: undefined,
                 status: '0',
                 remark: undefined
             };
-
             this.resetForm('form');
         },
 
         /** 新增按钮操作 */
         handleAdd() {
             this.reset();
-            this.getTreeselect();
-            this.form.categoryId = this.categoryId;
             this.open = true;
             this.isEdit = false;
             this.title = '新增供应商';
@@ -289,8 +268,7 @@ export default {
         /** 修改按钮操作 */
         handleUpdate(row) {
             this.reset();
-            this.getTreeselect();
-            getClientele(row.clienteleId).then(res => {
+            getSupplier(row.supplierId).then(res => {
                 this.form = res.data;
                 this.open = true;
                 this.isEdit = true;
@@ -305,17 +283,17 @@ export default {
                 cancelButtonText: '取消',
                 type: 'warning'
             }).then(function() {
-                return deleteClientele(row.clienteleId).then(res => that.callbackFun(res));
+                return deleteSupplier(row.supplierId).then(res => that.callbackFun(res));
             });
         },
         /** 提交按钮 */
         submitForm() {
-            this.$refs['form'].validate(valid => {
+            this.$refs.form.validate(valid => {
                 if (valid) {
-                    if (this.form.clienteleId != undefined) {
-                        updateClientele(this.form).then(res => this.callbackFun(res));
+                    if (this.form.supplierId != undefined) {
+                        updateSupplier(this.form).then(res => this.callbackFun(res));
                     } else {
-                        addClientele(this.form).then(res => this.callbackFun(res));
+                        addSupplier(this.form).then(res => this.callbackFun(res));
                     }
                 }
             });

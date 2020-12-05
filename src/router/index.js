@@ -495,6 +495,60 @@
            permission: 'finance:writeoff:preview'
          }
        },
+       {
+         name: '/page/purchase/order/add',
+         path: '/page/purchase/order/add',
+         component: () => import('@/components/page/purchase/order/add.vue'),
+         meta: {
+           title: '新增采购订单',
+           permission: 'purchase:order:add'
+         }
+       },
+       {
+         name: '/page/purchase/order/preview',
+         path: '/page/purchase/order/preview',
+         component: () => import('@/components/page/purchase/order/preview.vue'),
+         meta: {
+           title: '查看采购订单',
+           permission: 'purchase:order:preview'
+         }
+       },
+       {
+         name: '/page/purchase/order/edit',
+         path: '/page/purchase/order/edit',
+         component: () => import('@/components/page/purchase/order/edit.vue'),
+         meta: {
+           title: '修改采购订单',
+           permission: 'purchase:order:edit'
+         }
+       },
+       {
+         name: '/page/purchase/sign/add',
+         path: '/page/purchase/sign/add',
+         component: () => import('@/components/page/purchase/sign/add.vue'),
+         meta: {
+           title: '新增采购订单',
+           permission: 'purchase:order:add'
+         }
+       },
+       {
+         name: '/page/purchase/sign/preview',
+         path: '/page/purchase/sign/preview',
+         component: () => import('@/components/page/purchase/sign/preview.vue'),
+         meta: {
+           title: '查看采购订单',
+           permission: 'purchase:order:preview'
+         }
+       },
+       {
+         name: '/page/purchase/sign/edit',
+         path: '/page/purchase/sign/edit',
+         component: () => import('@/components/page/purchase/sign/edit.vue'),
+         meta: {
+           title: '修改采购订单',
+           permission: 'purchase:order:edit'
+         }
+       },
      ]
    }
  ];
