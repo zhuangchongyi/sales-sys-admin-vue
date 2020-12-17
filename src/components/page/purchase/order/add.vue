@@ -618,8 +618,8 @@ export default {
                         return;
                     }
                     let data = {
-                        order: this.supplierForm,
-                        orderSubs: this.materielListData
+                        header: this.supplierForm,
+                        bodys: this.materielListData
                     };
                     addPurchaseOrder(data).then(res => {
                         if (res.success) {

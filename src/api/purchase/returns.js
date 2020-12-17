@@ -1,61 +1,61 @@
  import request from '@/utils/request';
 
- export function listPurchaseSign(params) {
+ export function listPurchaseReturns(params) {
    return request({
-     url: '/purchase/sign',
+     url: '/purchase/returns',
      method: 'get',
      params: params
    });
  }
 
- export function listPurchaseSignDialog(params) {
+ export function listPurchaseReturnsDialog(params) {
    return request({
-     url: '/purchase/sign/list',
+     url: '/purchase/returns/list',
      method: 'get',
      params: params
    });
  }
 
- export function getPurchaseSign(params) {
+ export function getPurchaseReturns(params) {
    return request({
-     url: '/purchase/sign/' + params,
+     url: '/purchase/returns/' + params,
      method: 'get',
    });
  }
 
- export function deletePurchaseSign(params) {
+ export function deletePurchaseReturns(params) {
    return request({
-     url: '/purchase/sign/' + params,
+     url: '/purchase/returns/' + params,
      method: 'delete',
    });
  }
 
- export function addPurchaseSign(params) {
+ export function addPurchaseReturns(params) {
    return request({
-     url: '/purchase/sign',
+     url: '/purchase/returns',
      method: 'post',
      data: params
    });
  }
- export function updatePurchaseSign(params) {
+ export function updatePurchaseReturns(params) {
    return request({
-     url: '/purchase/sign',
+     url: '/purchase/returns',
      method: 'put',
      data: params
    });
  }
 
- export function auditPurchaseSign(params) {
+ export function auditPurchaseReturns(params) {
    return request({
-     url: '/purchase/sign/audit',
+     url: '/purchase/returns/audit',
      method: 'put',
      data: params
    });
  }
 
- export function submitPurchaseSign(params) {
+ export function submitPurchaseReturns(params) {
    return request({
-     url: '/purchase/sign/submit',
+     url: '/purchase/returns/submit',
      method: 'put',
      data: params
    });
@@ -63,9 +63,9 @@
 
  // =====================================子表操作================================================//
 
- export function listPurchaseSignSub(params) {
+ export function listPurchaseReturnsSub(params) {
    return request({
-     url: '/purchase/signSub/list',
+     url: '/purchase/returnsSub/list',
      method: 'get',
      params: params
    });
@@ -73,32 +73,32 @@
 
  // =====================================采购入库操作================================================//
 
- export function listPurchaseStorage(params) {
+ export function listPurchaseOutbound(params) {
    return request({
-     url: '/purchase/storage',
+     url: '/purchase/outbound',
      method: 'get',
      params: params
    });
  }
 
- export function getPurchaseStorage(params) {
+ export function getPurchaseOutbound(params) {
    return request({
-     url: '/purchase/storage/' + params,
+     url: '/purchase/outbound/' + params,
      method: 'get',
    });
  }
 
- export function updatePurchaseStorage(params) {
+ export function updatePurchaseOutbound(params) {
    return request({
-     url: '/purchase/storage',
+     url: '/purchase/outbound',
      method: 'put',
      data: params
    });
  }
 
- export function auditPurchaseStorage(params) {
+ export function auditPurchaseOutbound(params) {
    return request({
-     url: '/purchase/storage/audit',
+     url: '/purchase/outbound/audit',
      method: 'put',
      data: params
    });

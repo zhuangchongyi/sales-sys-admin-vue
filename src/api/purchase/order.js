@@ -69,3 +69,11 @@
      params: params
    });
  }
+
+ export function listPurchaseOrderSubDialog(params) {
+   return request({
+     url: '/purchase/orderSub',
+     method: 'get',
+     params: params
+   });
+ }

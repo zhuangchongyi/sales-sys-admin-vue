@@ -8,7 +8,7 @@
                 <el-input v-model="queryParams.warehouseName" readonly size="small" style="width: 200px" />
             </el-form-item>
             <el-form-item label="产品" prop="materielName">
-                <el-input v-model="queryParams.materielName" size="small" style="width: 200px" placeholder="搜索产品" clearable />
+                <el-input v-model="queryParams.materielName" size="small" style="width: 200px" placeholder="搜索产品" clearable @keyup.enter.native="handleQuery" />
             </el-form-item>
             <el-form-item>
                 <el-button type="primary" icon="el-icon-search" size="small" @click="handleQuery">刷新</el-button>
@@ -172,6 +172,7 @@ export default {
             this.queryParams.warehouseId = row.warehouseId;
             this.queryParams.warehouseName = row.warehouseName;
             this.queryParams.warehouseNum = row.warehouseNum;
+            this.queryParams.current = 1;
             this.open = false;
             this.loading = true;
             this.getList();

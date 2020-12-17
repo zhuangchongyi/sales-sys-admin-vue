@@ -2,8 +2,12 @@
     <div class="container">
         <div>
             <el-button type="primary" icon="el-icon-check" @click="submitAddForm">保 存</el-button>
+            <el-button icon="el-icon-close" @click="clearAddForm">清 空</el-button>
         </div>
         <el-divider><strong>供应商信息</strong></el-divider>
+        <div class="handle-box">
+            <el-button type="primary" size="small" icon="el-icon-paperclip" class="handle-del mr10" @click="handleAddOrder">采购订单</el-button>
+        </div>
         <el-form :model="supplierForm" ref="supplierForm" :rules="rules" label-position="right" label-width="auto" :inline="true">
             <el-row>
                 <el-col :span="4">
@@ -18,17 +22,17 @@
                 </el-col>
                 <el-col :span="4">
                     <el-form-item label="订单日期" prop="orderTime">
-                        <el-date-picker v-model="supplierForm.orderTime" style="width:155px;" value-format="yyyy-MM-dd" format="yyyy-MM-dd" placeholder="选择日期" />
+                        <el-date-picker v-model="supplierForm.orderTime" readonly style="width:155px;" value-format="yyyy-MM-dd" format="yyyy-MM-dd" placeholder="选择日期" />
                     </el-form-item>
                 </el-col>
                 <el-col :span="4">
                     <el-form-item label="供应商编码" prop="supplierNum">
-                        <el-input v-model="supplierForm.supplierNum" maxlength="10" show-word-limit size="small" style="width: 155px;" />
+                        <el-input v-model="supplierForm.supplierNum" maxlength="10" readonly show-word-limit size="small" style="width: 155px;" />
                     </el-form-item>
                 </el-col>
                 <el-col :span="4">
                     <el-form-item label="供应商名称" prop="supplierName">
-                        <el-input v-model="supplierForm.supplierName" clearable size="small" style="width: 155px;" />
+                        <el-input v-model="supplierForm.supplierName" clearable readonly size="small" style="width: 155px;" />
                     </el-form-item>
                 </el-col>
                 <el-col :span="4">
@@ -57,13 +61,8 @@
                     </el-form-item>
                 </el-col>
                 <el-col :span="4">
-                    <el-form-item label="总计金额" prop="totalPrice">
-                        <el-input v-model="supplierForm.totalPrice" size="small" readonly style="width: 155px;" />
-                    </el-form-item>
-                </el-col>
-                <el-col :span="4">
-                    <el-form-item label="订单日期" prop="orderTime">
-                        <el-date-picker v-model="supplierForm.orderTime" style="width:155px;" value-format="yyyy-MM-dd" format="yyyy-MM-dd" placeholder="选择日期" />
+                    <el-form-item label="到货日期" prop="signTime">
+                        <el-date-picker v-model="supplierForm.signTime" style="width:155px;" value-format="yyyy-MM-dd" format="yyyy-MM-dd" placeholder="选择日期" />
                     </el-form-item>
                 </el-col>
                 <el-col :span="4">
@@ -81,42 +80,45 @@
             </el-row>
         </el-form>
         <el-divider><strong>产品信息</strong></el-divider>
-        <div class="handle-box">
-            <el-button type="primary" size="small" icon="el-icon-paperclip" class="handle-del mr10" @click="handleAddLinkMateriel">产品</el-button>
-        </div>
-        <el-table v-loading="loading" :data="materielListData">
-            <el-table-column prop="materielNum" label="产品编码" align="center" width="100" :show-overflow-tooltip="true" />
-            <el-table-column prop="materielName" label="产品名称" align="center" :show-overflow-tooltip="true" />
-            <el-table-column prop="specification" label="规格" align="center" :show-overflow-tooltip="true"></el-table-column>
-            <el-table-column prop="modelName" label="型号" align="center" :show-overflow-tooltip="true"></el-table-column>
-            <el-table-column prop="needTorque" label="所需扭矩" align="center" :show-overflow-tooltip="true"></el-table-column>
-            <el-table-column prop="outTorque" label="输出扭矩" align="center" :show-overflow-tooltip="true"></el-table-column>
-            <el-table-column prop="unitsName" label="单位" width="100" align="center"></el-table-column>
-            <el-table-column prop="price" label="单价" align="center"></el-table-column>
-            <el-table-column prop="number" label="采购数量" align="center"></el-table-column>
-            <el-table-column prop="signNum" label="到货数量" align="center">
-                <template slot-scope="scope">
-                    <el-input size="small" @input="calculateTotalPrice" oninput="value=value.replace(/[^\d]/g,'')" maxLength="9" v-model="scope.row.signNum" />
-                </template>
-            </el-table-column>
-            <el-table-column label="操作" align="center" class-name="small-padding fixed-width" fixed="right">
-                <template slot-scope="scope">
-                    <el-button size="small" type="text" icon="el-icon-delete" style="color:#f56c6c;" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
-                </template>
-            </el-table-column>
-        </el-table>
+
+        <el-form :model="formData" ref="formData" :rules="formRules">
+            <el-table v-loading="loading" :data="formData.materielListData">
+                <el-table-column prop="materielNum" label="产品编码" align="center" width="100" :show-overflow-tooltip="true" />
+                <el-table-column prop="materielName" label="产品名称" align="center" :show-overflow-tooltip="true" />
+                <el-table-column prop="specification" label="规格" align="center" :show-overflow-tooltip="true"></el-table-column>
+                <el-table-column prop="modelName" label="型号" align="center" :show-overflow-tooltip="true"></el-table-column>
+                <el-table-column prop="needTorque" label="所需扭矩" align="center" :show-overflow-tooltip="true"></el-table-column>
+                <el-table-column prop="outTorque" label="输出扭矩" align="center" :show-overflow-tooltip="true"></el-table-column>
+                <el-table-column prop="unitsName" label="单位" width="100" align="center"></el-table-column>
+                <!-- <el-table-column prop="price" label="单价" align="center"></el-table-column> -->
+                <el-table-column prop="number" label="采购数量" align="center"></el-table-column>
+                <el-table-column prop="hasSignNum" label="已到货入库数量" align="center"></el-table-column>
+                <el-table-column prop="signNum" label="到货数量" align="center">
+                    <template slot-scope="scope">
+                        <el-form-item :prop="'materielListData.' + scope.$index + '.signNum'" :rules="formRules.signNum">
+                            <el-input size="small" @input="calculateInputPrice(scope.row)" maxLength="9" v-model="scope.row.signNum" />
+                        </el-form-item>
+                    </template>
+                </el-table-column>
+                <el-table-column label="操作" align="center" class-name="small-padding fixed-width" fixed="right">
+                    <template slot-scope="scope">
+                        <el-button size="small" type="text" icon="el-icon-delete" style="color:#f56c6c;" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+                    </template>
+                </el-table-column>
+            </el-table>
+        </el-form>
 
         <!--  添加采购订单窗口 -->
-        <el-dialog :title="title" :visible.sync="open" width="600px" append-to-body>
+        <el-dialog :title="title" :visible.sync="open" width="800px" append-to-body v-dialogDrag>
             <el-form :model="supplierQueryParams" ref="supplierQueryParams" :inline="true">
                 <el-form-item label="订单号" prop="orderNum">
-                    <el-input v-model="supplierQueryParams.orderNum" placeholder="请输入订单号" clearable size="small" style="width: 155px;" @keyup.enter.native="handleQueryClientele" />
+                    <el-input v-model="supplierQueryParams.orderNum" placeholder="请输入订单号" clearable size="small" style="width: 155px;" @keyup.enter.native="handleQueryOrder" />
                 </el-form-item>
                 <el-form-item label="供应商" prop="supplierName">
-                    <el-input v-model="supplierQueryParams.supplierName" placeholder="请输入编码或名称" clearable size="small" style="width: 155px;" @keyup.enter.native="handleQueryClientele" />
+                    <el-input v-model="supplierQueryParams.supplierName" placeholder="请输入编码或名称" clearable size="small" style="width: 155px;" @keyup.enter.native="handleQueryOrder" />
                 </el-form-item>
                 <el-form-item>
-                    <el-button type="primary" icon="el-icon-search" size="small" @click="handleQueryClientele">搜索</el-button>
+                    <el-button type="primary" icon="el-icon-search" size="small" @click="handleQueryOrder">搜索</el-button>
                 </el-form-item>
             </el-form>
             <el-table v-loading="loading" :data="supplierListData" highlight-current-row @row-dblclick="handledbClick">
@@ -139,7 +141,7 @@
                     :total="supplierTotal"
                     :page-sizes="[10, 50, 100, 200]"
                     @size-change="handleSizeChange"
-                    @current-change="handlePageChangeClientele"
+                    @current-change="handlePageChangeOrder"
                 ></el-pagination>
             </div>
         </el-dialog>
@@ -185,7 +187,8 @@
 </template>
 
 <script>
-import { addPurchaseOrder, getPurchaseOrder, listPurchaseOrderSub } from '@/api/purchase/order.js';
+import { listPurchaseOrderDialog, listPurchaseOrderSubDialog } from '@/api/purchase/order.js';
+import { addPurchaseSign } from '@/api/purchase/sign.js';
 import { treeselect } from '@/api/basis/category.js';
 import { listSupplierDialog } from '@/api/purchase/supplier.js';
 import { userListDialog } from '@/api/system/user.js';
@@ -193,6 +196,7 @@ import { listAllMateriel } from '@/api/basis/materiel.js';
 import { listUnits } from '@/api/basis/units.js';
 import Treeselect from '@riophae/vue-treeselect';
 import '@riophae/vue-treeselect/dist/vue-treeselect.css';
+import { validNumber } from '@/utils/validate';
 export default {
     components: { Treeselect },
     data() {
@@ -205,10 +209,10 @@ export default {
             title: '',
             // 表单校验
             rules: {
+                orderNum: [{ required: true, message: '订单号不能为空', trigger: 'blur' }],
                 supplierNum: [{ required: true, message: '供应商编码不能为空', trigger: 'blur' }],
                 supplierName: [{ required: true, message: '供应商名称不能为空', trigger: 'blur' }],
-                orderTime: [{ required: true, message: '订单日期不能为空', trigger: 'blur' }],
-                deliveryTime: [{ required: true, message: '交货日期不能为空', trigger: 'blur' }],
+                signTime: [{ required: true, message: '到货日期不能为空', trigger: 'blur' }],
                 personnelName: [{ required: true, message: '业务人员不能为空', trigger: 'change' }],
                 email: [
                     {
@@ -225,13 +229,13 @@ export default {
                     }
                 ]
             },
+            formData: { materielListData: [] },
             formRules: {
-                materielName: [{ required: true, message: '产品名称不能为空', trigger: 'blur' }],
-                specification: [{ required: true, message: '规格不能为空', trigger: 'blur' }],
-                modelName: [{ required: true, message: '型号不能为空', trigger: 'blur' }],
-                price: [{ required: true, message: '单价不能为空', trigger: 'blur' }],
-                unitsName: [{ required: true, message: '单位不能为空', trigger: 'blur' }],
-                number: [{ required: true, message: '数量不能为空', trigger: 'blur' }]
+                number: [{ required: true, message: '不能为空', trigger: 'blur' }],
+                signNum: [
+                    { required: true, message: '不能为空', trigger: 'blur' },
+                    { pattern: /^\+?[1-9][0-9]*$/, message: '请输入正整数', trigger: ['blur', 'change'] }
+                ]
             },
             //表单参数
             supplierForm: {}, //主表信息
@@ -244,8 +248,7 @@ export default {
                 size: 10,
                 supplierName: undefined,
                 supplierNum: undefined,
-                categoryId: undefined,
-                status: '0'
+                orderNum: undefined
             },
             supplierTotal: 0,
             orderNum: undefined,
@@ -261,105 +264,49 @@ export default {
                 userNum: undefined,
                 nickname: undefined,
                 status: '0'
-            },
-
-            // 添加产品
-            materielSelection: [], //选中产品
-            uploadOpen: false,
-            fileList: [],
-            materielOpen: false,
-            linkMaterielOpen: false,
-            linkMaterielListData: [],
-            linkMaterielLoading: true,
-            form: {},
-            materileTypeOptions: [],
-            materielQueryParams: {
-                current: 1,
-                size: 10,
-                supplierId: undefined,
-                materielNum: undefined,
-                materielName: undefined
-            },
-            materielTotal: 0,
-            materielEdit: false,
-            materielIndex: undefined,
-            // 标签
-            dynamicTags: [],
-            inputVisible: false,
-            inputValue: '',
-
-            // 基本单位
-            unitsLoading: true,
-            unitsOpen: false,
-            unitsTotal: 0,
-            unitsListData: [],
-            unitsQueryParam: {
-                current: 1,
-                size: 10,
-                unitsNum: undefined,
-                unitsName: undefined,
-                unitsType: undefined,
-                status: '0'
-            },
-            unitsTypeOptions: [
-                { dictValue: '0', dictLabel: '基本单位' },
-                { dictValue: '1', dictLabel: '包装单位' }
-            ],
-            delSubIds: [],
-
-            //图片
-            imageLoading: true,
-            imageListData: [],
-            fileQuery: {
-                current: 1,
-                size: 10,
-                materielId: undefined
-            },
-            fileTotal: 0,
-            filePreviewOpen: false,
-            imageUrl: undefined,
-            imageName: undefined
+            }
         };
     },
+    created() {
+        this.getPersonnelName();
+    },
     methods: {
-        getPurchaseOrderList() {
-            getPurchaseOrder(this.orderId).then(res => {
-                if (res.success) {
-                    this.supplierForm = res.data;
-                    this.orderId = res.data.orderId;
-                    this.orderNum = res.data.orderNum;
-                }
-            });
-        },
         getPurchaseOrderSubList() {
-            let param = { orderId: this.orderId };
-            listPurchaseOrderSub(param).then(res => {
-                this.materielListData = res.data || [];
-            });
+            this.materielListData = [];
+            this.loading = true;
+            let param = { orderId: this.supplierForm.orderId };
+            listPurchaseOrderSubDialog(param)
+                .then(res => {
+                    this.materielListData = res.data;
+                    this.formData.materielListData = res.data;
+                    this.loading = false;
+                })
+                .catch(e => {
+                    this.loading = false;
+                });
         },
         getPersonnelName() {
             this.supplierForm.personnelName = this.$store.getters.name;
             this.supplierForm.personnelId = this.$store.getters.userId;
-            this.supplierForm.orderTime = this.parseTime(new Date());
+            this.supplierForm.signTime = this.parseTime(new Date());
         },
         // 供应商分页导航
-        handlePageChangeClientele(val) {
+        handlePageChangeOrder(val) {
             this.$set(this.supplierQueryParams, 'current', val);
-            this.handleQueryClientele();
+            this.handleQueryOrder();
         },
         handleSizeChange(val) {
             this.$set(this.supplierQueryParams, 'size', val);
-            this.handleQueryClientele();
+            this.handleQueryOrder();
         },
         /** 新增按钮操作 */
-        handleAddClientele() {
-            this.handleQueryClientele();
+        handleAddOrder() {
+            this.handleQueryOrder();
             this.open = true;
-            this.title = '添加供应商';
+            this.title = '采购订单';
         },
-        handleQueryClientele() {
-            this.supplierQueryParams.supplierNum = this.supplierQueryParams.supplierName;
-            listSupplierDialog(this.supplierQueryParams).then(res => {
+        handleQueryOrder() {
+            listPurchaseOrderDialog(this.supplierQueryParams).then(res => {
                 if (res.success) {
                     this.supplierListData = res.data.records;
                     this.supplierTotal = res.data.total;
@@ -367,47 +314,49 @@ export default {
             });
         },
         getCurrentRow(row) {
-            this.submitClienteleForm(row);
+            this.submitFormOrder(row);
         },
         handledbClick(row, event, column) {
-            this.submitClienteleForm(row);
+            this.submitFormOrder(row);
         },
-        submitClienteleForm(row) {
+        submitFormOrder(row) {
             this.supplierForm = row;
             this.open = false;
             this.getPersonnelName();
+            this.getPurchaseOrderSubList();
         },
         clearAddForm() {
             this.supplierForm = {};
-            this.form = {};
             this.materielListData = [];
-            this.delSubIds = [];
-            this.supplierForm.personnelName = this.$store.getters.name;
-            this.supplierForm.personnelId = this.$store.getters.userId;
-            this.supplierForm.orderTime = this.parseTime(new Date());
             this.resetForm('supplierForm');
+            this.getPersonnelName();
         },
         submitAddForm() {
             let taht = this;
-            this.$refs['supplierForm'].validate(valid => {
-                if (valid) {
-                    if (this.materielListData.length == 0) {
-                        this.msgError('未添加产品');
-                        return;
-                    }
-                    let data = {
-                        delSubIds: this.delSubIds,
-                        order: this.supplierForm,
-                        orderSubs: this.materielListData
-                    };
-                    addPurchaseOrder(data).then(res => {
-                        if (res.success) {
-                            this.msgSuccess(res.message);
-                            this.getPurchaseOrder();
-                        } else {
-                            this.msgError(res.message);
+            taht.$refs.formData.validate((v, item) => {
+                if (v) {
+                    taht.$refs['supplierForm'].validate(valid => {
+                        if (valid) {
+                            if (taht.formData.materielListData.length == 0) {
+                                taht.msgError('未添加产品');
+                                return;
+                            }
+                            let data = {
+                                header: taht.supplierForm,
+                                bodys: taht.formData.materielListData
+                            };
+                            addPurchaseSign(data).then(res => {
+                                if (res.success) {
+                                    taht.msgSuccess(res.message);
+                                    taht.$set(taht.supplierForm, 'signNum', res.data);
+                                } else {
+                                    taht.msgError(res.message);
+                                }
+                            });
                         }
                     });
+                } else {
+                    console.log(item);
                 }
             });
         },
@@ -446,13 +395,6 @@ export default {
             this.personnelOpen = false;
             this.$refs.supplierForm.clearValidate('personnelName');
         },
-
-        // 产品类别
-        getTreeselectMateriel() {
-            treeselect({ category: '0' }).then(res => {
-                this.materileTypeOptions = res.data;
-            });
-        },
         // 多选框选中数据
         handleSelectionChange(selection) {
             this.materielSelection = selection;
@@ -460,57 +402,23 @@ export default {
         clickSelectionMateriel(row, event, column) {
             this.$refs['linkMaterielListData'].toggleRowSelection(row);
         },
-        // 产品列表
-        handleAddLinkMateriel() {
-            this.linkMaterielOpen = true;
-            this.title = '添加产品';
-            this.materielQueryParams.supplierId = this.supplierForm.supplierId;
-            this.getTreeselectMateriel();
-            this.getMaterielList();
-        },
-        getMaterielList() {
-            this.linkMaterielListData = [];
-            this.materielTotal = 0;
-            listAllMateriel(this.materielQueryParams).then(res => {
-                this.linkMaterielListData = res.data.records;
-                this.materielTotal = res.data.total;
-                this.linkMaterielLoading = false;
-            });
-        },
-        handlePageChangeMateriel(val) {
-            this.$set(this.materielQueryParams, 'current', val);
-            this.getMaterielList();
-        },
-        handleSizeChangeMateriel(val) {
-            this.$set(this.materielQueryParams, 'size', val);
-            this.handleQueryMateriel();
-        },
-        handleQueryMateriel() {
-            this.materielQueryParams.current = 1;
-            this.getMaterielList();
-        },
-        submitForm() {
-            if (this.materielSelection.length !== 0) {
-                this.materielListData = this.materielListData.concat(this.materielSelection);
+        calculateInputPrice(row) {
+            let signNumStr = row.signNum;
+            if (!validNumber(signNumStr)) {
+                return;
             }
-            this.linkMaterielOpen = false;
-            this.calculateTotalPrice();
+            let signNum = parseInt(row.number || 0) - parseInt(row.hasSignNum || 0);
+            let thisSignNum = parseInt(row.signNum || 0);
+            if (thisSignNum > signNum) {
+                row.signNum = signNum;
+            }
         },
         calculateTotalPrice() {
-            let total = 0;
-            this.materielListData.forEach(item => {
-                let price = parseFloat(item.price || 0) * parseInt(item.number || 0);
-                item.totalPrice = price.toFixed(2);
-                total = parseFloat(total) + price;
-            });
-            this.$set(this.supplierForm, 'totalPrice', total.toFixed(2));
+            this.formData.materielListData.forEach(item => {});
         },
         handleDelete(index, row) {
-            if (row.orderSubId) {
-                this.delSubIds.push(row.orderSubId);
-            }
-            this.materielListData.splice(index, 1);
-            this.calculateTotalPrice();
+            this.formData.materielListData.splice(index, 1);
+            // this.calculateTotalPrice();
         }
     }
 };

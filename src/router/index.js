@@ -527,8 +527,8 @@
          path: '/page/purchase/sign/add',
          component: () => import('@/components/page/purchase/sign/add.vue'),
          meta: {
-           title: '新增采购订单',
-           permission: 'purchase:order:add'
+           title: '新增到货单',
+           permission: 'purchase:sign:add'
          }
        },
        {
@@ -536,8 +536,8 @@
          path: '/page/purchase/sign/preview',
          component: () => import('@/components/page/purchase/sign/preview.vue'),
          meta: {
-           title: '查看采购订单',
-           permission: 'purchase:order:preview'
+           title: '查看到货单',
+           permission: 'purchase:sign:preview'
          }
        },
        {
@@ -545,8 +545,98 @@
          path: '/page/purchase/sign/edit',
          component: () => import('@/components/page/purchase/sign/edit.vue'),
          meta: {
-           title: '修改采购订单',
-           permission: 'purchase:order:edit'
+           title: '修改到货单',
+           permission: 'purchase:sign:edit'
+         }
+       },
+       {
+         name: '/page/purchase/storage/preview',
+         path: '/page/purchase/storage/preview',
+         component: () => import('@/components/page/purchase/storage/preview.vue'),
+         meta: {
+           title: '查看入库单',
+           permission: 'purchase:storage:preview'
+         }
+       },
+       {
+         name: '/page/purchase/storage/edit',
+         path: '/page/purchase/storage/edit',
+         component: () => import('@/components/page/purchase/storage/edit.vue'),
+         meta: {
+           title: '修改入库单',
+           permission: 'purchase:storage:edit'
+         }
+       },
+       {
+         name: '/page/purchase/returns/add',
+         path: '/page/purchase/returns/add',
+         component: () => import('@/components/page/purchase/returns/add.vue'),
+         meta: {
+           title: '新增退货单',
+           permission: 'purchase:returns:add'
+         }
+       },
+       {
+         name: '/page/purchase/returns/preview',
+         path: '/page/purchase/returns/preview',
+         component: () => import('@/components/page/purchase/returns/preview.vue'),
+         meta: {
+           title: '查看退货单',
+           permission: 'purchase:returns:preview'
+         }
+       },
+       {
+         name: '/page/purchase/returns/edit',
+         path: '/page/purchase/returns/edit',
+         component: () => import('@/components/page/purchase/returns/edit.vue'),
+         meta: {
+           title: '修改退货单',
+           permission: 'purchase:returns:edit'
+         }
+       },
+       {
+         name: '/page/purchase/outbound/preview',
+         path: '/page/purchase/outbound/preview',
+         component: () => import('@/components/page/purchase/outbound/preview.vue'),
+         meta: {
+           title: '查看出库单',
+           permission: 'purchase:outbound:preview'
+         }
+       },
+       {
+         name: '/page/purchase/outbound/edit',
+         path: '/page/purchase/outbound/edit',
+         component: () => import('@/components/page/purchase/outbound/edit.vue'),
+         meta: {
+           title: '修改出库单',
+           permission: 'purchase:outbound:edit'
+         }
+       },
+       {
+         name: '/page/finance/payable/add',
+         path: '/page/finance/payable/add',
+         component: () => import('@/components/page/finance/payable/add.vue'),
+         meta: {
+           title: '新增应付款',
+           permission: 'finance:payable:add'
+         }
+       },
+       {
+         name: '/page/finance/payable/preview',
+         path: '/page/finance/payable/preview',
+         component: () => import('@/components/page/finance/payable/preview.vue'),
+         meta: {
+           title: '查看应付款',
+           permission: 'finance:payable:preview'
+         }
+       },
+       {
+         name: '/page/finance/payable/edit',
+         path: '/page/finance/payable/edit',
+         component: () => import('@/components/page/finance/payable/edit.vue'),
+         meta: {
+           title: '修改应付款',
+           permission: 'finance:payable:edit'
          }
        },
      ]

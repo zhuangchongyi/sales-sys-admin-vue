@@ -1,6 +1,9 @@
 <template>
     <div class="container">
         <el-form :model="queryParams" ref="queryParams" :inline="true">
+            <el-form-item prop="signNum">
+                <el-input v-model="queryParams.signNum" placeholder="到货单号" clearable size="small" style="width: 200px" @keyup.enter.native="handleQuery" />
+            </el-form-item>
             <el-form-item prop="orderNum">
                 <el-input v-model="queryParams.orderNum" placeholder="订单号" clearable size="small" style="width: 200px" @keyup.enter.native="handleQuery" />
             </el-form-item>
@@ -16,16 +19,8 @@
             </el-form-item>
         </el-form>
         <div class="handle-box">
-            <el-button type="primary" size="small" icon="el-icon-plus" class="handle-del mr10" v-hasPermi="['purchase:order:add']" @click="handleAdd">新增</el-button>
-            <el-dropdown trigger="click" style="margin: 0 10px;" v-hasPermi="['purchase:order:submit']">
-                <el-button class="el-dropdown-link" size="small" type="primary"> 提交<i class="el-icon-arrow-down el-icon--right"></i> </el-button>
-                <el-dropdown-menu slot="dropdown">
-                    <el-dropdown-item icon="el-icon-top" @click.native="handleSubmit">提交</el-dropdown-item>
-                    <el-dropdown-item icon="el-icon-bottom" @click.native="handleNoSubmit">收回</el-dropdown-item>
-                </el-dropdown-menu>
-            </el-dropdown>
-            <el-button type="primary" size="small" icon="el-icon-finished" class="handle-del mr10" :disabled="single" @click="handleAudit" v-hasPermi="['purchase:order:audit']">审核</el-button>
-            <!-- <el-button type="primary" size="small" icon="el-icon-printer" class="handle-del mr10" @click="handlePrint" :disabled="single" v-hasPermi="['purchase:order:print']">打印</el-button> -->
+            <el-button type="primary" size="small" icon="el-icon-finished" class="handle-del mr10" :disabled="single" @click="handleAudit" v-hasPermi="['purchase:sign:audit']">审核</el-button>
+            <!-- <el-button type="primary" size="small" icon="el-icon-printer" class="handle-del mr10" @click="handlePrint" :disabled="single" v-hasPermi="['purchase:sign:print']">打印</el-button> -->
         </div>
         <el-table
             v-loading="loading"
@@ -37,23 +32,27 @@
             @selection-change="handleSelectionChange"
         >
             <el-table-column type="selection" width="50" fixed="left" align="center" />
-            <el-table-column label="订单号" align="center" prop="orderNum" fixed="left" :show-overflow-tooltip="true" width="200" />
+            <el-table-column label="入库仓库编码" align="center" prop="warehouseNum" :show-overflow-tooltip="true" width="150" />
+            <el-table-column label="入库仓库名称" align="center" prop="warehouseName" :show-overflow-tooltip="true" width="150" />
+            <el-table-column label="入库日期" align="center" prop="storageTime" :show-overflow-tooltip="true" width="150" />
+            <el-table-column label="入库状态" prop="storageStatus" :formatter="storageStatusFormatter" align="center" width="100" />
+            <el-table-column label="到货单号" align="center" prop="signNum" :show-overflow-tooltip="true" width="200" />
+            <el-table-column label="到货日期" align="center" prop="signTime" :show-overflow-tooltip="true" width="150" />
+            <el-table-column label="审核状态" prop="auditStatus" :formatter="auditStatusFormatter" align="center" width="100" />
+            <el-table-column label="订单号" align="center" prop="orderNum" :show-overflow-tooltip="true" width="200" />
             <el-table-column label="订单日期" align="center" prop="orderTime" :show-overflow-tooltip="true" width="150" />
-            <el-table-column label="状态" prop="status" :formatter="auditStatusFormatter" align="center" width="100" />
             <el-table-column label="供应商编号" align="center" prop="supplierNum" :show-overflow-tooltip="true" width="100" />
             <el-table-column label="供应商名称" align="center" prop="supplierName" :show-overflow-tooltip="true" width="150" />
             <el-table-column label="联系人" align="center" prop="leader" :show-overflow-tooltip="true" width="100" />
             <el-table-column label="联系人电话" align="center" prop="phone" :show-overflow-tooltip="true" width="150" />
             <el-table-column label="手机" align="center" prop="mobilephone" :show-overflow-tooltip="true" width="150" />
-            <el-table-column label="总计金额" align="center" :show-overflow-tooltip="true" prop="totalPrice" width="160" />
             <el-table-column label="录入人" prop="createBy" :show-overflow-tooltip="true" align="center" width="120" />
             <el-table-column label="录入时间" prop="createTime" :show-overflow-tooltip="true" align="center" width="160" />
             <el-table-column label="审核人" align="center" prop="auditBy" :show-overflow-tooltip="true" width="120" />
             <el-table-column label="审核时间" align="center" :show-overflow-tooltip="true" prop="auditTime" width="160" />
-            <el-table-column label="操作" align="center" width="200" class-name="small-padding fixed-width" fixed="right">
+            <el-table-column label="操作" align="center" width="100" class-name="small-padding fixed-width" fixed="right">
                 <template slot-scope="scope">
-                    <el-button size="mini" type="text" icon="el-icon-edit" v-hasPermi="['purchase:order:edit']" @click="handleUpdate(scope.row)">修改</el-button>
-                    <el-button size="mini" type="text" icon="el-icon-delete" style="color:#fd5656" v-hasPermi="['purchase:order:delete']" @click="handleDelete(scope.row)">删除</el-button>
+                    <el-button size="mini" type="text" icon="el-icon-edit" v-hasPermi="['purchase:sign:edit']" @click="handleUpdate(scope.row)">入库</el-button>
                 </template>
             </el-table-column>
         </el-table>
@@ -73,7 +72,7 @@
 </template>
 
 <script>
-import { listPurchaseOrder, deletePurchaseOrder, submitPurchaseOrder } from '@/api/purchase/order.js';
+import { listPurchaseStorage } from '@/api/purchase/sign.js';
 export default {
     data() {
         return {
@@ -107,7 +106,11 @@ export default {
                 supplierNum: undefined,
                 supplierName: undefined,
                 status: undefined
-            }
+            },
+            storageStatusOptions: [
+                { dictValue: '0', dictLabel: '未入库' },
+                { dictValue: '1', dictLabel: '已入库' }
+            ]
         };
     },
     created() {
@@ -117,11 +120,14 @@ export default {
         this.getList();
     },
     methods: {
+        storageStatusFormatter(row) {
+            return this.selectDictLabel(this.storageStatusOptions, row.storageStatus);
+        },
         auditStatusFormatter(row, column) {
-            return this.approvalStatusFormatter(row.status);
+            return this.approvalStatusFormatter(row.auditStatus);
         },
         getList() {
-            listPurchaseOrder(this.queryParams).then(res => {
+            listPurchaseStorage(this.queryParams).then(res => {
                 if (res.success) {
                     this.orderListData = res.data.records;
                     this.total = res.data.total;
@@ -150,14 +156,14 @@ export default {
         },
         // 多选框选中数据
         handleSelectionChange(selection) {
-            this.ids = selection.map(item => item.orderId);
             this.single = selection.length != 1;
             this.multiple = !selection.length;
             this.selection = selection[0];
             this.multipleSelection = selection;
         },
         selectionRowClick(row) {
-            this.$refs['orderListData'].toggleRowSelection(row);
+            this.$refs.orderListData.clearSelection();
+            this.$refs.orderListData.toggleRowSelection(row);
         },
         handledblclickRow(row, event, column) {
             this.handlePreview(row);
@@ -165,47 +171,7 @@ export default {
 
         // 校验状态
         verifyStatus(status, msg) {
-            return this.checkAuditStatus(this.multipleSelection, 'orderNum', status, msg);
-        },
-        /** 提交按钮 */
-        handleSubmit() {
-            if (this.verifyStatus('7', '已提交') || this.verifyStatus('1', '已提交') || this.verifyStatus('4', '已提交') || this.verifyStatus('3', '已审核')) {
-                return;
-            }
-            let data = {
-                status: '1',
-                ids: this.ids
-            };
-            submitPurchaseOrder(data).then(res => {
-                if (res.success) {
-                    this.msgSuccess('提交成功');
-                    this.handleQuery();
-                } else {
-                    this.msgError(res.message);
-                }
-            });
-        },
-        // 收回按钮
-        handleNoSubmit() {
-            if (this.verifyStatus('7', '已提交') || this.verifyStatus('0', '请先提交') || this.verifyStatus('2', '已收回') || this.verifyStatus('3', '已审核')) {
-                return;
-            }
-            let data = {
-                status: '2',
-                ids: this.ids
-            };
-            submitPurchaseOrder(data).then(res => {
-                if (res.success) {
-                    this.msgSuccess('收回成功');
-                    this.handleQuery();
-                } else {
-                    this.msgError(res.message);
-                }
-            });
-        },
-        /** 新增按钮操作 */
-        handleAdd() {
-            this.$router.push('/page/purchase/order/add');
+            return this.checkAuditStatus(this.multipleSelection, 'signNum', status, msg);
         },
         // 打印
         handlePrint() {
@@ -216,51 +182,24 @@ export default {
             }
             this.msgSuccess('打印成功');
         },
-        // 删除按钮
-        handleDelete(row) {
-            if ('1' === row.status || '4' === row.status) {
-                this.msgError('已提交，请收回删除');
-                return;
-            } else if ('3' === row.status) {
-                this.msgError('已审核，不能删除');
-                return;
-            }
-            let that = this;
-            let orderId = row.orderId;
-            this.$confirm('请确认是否删除？', '警告', {
-                confirmButtonText: '确定',
-                cancelButtonText: '取消',
-                type: 'warning'
-            }).then(function() {
-                deletePurchaseOrder(orderId).then(res => {
-                    if (res.success) {
-                        that.msgSuccess(res.message);
-                        that.handleQuery();
-                    } else {
-                        that.msgError(res.message);
-                    }
-                });
-            });
-        },
         /** 修改按钮操作 */
         handleUpdate(row) {
-            let status = parseInt(row.status || 0);
-            if (status == 1 || status > 2) {
-                this.msgError('已提交不允许修改');
+            if (row.auditStatus === '3') {
+                this.msgError('已审核不允许修改');
                 return;
             }
-            this.$router.push({ path: '/page/purchase/order/edit', query: { id: row.orderId } });
+            this.$router.push({ path: '/page/purchase/storage/edit', query: { id: row.signId } });
         },
         /** 明细按钮操作 */
         handlePreview(row) {
-            this.$router.push({ path: '/page/purchase/order/preview', query: { id: row.orderId, isShow: false } });
+            this.$router.push({ path: '/page/purchase/storage/preview', query: { id: row.signId, isShow: false } });
         },
         handleAudit() {
-            if (this.verifyStatus('7', '已关闭')) return;
-            if (this.verifyStatus('0', '请先提交') || this.verifyStatus('2', '请先提交')) {
+            if (this.selection.storageStatus === 0) {
+                this.msgError('请先入库');
                 return;
             }
-            this.$router.push({ path: '/page/purchase/order/preview', query: { id: this.selection.orderId, isShow: false, isAudit: true } });
+            this.$router.push({ path: '/page/purchase/storage/preview', query: { id: this.selection.signId, isShow: false, isAudit: true } });
         }
     }
 };

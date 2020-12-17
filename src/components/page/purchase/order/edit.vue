@@ -521,35 +521,29 @@ export default {
         };
     },
     created() {
-        this.orderId = this.$route.query.id;
-        this.getPurchaseOrder();
+        this.getPurchaseOrderList();
     },
     watch: {
         $route(to, form) {
-            if (to.path === '/page/sales/order/edit' && this.orderId !== this.$route.query.id) {
-                this.orderId = this.$route.query.id;
-                this.getPurchaseOrder();
+            if (to.path === '/page/purchase/order/edit' && this.supplierForm.orderId !== this.$route.query.id) {
+                this.getPurchaseOrderList();
             }
         }
     },
     methods: {
-        getPurchaseOrder() {
-            this.getPurchaseOrderList();
-            this.getPurchaseOrderSubList();
-        },
         getPurchaseOrderList() {
-            getPurchaseOrder(this.orderId).then(res => {
+            getPurchaseOrder(this.$route.query.id).then(res => {
                 if (res.success) {
                     this.supplierForm = res.data;
-                    this.orderId = res.data.orderId;
-                    this.orderNum = res.data.orderNum;
+                    this.getPurchaseOrderSubList();
                 }
             });
         },
         getPurchaseOrderSubList() {
-            let param = { orderId: this.orderId };
+            let param = { orderId: this.supplierForm.orderId };
             listPurchaseOrderSub(param).then(res => {
-                this.materielListData = res.data || [];
+                this.delSubIds = [];
+                this.materielListData = res.data;
             });
         },
         getPersonnelName() {
@@ -612,13 +606,13 @@ export default {
                     }
                     let data = {
                         delSubIds: this.delSubIds,
-                        order: this.supplierForm,
-                        orderSubs: this.materielListData
+                        header: this.supplierForm,
+                        bodys: this.materielListData
                     };
                     updatePurchaseOrder(data).then(res => {
                         if (res.success) {
                             this.msgSuccess(res.message);
-                            this.getPurchaseOrder();
+                            this.getPurchaseOrderList();
                         } else {
                             this.msgError(res.message);
                         }

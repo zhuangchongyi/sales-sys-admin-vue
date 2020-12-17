@@ -28,7 +28,7 @@
                 </el-dropdown-menu>
             </el-dropdown>
             <el-button type="primary" size="small" icon="el-icon-finished" class="handle-del mr10" :disabled="single" @click="handleAudit" v-hasPermi="['purchase:sign:audit']">审核</el-button>
-            <el-button type="primary" size="small" icon="el-icon-printer" class="handle-del mr10" @click="handlePrint" :disabled="single" v-hasPermi="['purchase:sign:print']">打印</el-button>
+            <!-- <el-button type="primary" size="small" icon="el-icon-printer" class="handle-del mr10" @click="handlePrint" :disabled="single" v-hasPermi="['purchase:sign:print']">打印</el-button> -->
         </div>
         <el-table
             v-loading="loading"
@@ -77,7 +77,7 @@
 </template>
 
 <script>
-import { listPurchaseSign, deletePurchaseSign, submitPurchaseSign, auditPurchaseSign, getPurchaseSignSub, checkClosePurchaseSignSub, closePurchaseSign } from '@/api/purchase/sign.js';
+import { listPurchaseSign, deletePurchaseSign, submitPurchaseSign } from '@/api/purchase/sign.js';
 export default {
     data() {
         return {
@@ -107,6 +107,7 @@ export default {
             queryParams: {
                 current: 1,
                 size: 10,
+                signNum: undefined,
                 orderNum: undefined,
                 supplierNum: undefined,
                 supplierName: undefined,
@@ -169,7 +170,7 @@ export default {
 
         // 校验状态
         verifyStatus(status, msg) {
-            return this.checkAuditStatus(this.multipleSelection, 'orderNum', status, msg);
+            return this.checkAuditStatus(this.multipleSelection, 'signNum', status, msg);
         },
         /** 提交按钮 */
         handleSubmit() {
@@ -177,7 +178,7 @@ export default {
                 return;
             }
             let data = {
-                sign: { status: '1' },
+                status: '1',
                 ids: this.ids
             };
             submitPurchaseSign(data).then(res => {
@@ -195,7 +196,7 @@ export default {
                 return;
             }
             let data = {
-                sign: { status: '2' },
+                status: '2',
                 ids: this.ids
             };
             submitPurchaseSign(data).then(res => {

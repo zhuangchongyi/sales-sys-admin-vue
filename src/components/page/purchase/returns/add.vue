@@ -2,17 +2,17 @@
     <div class="container">
         <div>
             <el-button type="primary" icon="el-icon-check" @click="submitAddForm">保 存</el-button>
-            <el-button icon="el-icon-close" @click="getPurchaseSignData">重 置</el-button>
+            <el-button icon="el-icon-close" @click="clearAddForm">清 空</el-button>
         </div>
         <el-divider><strong>供应商信息</strong></el-divider>
-        <!-- <div class="handle-box">
+        <div class="handle-box">
             <el-button type="primary" size="small" icon="el-icon-paperclip" class="handle-del mr10" @click="handleAddOrder">采购订单</el-button>
-        </div> -->
+        </div>
         <el-form :model="supplierForm" ref="supplierForm" :rules="rules" label-position="right" label-width="auto" :inline="true">
             <el-row>
                 <el-col :span="4">
-                    <el-form-item label="到货单号" prop="signNum">
-                        <el-input v-model="supplierForm.signNum" size="small" readonly style="width: 155px;" />
+                    <el-form-item label="退货单号" prop="returnsNum">
+                        <el-input v-model="supplierForm.returnsNum" size="small" readonly style="width: 155px;" />
                     </el-form-item>
                 </el-col>
                 <el-col :span="4">
@@ -61,8 +61,8 @@
                     </el-form-item>
                 </el-col>
                 <el-col :span="4">
-                    <el-form-item label="到货日期" prop="signTime">
-                        <el-date-picker v-model="supplierForm.signTime" style="width:155px;" value-format="yyyy-MM-dd" format="yyyy-MM-dd" placeholder="选择日期" />
+                    <el-form-item label="退货日期" prop="returnsTime">
+                        <el-date-picker v-model="supplierForm.returnsTime" style="width:155px;" value-format="yyyy-MM-dd" format="yyyy-MM-dd" placeholder="选择日期" />
                     </el-form-item>
                 </el-col>
                 <el-col :span="4">
@@ -92,11 +92,11 @@
                 <el-table-column prop="unitsName" label="单位" width="100" align="center"></el-table-column>
                 <!-- <el-table-column prop="price" label="单价" align="center"></el-table-column> -->
                 <el-table-column prop="number" label="采购数量" align="center"></el-table-column>
-                <el-table-column prop="hasSignNum" label="已到货入库数量" align="center"></el-table-column>
-                <el-table-column prop="signNum" label="到货数量" align="center">
+                <!-- <el-table-column prop="hasReturnsNum" label="已退货入库数量" align="center"></el-table-column> -->
+                <el-table-column prop="returnsNum" label="退货数量" align="center">
                     <template slot-scope="scope">
-                        <el-form-item :prop="'materielListData.' + scope.$index + '.signNum'" :rules="formRules.signNum">
-                            <el-input size="small" @input="calculateInputPrice(scope.row)" maxLength="9" v-model="scope.row.signNum" />
+                        <el-form-item :prop="'materielListData.' + scope.$index + '.returnsNum'" :rules="formRules.returnsNum">
+                            <el-input size="small" @input="calculateInputPrice(scope.row)" maxLength="9" v-model="scope.row.returnsNum" />
                         </el-form-item>
                     </template>
                 </el-table-column>
@@ -187,8 +187,8 @@
 </template>
 
 <script>
-import { listPurchaseOrderDialog, listPurchaseOrderSubDialog } from '@/api/purchase/order.js';
-import { updatePurchaseSign, getPurchaseSign, listPurchaseSignSub } from '@/api/purchase/sign.js';
+import { listPurchaseOrderDialog, listPurchaseOrderSub } from '@/api/purchase/order.js';
+import { addPurchaseReturns } from '@/api/purchase/returns.js';
 import { treeselect } from '@/api/basis/category.js';
 import { listSupplierDialog } from '@/api/purchase/supplier.js';
 import { userListDialog } from '@/api/system/user.js';
@@ -212,7 +212,7 @@ export default {
                 orderNum: [{ required: true, message: '订单号不能为空', trigger: 'blur' }],
                 supplierNum: [{ required: true, message: '供应商编码不能为空', trigger: 'blur' }],
                 supplierName: [{ required: true, message: '供应商名称不能为空', trigger: 'blur' }],
-                signTime: [{ required: true, message: '到货日期不能为空', trigger: 'blur' }],
+                returnsTime: [{ required: true, message: '退货日期不能为空', trigger: 'blur' }],
                 personnelName: [{ required: true, message: '业务人员不能为空', trigger: 'change' }],
                 email: [
                     {
@@ -232,7 +232,7 @@ export default {
             formData: { materielListData: [] },
             formRules: {
                 number: [{ required: true, message: '不能为空', trigger: 'blur' }],
-                signNum: [
+                returnsNum: [
                     { required: true, message: '不能为空', trigger: 'blur' },
                     { pattern: /^\+?[1-9][0-9]*$/, message: '请输入正整数', trigger: ['blur', 'change'] }
                 ]
@@ -264,36 +264,18 @@ export default {
                 userNum: undefined,
                 nickname: undefined,
                 status: '0'
-            },
-            delSubIds: []
+            }
         };
     },
     created() {
-        this.getPurchaseSignData();
-    },
-    watch: {
-        $route(to, form) {
-            if (to.path === '/page/purchase/sign/edit' && this.supplierForm.signId !== this.$route.query.id) {
-                this.getPurchaseSignData();
-            }
-        }
+        this.getPersonnelName();
     },
     methods: {
-        getPurchaseSignData() {
-            let id = this.$route.query.id;
-            getPurchaseSign(id).then(res => {
-                this.supplierForm = res.data;
-                listPurchaseSignSub({ signId: id }).then(res => {
-                    this.formData.materielListData = res.data;
-                    this.delSubIds = [];
-                });
-            });
-        },
         getPurchaseOrderSubList() {
             this.materielListData = [];
             this.loading = true;
             let param = { orderId: this.supplierForm.orderId };
-            listPurchaseOrderSubDialog(param)
+            listPurchaseOrderSub(param)
                 .then(res => {
                     this.materielListData = res.data;
                     this.formData.materielListData = res.data;
@@ -306,7 +288,7 @@ export default {
         getPersonnelName() {
             this.supplierForm.personnelName = this.$store.getters.name;
             this.supplierForm.personnelId = this.$store.getters.userId;
-            this.supplierForm.signTime = this.parseTime(new Date());
+            this.supplierForm.returnsTime = this.parseTime(new Date());
         },
         // 供应商分页导航
         handlePageChangeOrder(val) {
@@ -360,13 +342,13 @@ export default {
                                 return;
                             }
                             let data = {
-                                delSubIds: taht.delSubIds,
                                 header: taht.supplierForm,
                                 bodys: taht.formData.materielListData
                             };
-                            updatePurchaseSign(data).then(res => {
+                            addPurchaseReturns(data).then(res => {
                                 if (res.success) {
                                     taht.msgSuccess(res.message);
+                                    taht.$set(taht.supplierForm, 'returnsNum', res.data);
                                 } else {
                                     taht.msgError(res.message);
                                 }
@@ -421,27 +403,20 @@ export default {
             this.$refs['linkMaterielListData'].toggleRowSelection(row);
         },
         calculateInputPrice(row) {
-            let signNumStr = row.signNum;
-            if (!validNumber(signNumStr)) {
+            let returnsNumStr = row.returnsNum;
+            if (!validNumber(returnsNumStr)) {
                 return;
             }
-            let signNum = parseInt(row.number || 0) - parseInt(row.hasSignNum || 0);
-            let thisSignNum = parseInt(row.signNum || 0);
-            if (thisSignNum > signNum) {
-                row.signNum = signNum;
+            let returnsNum = parseInt(row.number || 0) - parseInt(row.hasReturnsNum || 0);
+            let thisReturnsNum = parseInt(row.returnsNum || 0);
+            if (thisReturnsNum > returnsNum) {
+                row.returnsNum = returnsNum;
             }
         },
         calculateTotalPrice() {
-            let total = 0;
-            this.materielListData.forEach(item => {
-                let price = parseFloat(item.price || 0) * parseInt(item.number || 0);
-                item.totalPrice = price.toFixed(2);
-                total = parseFloat(total) + price;
-            });
-            this.$set(this.supplierForm, 'totalPrice', total.toFixed(2));
+            this.formData.materielListData.forEach(item => {});
         },
         handleDelete(index, row) {
-            this.delSubIds.push(row.signSubId);
             this.formData.materielListData.splice(index, 1);
             // this.calculateTotalPrice();
         }

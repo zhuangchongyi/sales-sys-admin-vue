@@ -2,7 +2,7 @@
     <div class="container">
         <div>
             <el-button type="primary" icon="el-icon-check" @click="submitAddForm">保 存</el-button>
-            <el-button icon="el-icon-close" @click="getPurchaseSignData">重 置</el-button>
+            <el-button icon="el-icon-close" @click="getPurchaseStorageData">重 置</el-button>
         </div>
         <el-divider><strong>供应商信息</strong></el-divider>
         <!-- <div class="handle-box">
@@ -37,50 +37,64 @@
                 </el-col>
                 <el-col :span="4">
                     <el-form-item label="联系人" prop="leader">
-                        <el-input v-model="supplierForm.leader" clearable size="small" style="width: 155px;" />
+                        <el-input v-model="supplierForm.leader" clearable size="small" style="width: 155px;" readonly />
                     </el-form-item>
                 </el-col>
                 <el-col :span="4">
                     <el-form-item label="联系电话" prop="phone">
-                        <el-input v-model="supplierForm.phone" clearable size="small" style="width: 155px;" />
+                        <el-input v-model="supplierForm.phone" clearable size="small" style="width: 155px;" readonly />
                     </el-form-item>
                 </el-col>
                 <el-col :span="4">
                     <el-form-item label="手机" prop="mobilephone">
-                        <el-input v-model="supplierForm.mobilephone" clearable size="small" style="width: 155px;" />
+                        <el-input v-model="supplierForm.mobilephone" clearable size="small" style="width: 155px;" readonly />
                     </el-form-item>
                 </el-col>
                 <el-col :span="4">
                     <el-form-item label="邮箱" prop="email">
-                        <el-input v-model="supplierForm.email" size="small" style="width: 155px;" />
+                        <el-input v-model="supplierForm.email" size="small" style="width: 155px;" readonly />
                     </el-form-item>
                 </el-col>
                 <el-col :span="8">
                     <el-form-item label="地址" prop="address">
-                        <el-input v-model="supplierForm.address" size="small" style="width: 420px" />
+                        <el-input v-model="supplierForm.address" size="small" style="width: 420px" readonly />
                     </el-form-item>
                 </el-col>
                 <el-col :span="4">
                     <el-form-item label="到货日期" prop="signTime">
-                        <el-date-picker v-model="supplierForm.signTime" style="width:155px;" value-format="yyyy-MM-dd" format="yyyy-MM-dd" placeholder="选择日期" />
+                        <el-date-picker v-model="supplierForm.signTime" style="width:155px;" value-format="yyyy-MM-dd" format="yyyy-MM-dd" placeholder="选择日期" readonly />
                     </el-form-item>
                 </el-col>
                 <el-col :span="4">
                     <el-form-item label="业务员" prop="personnelName">
-                        <el-input v-model="supplierForm.personnelName" size="small" suffix-icon="el-icon-search" @focus="personnelFocus" ref="personnelBlur" style="width: 155px;" />
+                        <el-input v-model="supplierForm.personnelName" size="small" suffix-icon="el-icon-search" readonly ref="personnelBlur" style="width: 155px;" />
+                    </el-form-item>
+                </el-col>
+                <el-col :span="4">
+                    <el-form-item label="仓库编码" prop="warehouseNum">
+                        <el-input v-model="supplierForm.warehouseNum" size="small" placeholder="选择出库仓库" @focus="warehouseListDialog" style="width: 155px;" />
+                    </el-form-item>
+                </el-col>
+                <el-col :span="4">
+                    <el-form-item label="仓库名称" prop="warehouseName">
+                        <el-input v-model="supplierForm.warehouseName" size="small" style="width: 155px;" readonly />
+                    </el-form-item>
+                </el-col>
+                <el-col :span="4">
+                    <el-form-item label="入库日期" prop="storageTime">
+                        <el-date-picker v-model="supplierForm.storageTime" style="width:155px;" value-format="yyyy-MM-dd" format="yyyy-MM-dd" placeholder="选择日期" />
                     </el-form-item>
                 </el-col>
             </el-row>
             <el-row>
                 <el-col :span="24">
                     <el-form-item label="备注" prop="remark">
-                        <el-input v-model="supplierForm.remark" type="textarea" autosize style="width: 1000px" size="small" />
+                        <el-input v-model="supplierForm.remark" type="textarea" autosize style="width: 1000px" size="small" readonly />
                     </el-form-item>
                 </el-col>
             </el-row>
         </el-form>
         <el-divider><strong>产品信息</strong></el-divider>
-
         <el-form :model="formData" ref="formData" :rules="formRules">
             <el-table v-loading="loading" :data="formData.materielListData">
                 <el-table-column prop="materielNum" label="产品编码" align="center" width="100" :show-overflow-tooltip="true" />
@@ -92,59 +106,22 @@
                 <el-table-column prop="unitsName" label="单位" width="100" align="center"></el-table-column>
                 <!-- <el-table-column prop="price" label="单价" align="center"></el-table-column> -->
                 <el-table-column prop="number" label="采购数量" align="center"></el-table-column>
-                <el-table-column prop="hasSignNum" label="已到货入库数量" align="center"></el-table-column>
-                <el-table-column prop="signNum" label="到货数量" align="center">
+                <el-table-column prop="hasSignNum" label="已到货数量" align="center"></el-table-column>
+                <el-table-column prop="signNum" label="到货数量" align="center"></el-table-column>
+                <el-table-column prop="storageNum" label="入库数量" align="center">
                     <template slot-scope="scope">
-                        <el-form-item :prop="'materielListData.' + scope.$index + '.signNum'" :rules="formRules.signNum">
-                            <el-input size="small" @input="calculateInputPrice(scope.row)" maxLength="9" v-model="scope.row.signNum" />
+                        <el-form-item :prop="'materielListData.' + scope.$index + '.storageNum'" :rules="formRules.storageNum">
+                            <el-input size="small" @input="calculateInput(scope.row)" maxLength="9" v-model="scope.row.storageNum" />
                         </el-form-item>
                     </template>
                 </el-table-column>
-                <el-table-column label="操作" align="center" class-name="small-padding fixed-width" fixed="right">
+                <!-- <el-table-column label="操作" align="center" class-name="small-padding fixed-width" fixed="right">
                     <template slot-scope="scope">
                         <el-button size="small" type="text" icon="el-icon-delete" style="color:#f56c6c;" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
                     </template>
-                </el-table-column>
+                </el-table-column> -->
             </el-table>
         </el-form>
-
-        <!--  添加采购订单窗口 -->
-        <el-dialog :title="title" :visible.sync="open" width="800px" append-to-body v-dialogDrag>
-            <el-form :model="supplierQueryParams" ref="supplierQueryParams" :inline="true">
-                <el-form-item label="订单号" prop="orderNum">
-                    <el-input v-model="supplierQueryParams.orderNum" placeholder="请输入订单号" clearable size="small" style="width: 155px;" @keyup.enter.native="handleQueryOrder" />
-                </el-form-item>
-                <el-form-item label="供应商" prop="supplierName">
-                    <el-input v-model="supplierQueryParams.supplierName" placeholder="请输入编码或名称" clearable size="small" style="width: 155px;" @keyup.enter.native="handleQueryOrder" />
-                </el-form-item>
-                <el-form-item>
-                    <el-button type="primary" icon="el-icon-search" size="small" @click="handleQueryOrder">搜索</el-button>
-                </el-form-item>
-            </el-form>
-            <el-table v-loading="loading" :data="supplierListData" highlight-current-row @row-dblclick="handledbClick">
-                <el-table-column label="选择" width="65">
-                    <template slot-scope="scope">
-                        <el-radio :label="scope.$index + 1" v-model="radio" @change.native="getCurrentRow(scope.row)"></el-radio>
-                    </template>
-                </el-table-column>
-                <el-table-column label="订单号" align="center" prop="orderNum" :show-overflow-tooltip="true" />
-                <el-table-column label="订单日期" align="center" prop="orderTime" :show-overflow-tooltip="true" />
-                <el-table-column label="供应商编码" align="center" prop="supplierNum" :show-overflow-tooltip="true" />
-                <el-table-column label="供应商名称" align="center" prop="supplierName" :show-overflow-tooltip="true" />
-            </el-table>
-            <div class="pagination">
-                <el-pagination
-                    background
-                    layout="total, sizes, prev, pager, next"
-                    :current-page="supplierQueryParams.current"
-                    :page-size="supplierQueryParams.size"
-                    :total="supplierTotal"
-                    :page-sizes="[10, 50, 100, 200]"
-                    @size-change="handleSizeChange"
-                    @current-change="handlePageChangeOrder"
-                ></el-pagination>
-            </div>
-        </el-dialog>
 
         <!-- 业务人员弹窗 -->
         <el-dialog :title="title" :visible.sync="personnelOpen" width="550px" append-to-body>
@@ -183,17 +160,45 @@
                 ></el-pagination>
             </div>
         </el-dialog>
+
+        <!--  添加仓库窗口 -->
+        <el-dialog title="仓库" :visible.sync="open" width="500px" append-to-body>
+            <el-form :model="warehouseParams" ref="warehouseParams" :inline="true">
+                <el-form-item label="仓库" prop="warehouseName">
+                    <el-input v-model="warehouseParams.warehouseName" placeholder="请输入名称或编码" clearable size="small" style="width: 150px" @keyup.enter.native="handleQueryWarehouse" />
+                </el-form-item>
+                <el-form-item>
+                    <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQueryWarehouse">搜索</el-button>
+                </el-form-item>
+            </el-form>
+            <el-table :data="warehouseListData" @row-dblclick="dbclickWarehouse" highlight-current-row>
+                <el-table-column label="选择" width="65">
+                    <template slot-scope="scope">
+                        <el-radio :label="scope.$index + 1" v-model="radio" @change.native="getCurrentWarehouseRow(scope.row)"></el-radio>
+                    </template>
+                </el-table-column>
+                <el-table-column label="仓库编码" align="center" :show-overflow-tooltip="true" prop="warehouseNum" />
+                <el-table-column label="仓库名称" align="center" prop="warehouseName" :show-overflow-tooltip="true" />
+            </el-table>
+            <div class="pagination">
+                <el-pagination
+                    background
+                    layout="total, prev, pager, next"
+                    :current-page="warehouseParams.current"
+                    :page-size="warehouseParams.size"
+                    :total="warehouseTotal"
+                    @current-change="handlePageChangeWarehouse"
+                ></el-pagination>
+            </div>
+        </el-dialog>
     </div>
 </template>
 
 <script>
-import { listPurchaseOrderDialog, listPurchaseOrderSubDialog } from '@/api/purchase/order.js';
-import { updatePurchaseSign, getPurchaseSign, listPurchaseSignSub } from '@/api/purchase/sign.js';
-import { treeselect } from '@/api/basis/category.js';
-import { listSupplierDialog } from '@/api/purchase/supplier.js';
+import { updatePurchaseStorage, getPurchaseStorage, listPurchaseSignSub } from '@/api/purchase/sign.js';
 import { userListDialog } from '@/api/system/user.js';
-import { listAllMateriel } from '@/api/basis/materiel.js';
-import { listUnits } from '@/api/basis/units.js';
+import { warehouseListDialog } from '@/api/basis/warehouse.js';
+
 import Treeselect from '@riophae/vue-treeselect';
 import '@riophae/vue-treeselect/dist/vue-treeselect.css';
 import { validNumber } from '@/utils/validate';
@@ -209,10 +214,13 @@ export default {
             title: '',
             // 表单校验
             rules: {
+                signNum: [{ required: true, message: '到货号不能为空', trigger: 'blur' }],
                 orderNum: [{ required: true, message: '订单号不能为空', trigger: 'blur' }],
+                warehouseNum: [{ required: true, message: '仓库编码不能为空', trigger: 'blur' }],
+                warehouseName: [{ required: true, message: '仓库名称不能为空', trigger: 'blur' }],
                 supplierNum: [{ required: true, message: '供应商编码不能为空', trigger: 'blur' }],
                 supplierName: [{ required: true, message: '供应商名称不能为空', trigger: 'blur' }],
-                signTime: [{ required: true, message: '到货日期不能为空', trigger: 'blur' }],
+                storageTime: [{ required: true, message: '到货日期不能为空', trigger: 'blur' }],
                 personnelName: [{ required: true, message: '业务人员不能为空', trigger: 'change' }],
                 email: [
                     {
@@ -232,27 +240,14 @@ export default {
             formData: { materielListData: [] },
             formRules: {
                 number: [{ required: true, message: '不能为空', trigger: 'blur' }],
-                signNum: [
+                storageNum: [
                     { required: true, message: '不能为空', trigger: 'blur' },
-                    { pattern: /^\+?[1-9][0-9]*$/, message: '请输入正整数', trigger: ['blur', 'change'] }
+                    { pattern: /^\+?[0-9][0-9]*$/, message: '请输入正整数', trigger: ['blur', 'change'] }
                 ]
             },
             //表单参数
             supplierForm: {}, //主表信息
             materielListData: [], //子表信息
-            // 添加采购订单
-            supplierListData: [],
-            radio: '',
-            supplierQueryParams: {
-                current: 1,
-                size: 10,
-                supplierName: undefined,
-                supplierNum: undefined,
-                orderNum: undefined
-            },
-            supplierTotal: 0,
-            orderNum: undefined,
-            orderId: undefined,
             //添加人员
             personnelLoading: true,
             personnelOpen: false,
@@ -265,43 +260,38 @@ export default {
                 nickname: undefined,
                 status: '0'
             },
-            delSubIds: []
+            // 仓库
+            radio: '',
+            warehouseListData: [],
+            warehouseTotal: 0,
+            warehouseParams: {
+                current: 1,
+                size: 10,
+                warehouseName: undefined,
+                warehouseNum: undefined
+            }
         };
     },
     created() {
-        this.getPurchaseSignData();
+        this.getPurchaseStorageData();
     },
     watch: {
         $route(to, form) {
-            if (to.path === '/page/purchase/sign/edit' && this.supplierForm.signId !== this.$route.query.id) {
-                this.getPurchaseSignData();
+            if (to.path === '/page/purchase/storage/edit' && this.supplierForm.signId !== this.$route.query.id) {
+                this.getPurchaseStorageData();
             }
         }
     },
     methods: {
-        getPurchaseSignData() {
+        getPurchaseStorageData() {
             let id = this.$route.query.id;
-            getPurchaseSign(id).then(res => {
+            getPurchaseStorage(id).then(res => {
                 this.supplierForm = res.data;
+                this.$set(this.supplierForm, 'storageTime', this.parseTime(new Date()));
                 listPurchaseSignSub({ signId: id }).then(res => {
                     this.formData.materielListData = res.data;
-                    this.delSubIds = [];
                 });
             });
-        },
-        getPurchaseOrderSubList() {
-            this.materielListData = [];
-            this.loading = true;
-            let param = { orderId: this.supplierForm.orderId };
-            listPurchaseOrderSubDialog(param)
-                .then(res => {
-                    this.materielListData = res.data;
-                    this.formData.materielListData = res.data;
-                    this.loading = false;
-                })
-                .catch(e => {
-                    this.loading = false;
-                });
         },
         getPersonnelName() {
             this.supplierForm.personnelName = this.$store.getters.name;
@@ -309,28 +299,6 @@ export default {
             this.supplierForm.signTime = this.parseTime(new Date());
         },
         // 供应商分页导航
-        handlePageChangeOrder(val) {
-            this.$set(this.supplierQueryParams, 'current', val);
-            this.handleQueryOrder();
-        },
-        handleSizeChange(val) {
-            this.$set(this.supplierQueryParams, 'size', val);
-            this.handleQueryOrder();
-        },
-        /** 新增按钮操作 */
-        handleAddOrder() {
-            this.handleQueryOrder();
-            this.open = true;
-            this.title = '采购订单';
-        },
-        handleQueryOrder() {
-            listPurchaseOrderDialog(this.supplierQueryParams).then(res => {
-                if (res.success) {
-                    this.supplierListData = res.data.records;
-                    this.supplierTotal = res.data.total;
-                }
-            });
-        },
         getCurrentRow(row) {
             this.submitFormOrder(row);
         },
@@ -341,7 +309,6 @@ export default {
             this.supplierForm = row;
             this.open = false;
             this.getPersonnelName();
-            this.getPurchaseOrderSubList();
         },
         clearAddForm() {
             this.supplierForm = {};
@@ -359,12 +326,13 @@ export default {
                                 taht.msgError('未添加产品');
                                 return;
                             }
+                            taht.supplierForm.storageStatus = '1';
+                            taht.supplierForm.auditStatus = '1';
                             let data = {
-                                delSubIds: taht.delSubIds,
                                 header: taht.supplierForm,
                                 bodys: taht.formData.materielListData
                             };
-                            updatePurchaseSign(data).then(res => {
+                            updatePurchaseStorage(data).then(res => {
                                 if (res.success) {
                                     taht.msgSuccess(res.message);
                                 } else {
@@ -420,15 +388,15 @@ export default {
         clickSelectionMateriel(row, event, column) {
             this.$refs['linkMaterielListData'].toggleRowSelection(row);
         },
-        calculateInputPrice(row) {
-            let signNumStr = row.signNum;
-            if (!validNumber(signNumStr)) {
+        calculateInput(row) {
+            let storageNumStr = row.storageNum;
+            if (!validNumber(storageNumStr)) {
                 return;
             }
-            let signNum = parseInt(row.number || 0) - parseInt(row.hasSignNum || 0);
-            let thisSignNum = parseInt(row.signNum || 0);
-            if (thisSignNum > signNum) {
-                row.signNum = signNum;
+            let signNum = parseInt(row.signNum || 0);
+            let storageNum = parseInt(storageNumStr || 0);
+            if (storageNum > signNum) {
+                row.storageNum = signNum;
             }
         },
         calculateTotalPrice() {
@@ -443,7 +411,40 @@ export default {
         handleDelete(index, row) {
             this.delSubIds.push(row.signSubId);
             this.formData.materielListData.splice(index, 1);
-            // this.calculateTotalPrice();
+            this.calculateTotalPrice();
+        },
+        // ===================仓库===================
+        warehouseListDialog() {
+            this.open = true;
+            this.handleQueryWarehouse();
+        },
+        getWarehouseListData() {
+            warehouseListDialog(this.warehouseParams).then(res => {
+                this.warehouseListData = res.data.records;
+                this.warehouseTotal = res.data.total;
+            });
+        },
+        handlePageChangeWarehouse(val) {
+            this.$set(this.warehouseParams, 'current', val);
+            this.getWarehouseListData();
+        },
+        handleQueryWarehouse() {
+            this.warehouseParams.current = 1;
+            this.getWarehouseListData();
+        },
+        getCurrentWarehouseRow(row) {
+            this.submitWarehouseForm(row);
+        },
+        dbclickWarehouse(row, column, event) {
+            this.submitWarehouseForm(row);
+        },
+        submitWarehouseForm(row) {
+            this.open = false;
+            this.$set(this.supplierForm, 'warehouseId', row.warehouseId);
+            this.$set(this.supplierForm, 'warehouseNum', row.warehouseNum);
+            this.$set(this.supplierForm, 'warehouseName', row.warehouseName);
+            this.$refs.supplierForm.clearValidate('warehouseNum');
+            this.$refs.supplierForm.clearValidate('warehouseName');
         }
     }
 };

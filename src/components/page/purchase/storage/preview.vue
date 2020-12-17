@@ -1,8 +1,8 @@
 <template>
     <div class="container">
-        <div>
-            <el-button type="primary" icon="el-icon-check" @click="submitAddForm">保 存</el-button>
-            <el-button icon="el-icon-close" @click="getPurchaseSignData">重 置</el-button>
+        <div v-show="isAudit">
+            <el-button type="primary" icon="el-icon-check" :loading="btnLoading" @click="submitAuditForm">审 核</el-button>
+            <el-button type="primary" icon="el-icon-close" :loading="btnLoading" @click="cancelAuditForm">反审核</el-button>
         </div>
         <el-divider><strong>供应商信息</strong></el-divider>
         <!-- <div class="handle-box">
@@ -37,44 +37,59 @@
                 </el-col>
                 <el-col :span="4">
                     <el-form-item label="联系人" prop="leader">
-                        <el-input v-model="supplierForm.leader" clearable size="small" style="width: 155px;" />
+                        <el-input v-model="supplierForm.leader" clearable size="small" readonly style="width: 155px;" />
                     </el-form-item>
                 </el-col>
                 <el-col :span="4">
                     <el-form-item label="联系电话" prop="phone">
-                        <el-input v-model="supplierForm.phone" clearable size="small" style="width: 155px;" />
+                        <el-input v-model="supplierForm.phone" clearable size="small" readonly style="width: 155px;" />
                     </el-form-item>
                 </el-col>
                 <el-col :span="4">
                     <el-form-item label="手机" prop="mobilephone">
-                        <el-input v-model="supplierForm.mobilephone" clearable size="small" style="width: 155px;" />
+                        <el-input v-model="supplierForm.mobilephone" clearable size="small" readonly style="width: 155px;" />
                     </el-form-item>
                 </el-col>
                 <el-col :span="4">
                     <el-form-item label="邮箱" prop="email">
-                        <el-input v-model="supplierForm.email" size="small" style="width: 155px;" />
+                        <el-input v-model="supplierForm.email" size="small" readonly style="width: 155px;" />
                     </el-form-item>
                 </el-col>
                 <el-col :span="8">
                     <el-form-item label="地址" prop="address">
-                        <el-input v-model="supplierForm.address" size="small" style="width: 420px" />
+                        <el-input v-model="supplierForm.address" size="small" readonly style="width: 420px" />
                     </el-form-item>
                 </el-col>
                 <el-col :span="4">
                     <el-form-item label="到货日期" prop="signTime">
-                        <el-date-picker v-model="supplierForm.signTime" style="width:155px;" value-format="yyyy-MM-dd" format="yyyy-MM-dd" placeholder="选择日期" />
+                        <el-date-picker v-model="supplierForm.signTime" style="width:155px;" readonly value-format="yyyy-MM-dd" format="yyyy-MM-dd" placeholder="选择日期" />
                     </el-form-item>
                 </el-col>
                 <el-col :span="4">
                     <el-form-item label="业务员" prop="personnelName">
-                        <el-input v-model="supplierForm.personnelName" size="small" suffix-icon="el-icon-search" @focus="personnelFocus" ref="personnelBlur" style="width: 155px;" />
+                        <el-input v-model="supplierForm.personnelName" size="small" suffix-icon="el-icon-search" readonly ref="personnelBlur" style="width: 155px;" />
+                    </el-form-item>
+                </el-col>
+                <el-col :span="4">
+                    <el-form-item label="仓库编码" prop="warehouseNum">
+                        <el-input v-model="supplierForm.warehouseNum" size="small" placeholder="选择出库仓库" readonly style="width: 155px;" />
+                    </el-form-item>
+                </el-col>
+                <el-col :span="4">
+                    <el-form-item label="仓库名称" prop="warehouseName">
+                        <el-input v-model="supplierForm.warehouseName" size="small" style="width: 155px;" readonly />
+                    </el-form-item>
+                </el-col>
+                <el-col :span="4">
+                    <el-form-item label="入库日期" prop="storageTime">
+                        <el-date-picker v-model="supplierForm.storageTime" style="width:155px;" value-format="yyyy-MM-dd" format="yyyy-MM-dd" placeholder="选择日期" readonly />
                     </el-form-item>
                 </el-col>
             </el-row>
             <el-row>
                 <el-col :span="24">
                     <el-form-item label="备注" prop="remark">
-                        <el-input v-model="supplierForm.remark" type="textarea" autosize style="width: 1000px" size="small" />
+                        <el-input v-model="supplierForm.remark" type="textarea" autosize style="width: 1000px" readonly size="small" />
                     </el-form-item>
                 </el-col>
             </el-row>
@@ -92,108 +107,16 @@
                 <el-table-column prop="unitsName" label="单位" width="100" align="center"></el-table-column>
                 <!-- <el-table-column prop="price" label="单价" align="center"></el-table-column> -->
                 <el-table-column prop="number" label="采购数量" align="center"></el-table-column>
-                <el-table-column prop="hasSignNum" label="已到货入库数量" align="center"></el-table-column>
-                <el-table-column prop="signNum" label="到货数量" align="center">
-                    <template slot-scope="scope">
-                        <el-form-item :prop="'materielListData.' + scope.$index + '.signNum'" :rules="formRules.signNum">
-                            <el-input size="small" @input="calculateInputPrice(scope.row)" maxLength="9" v-model="scope.row.signNum" />
-                        </el-form-item>
-                    </template>
-                </el-table-column>
-                <el-table-column label="操作" align="center" class-name="small-padding fixed-width" fixed="right">
-                    <template slot-scope="scope">
-                        <el-button size="small" type="text" icon="el-icon-delete" style="color:#f56c6c;" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
-                    </template>
-                </el-table-column>
+                <el-table-column prop="hasSignNum" label="已到货数量" align="center"></el-table-column>
+                <el-table-column prop="signNum" label="到货数量" align="center"> </el-table-column>
+                <el-table-column prop="storageNum" label="入库数量" align="center"> </el-table-column>
             </el-table>
         </el-form>
-
-        <!--  添加采购订单窗口 -->
-        <el-dialog :title="title" :visible.sync="open" width="800px" append-to-body v-dialogDrag>
-            <el-form :model="supplierQueryParams" ref="supplierQueryParams" :inline="true">
-                <el-form-item label="订单号" prop="orderNum">
-                    <el-input v-model="supplierQueryParams.orderNum" placeholder="请输入订单号" clearable size="small" style="width: 155px;" @keyup.enter.native="handleQueryOrder" />
-                </el-form-item>
-                <el-form-item label="供应商" prop="supplierName">
-                    <el-input v-model="supplierQueryParams.supplierName" placeholder="请输入编码或名称" clearable size="small" style="width: 155px;" @keyup.enter.native="handleQueryOrder" />
-                </el-form-item>
-                <el-form-item>
-                    <el-button type="primary" icon="el-icon-search" size="small" @click="handleQueryOrder">搜索</el-button>
-                </el-form-item>
-            </el-form>
-            <el-table v-loading="loading" :data="supplierListData" highlight-current-row @row-dblclick="handledbClick">
-                <el-table-column label="选择" width="65">
-                    <template slot-scope="scope">
-                        <el-radio :label="scope.$index + 1" v-model="radio" @change.native="getCurrentRow(scope.row)"></el-radio>
-                    </template>
-                </el-table-column>
-                <el-table-column label="订单号" align="center" prop="orderNum" :show-overflow-tooltip="true" />
-                <el-table-column label="订单日期" align="center" prop="orderTime" :show-overflow-tooltip="true" />
-                <el-table-column label="供应商编码" align="center" prop="supplierNum" :show-overflow-tooltip="true" />
-                <el-table-column label="供应商名称" align="center" prop="supplierName" :show-overflow-tooltip="true" />
-            </el-table>
-            <div class="pagination">
-                <el-pagination
-                    background
-                    layout="total, sizes, prev, pager, next"
-                    :current-page="supplierQueryParams.current"
-                    :page-size="supplierQueryParams.size"
-                    :total="supplierTotal"
-                    :page-sizes="[10, 50, 100, 200]"
-                    @size-change="handleSizeChange"
-                    @current-change="handlePageChangeOrder"
-                ></el-pagination>
-            </div>
-        </el-dialog>
-
-        <!-- 业务人员弹窗 -->
-        <el-dialog :title="title" :visible.sync="personnelOpen" width="550px" append-to-body>
-            <el-form :model="personnelQueryParams" ref="personnelQueryParams" :inline="true">
-                <el-form-item label="员工编码" prop="userNum">
-                    <el-input v-model="personnelQueryParams.userNum" placeholder="请输入编码 " clearable size="small" style="width: 120px" @keyup.enter.native="handlePersonnelQuery" />
-                </el-form-item>
-                <el-form-item label="员工名称" prop="nickname">
-                    <el-input v-model="personnelQueryParams.nickname" placeholder="请输入名称 " clearable size="small" style="width: 120px" @keyup.enter.native="handlePersonnelQuery" />
-                </el-form-item>
-                <el-form-item>
-                    <el-button type="primary" icon="el-icon-search" size="small" @click="handlePersonnelQuery">搜索</el-button>
-                </el-form-item>
-            </el-form>
-            <el-table v-loading="personnelLoading" :data="personnelListData" highlight-current-row @row-dblclick="submitFormPersonnel">
-                <el-table-column label="选择" width="60">
-                    <template slot-scope="scope">
-                        <el-radio :label="scope.$index + 1" v-model="radio" @change.native="getPersonnelRow(scope.row)"></el-radio>
-                    </template>
-                </el-table-column>
-                <el-table-column label="员工编码" align="center" prop="userNum" />
-                <el-table-column label="员工名称" align="center" prop="nickname" />
-                <el-table-column label="部门编码" align="center" prop="dept.deptNum" />
-                <el-table-column label="部门名称" align="center" prop="dept.deptName" />
-            </el-table>
-            <div class="pagination">
-                <el-pagination
-                    background
-                    :current-page="personnelQueryParams.current"
-                    :page-size="personnelQueryParams.size"
-                    :total="personnelTotal"
-                    layout="total, sizes, prev, pager, next"
-                    :page-sizes="[10, 50, 100, 200]"
-                    @size-change="handleSizeChangePersonnel"
-                    @current-change="handlePageChangePersonnel"
-                ></el-pagination>
-            </div>
-        </el-dialog>
     </div>
 </template>
 
 <script>
-import { listPurchaseOrderDialog, listPurchaseOrderSubDialog } from '@/api/purchase/order.js';
-import { updatePurchaseSign, getPurchaseSign, listPurchaseSignSub } from '@/api/purchase/sign.js';
-import { treeselect } from '@/api/basis/category.js';
-import { listSupplierDialog } from '@/api/purchase/supplier.js';
-import { userListDialog } from '@/api/system/user.js';
-import { listAllMateriel } from '@/api/basis/materiel.js';
-import { listUnits } from '@/api/basis/units.js';
+import { auditPurchaseStorage, getPurchaseStorage, listPurchaseSignSub } from '@/api/purchase/sign.js';
 import Treeselect from '@riophae/vue-treeselect';
 import '@riophae/vue-treeselect/dist/vue-treeselect.css';
 import { validNumber } from '@/utils/validate';
@@ -209,7 +132,10 @@ export default {
             title: '',
             // 表单校验
             rules: {
+                signNum: [{ required: true, message: '到货号不能为空', trigger: 'blur' }],
                 orderNum: [{ required: true, message: '订单号不能为空', trigger: 'blur' }],
+                warehouseNum: [{ required: true, message: '仓库编码不能为空', trigger: 'blur' }],
+                warehouseName: [{ required: true, message: '仓库名称不能为空', trigger: 'blur' }],
                 supplierNum: [{ required: true, message: '供应商编码不能为空', trigger: 'blur' }],
                 supplierName: [{ required: true, message: '供应商名称不能为空', trigger: 'blur' }],
                 signTime: [{ required: true, message: '到货日期不能为空', trigger: 'blur' }],
@@ -265,7 +191,10 @@ export default {
                 nickname: undefined,
                 status: '0'
             },
-            delSubIds: []
+            delSubIds: [],
+            isAudit: false,
+            isShow: false,
+            btnLoading: false
         };
     },
     created() {
@@ -273,19 +202,64 @@ export default {
     },
     watch: {
         $route(to, form) {
-            if (to.path === '/page/purchase/sign/edit' && this.supplierForm.signId !== this.$route.query.id) {
+            if (to.path === '/page/purchase/storage/preview' && this.supplierForm.signId !== this.$route.query.id) {
                 this.getPurchaseSignData();
             }
         }
     },
     methods: {
+        submitAuditForm() {
+            if (this.supplierForm.auditStatus === '3') {
+                this.msgError('已审核');
+                return;
+            }
+            let data = {
+                id: this.supplierForm.signId,
+                status: '3'
+            };
+            this.btnLoading = true;
+            auditPurchaseStorage(data)
+                .then(res => {
+                    this.btnLoading = false;
+                    if (res.success) {
+                        this.msgSuccess('审核成功');
+                        this.getPurchaseSignData();
+                    } else {
+                        this.msgError(res.message);
+                    }
+                })
+                .catch(e => (this.btnLoading = false));
+        },
+        cancelAuditForm() {
+            if (this.supplierForm.auditStatus === '4') {
+                this.msgError('已反审核');
+                return;
+            }
+            let data = {
+                id: this.supplierForm.signId,
+                status: '4'
+            };
+            this.btnLoading = true;
+            auditPurchaseStorage(data)
+                .then(res => {
+                    this.btnLoading = false;
+                    if (res.success) {
+                        this.msgSuccess('反审核成功');
+                        this.getPurchaseSignData();
+                    } else {
+                        this.msgError(res.message);
+                    }
+                })
+                .catch(e => (this.btnLoading = false));
+        },
         getPurchaseSignData() {
+            this.isShow = JSON.parse(this.$route.query.isShow || false);
+            this.isAudit = JSON.parse(this.$route.query.isAudit || false);
             let id = this.$route.query.id;
-            getPurchaseSign(id).then(res => {
+            getPurchaseStorage(id).then(res => {
                 this.supplierForm = res.data;
                 listPurchaseSignSub({ signId: id }).then(res => {
                     this.formData.materielListData = res.data;
-                    this.delSubIds = [];
                 });
             });
         },
@@ -293,7 +267,7 @@ export default {
             this.materielListData = [];
             this.loading = true;
             let param = { orderId: this.supplierForm.orderId };
-            listPurchaseOrderSubDialog(param)
+            listPurchaseOrderSub(param)
                 .then(res => {
                     this.materielListData = res.data;
                     this.formData.materielListData = res.data;
@@ -443,7 +417,7 @@ export default {
         handleDelete(index, row) {
             this.delSubIds.push(row.signSubId);
             this.formData.materielListData.splice(index, 1);
-            // this.calculateTotalPrice();
+            this.calculateTotalPrice();
         }
     }
 };
