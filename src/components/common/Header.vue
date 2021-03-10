@@ -159,10 +159,10 @@ export default {
         submitForm() {
             this.$refs.form.validate(valid => {
                 if (valid) {
-                    if (this.form.password !== decrypt(cookie.get('password'))) {
-                        this.msgError('输入原始密码不正确');
-                        return;
-                    }
+                    // if (this.form.password !== decrypt(cookie.get('password'))) {
+                    //     this.msgError('输入原始密码不正确');
+                    //     return;
+                    // }
                     this.loading = true;
                     changePassword(this.form)
                         .then(res => {

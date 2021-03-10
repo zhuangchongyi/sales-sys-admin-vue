@@ -177,8 +177,8 @@ export default {
     position: relative;
     width: 100%;
     height: 100%;
-    background-image: url(../../assets/img/starry.jpg);
-    /* background-size: 100%; */
+    background-image: url(../../assets/img/login-bg.jpg);
+    background-size: 100%;
 }
 .ms-title {
     width: 100%;
