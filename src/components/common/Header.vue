@@ -20,7 +20,7 @@
                     <span class="btn-bell-badge" v-if="message"></span>
                 </div>
                 <!-- 中英文转换 -->
-                <el-dropdown class="btn-international" trigger="click" @command="handleSetLanguage">
+                <!-- <el-dropdown class="btn-international" trigger="click" @command="handleSetLanguage">
                     <el-tooltip effect="dark" :content="$t('switchMsg')" placement="bottom">
                         <div>
                             <svg-icon class-name="international-icon" icon-class="language" />
@@ -34,7 +34,7 @@
                             English
                         </el-dropdown-item>
                     </el-dropdown-menu>
-                </el-dropdown>
+                </el-dropdown> -->
                 <!-- 用户头像 -->
                 <div class="user-avator"><img src="../../assets/img/avatar.gif" /></div>
                 <!-- 用户名下拉菜单 -->
